@@ -1,4 +1,8 @@
 package Lesson03;
+// Question: 给定一数组，该数组的相邻的元素不相等，如果有局部最小值，找出一个局部最小值
+// 左边界元素，arr[0] < arr[i]
+// 右边界元素，arr[len] < arr[len - 1],len为数组的最大下标
+// 中间元素，arr[i - 1] > arr[i] < arr[i + 1] 
 
 public class BSAswsome {
 
