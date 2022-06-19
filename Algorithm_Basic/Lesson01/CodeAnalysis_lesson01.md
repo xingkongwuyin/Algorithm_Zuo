@@ -73,7 +73,7 @@
    >   //      正确，这个问题后面再去研究吧
    >   ```
 
-2. > * Qusetion:
+2. > * Qusetion01:
    >
    >   > 有序数组中>= num最左的位置
    >
@@ -109,62 +109,265 @@
    >   			}	
    >   		}
    >   		return index;
-   >   		
+   >   
    >   	}
    >   
-   >   
-   >   // 2. 对数器
-   >   	// 2.1 generateRandomArray
-   >   	public static int[] generateRandomArray(int maxSize, int maxValue) {
-   >   		int[] arr = new int[(int)(Math.random() * (maxSize  + 1))];
-   >   		for(int i = 0; i < arr.length; i++) {
-   >   			arr[i] = (int)(Math.random() * (maxValue + 1)) - (int)(Math.random() * maxValue);
+   >     // 2. 对数器
+   >     	// 2.1 generateRandomArray
+   >     	public static int[] generateRandomArray(int maxSize, int maxValue) {
+   >     		int[] arr = new int[(int)(Math.random() * (maxSize  + 1))];
+   >     		for(int i = 0; i < arr.length; i++) {
+   >     			arr[i] = (int)(Math.random() * (maxValue + 1)) - (int)(Math.random() * maxValue);
+   >     		}
+   >     		return arr;
+   >     	}
+   >   // 2.2 test
+   >   public static int test(int[] arr, int num) {
+   >   	if(arr == null || arr.length <= 0) {
+   >   		return -1;
+   >   	}
+   >   	for(int i = 0; i < arr.length; i++) {
+   >   		if(arr[i] >= num) {
+   >   			return i;
    >   		}
-   >   		return arr;
    >   	}
-   >   	
-   >   	// 2.2 test
-   >   	public static int test(int[] arr, int num) {
+   >   	return -1;
+   >   
+   >   }
+   >   
+   >   // printArray
+   >   public static void printArray(int[] arr) {
+   >       for(int i = 0; i < arr.length; i++) {
+   >           System.out.println(arr[i] + " ");
+   >       }
+   >   }
+   >   
+   >   public static void main(String[] args) {
+   >       int testTimes = 10000000;
+   >       int maxSize = 10;
+   >       int maxValue = 100;
+   >       boolean succeed = true;
+   >       for(int i = 0; i < testTimes; i++) {
+   >           int[] arr = generateRandomArray(maxSize, maxValue);
+   >           Arrays.sort(arr);
+   >           int num = (int)(Math.random() * (maxValue + 1)) - (int)       (Math.random() * maxValue);
+   >           if(test(arr, num) != nearestIndex(arr, num)) {
+   >               printArray(arr);
+   >               System.out.println(num);
+   >               System.out.println(test(arr, num));
+   >               System.out.println(nearestIndex(arr, num));
+   >               succeed = false;
+   >               break;
+   >           }
+   >       }
+   >       System.out.println(succeed ? "nice!" :"Bad");
+   >   }
+   >
+   > * Question02:
+   >
+   >   > 有序数组<=num的最右位置
+   >
+   > * Code
+   >
+   >   ```java
+   >   package Lesson01;
+   >   import java.util.Arrays;
+   >   // 有序数组中<= num最右的位置
+   >   
+   >   public class BSNearR_Code06 {
+   >   
+   >   	// 1. nearestIndex
+   >   	public static int nearestIndex(int[] arr, int num) {
    >   		if(arr == null || arr.length <= 0) {
    >   			return -1;
    >   		}
-   >   		for(int i = 0; i < arr.length; i++) {
-   >   			if(arr[i] >= num) {
+   >   		int index = -1;
+   >   		int L = 0;
+   >   		int R = arr.length - 1;
+   >   		while(L <= R) {
+   >   			int mid = (L + R) /2;
+   >   			if(arr[mid] <= num) {
+   >   // ---------------不同之处--------------------------------------------		
+   >                   index = mid;
+   >   				L = mid + 1;
+   >   			}else {
+   >   				R = mid - 1;
+   >   			}
+   >   // ------------------------------------------------------------------           		}
+   >   		return index;
+   >   	}
+   >   	
+   >   	
+   >   	
+   >   	// 2.2 test
+   >           public static int test(int[] arr, int num) {
+   >   		if(arr == null || arr.length <= 0) {
+   >   			return -1;
+   >   		}
+   >    // ------------- 不同之处 ---------------------------------------------     
+   >   		for(int i = arr.length - 1; i >= 0; i--) {
+   >   			if(arr[i] <= num) {
    >   				return i;
    >   			}
+   >   // --------------------------------------------------------------------     
    >   		}
    >   		return -1;
    >   		
    >   	}
    >   	
-   >   	// printArray
-   >   	public static void printArray(int[] arr) {
-   >   		for(int i = 0; i < arr.length; i++) {
-   >   			System.out.println(arr[i] + " ");
+   >   	
+   >   ```
+
+3. > * Question:
+   >
+   >   二分查找
+   >
+   > * Code
+   >
+   >   ```java
+   >   package Lesson01;
+   >   import java.util.Arrays;
+   >   
+   >   public class BSExist_Code04 {
+   >   
+   >   	// 1. exist
+   >   	public static boolean exist(int[] arr, int num) {
+   >   		if(arr == null || arr.length == 0) {
+   >   			return false;
    >   		}
+   >   		int left = 0;
+   >   		int right = arr.length - 1;
+   >   		while(left <= right) {
+   >   		//	int mid = left + (right - left) >> 1;   错误 （1）
+   >   			int mid = left + ((right - left) >> 1);
+   >   			if(arr[mid] == num) {
+   >   				return true;
+   >   			}else if (arr[mid] < num) {
+   >   				left = mid + 1;
+   >   			}else {
+   >   				right = mid - 1;
+   >   			}
+   >   		}
+   >   		return false;
    >   	}
-   >   		
+   >   	
+   >   	// 2.  对数器
+   >   	// 2.1 generateRandomArray
+   >   	public static int[] generateRandomArray(int maxSize, int maxValue) {
+   >   		int[] arr= new int[(int)(Math.random() * (maxSize + 1))];
+   >   		for(int i = 0; i < arr.length; i++) {
+   >   			arr[i] = (int)(Math.random() * (maxValue + 1)) - (int)(Math.random() * (maxValue));
+   >   		}
+   >   		return arr;
+   >   	}
+   >   	
+   >   	// 2.2 test
+   >   	public static boolean test(int[] arr, int num) {
+   >   		for(int cur :arr ) {
+   >   			if(cur == num) {
+   >   				return true; 
+   >   			}
+   >   		}
+   >   		return false;
+   >   	}
+   >   	
+   >   	
+   >        // 2.3 main
    >   	public static void main(String[] args) {
-   >   		int testTimes = 10000000;
-   >   		int maxSize = 10;
+   >   		int testTimes = 100000;
+   >   		int maxSize = 100;
    >   		int maxValue = 100;
    >   		boolean succeed = true;
    >   		for(int i = 0; i < testTimes; i++) {
    >   			int[] arr = generateRandomArray(maxSize, maxValue);
    >   			Arrays.sort(arr);
    >   			int num = (int)(Math.random() * (maxValue + 1)) - (int)(Math.random() * maxValue);
-   >   			if(test(arr, num) != nearestIndex(arr, num)) {
-   >   				printArray(arr);
-   >   				System.out.println(num);
-   >   				System.out.println(test(arr, num));
-   >   				System.out.println(nearestIndex(arr, num));
+   >   			if(test(arr, num) != exist(arr, num)) {
    >   				succeed = false;
-   >   		        break;
+   >   				break;
    >   			}
    >   		}
-   >   		System.out.println(succeed ? "nice!" :"Bad");
+   >   		System.out.println(succeed ? "nice" : "bad");
    >   	}
    >   
+   >   }
+   >   
+   >   
+   >   // int mid = left + (right - left) >> 1;   错误 （1）
+   >   // 错的地方
+   >   // 1. 左移运算符和右移运算符不会对变量产生影响，即right << 1,right的变量
+   >   //    大小不发生变化
+   >   // 2. + - 的优先级比左移和右移运算符高
+   >   // 总而言之，left + (right - left) >> 1  == right >> 1,而每次right右移后
+   >   // 又不改变大小，所以会造成死循环
+   >   ```
+   >
+   >   ![image-20220619145943275](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206191459330.png)
+
+3. > * Qusetion:
+   >
+   >   插入排序、选择排序和冒泡排序
+   >
+   >   ```java
+   >   // 1. selectionSort
+   >   	public static void selectionSort(int[] arr) {
+   >   		if(arr == null || arr.length <=2) {
+   >   			return;
+   >   		}
+   >   		for(int i = 0; i < arr.length - 1; i++) {
+   >   			int min = i;
+   >   			for(int j = i + 1; j < arr.length; j++) {
+   >   				if(arr[min] > arr[j]) {
+   >   					min = j;
+   >   				}
+   >   				swap(arr, min, i);
+   >   			}
+   >   			
+   >   		}
+   >   	}
+   >   
+   >   // 2. bubbleSort
+   >   	public static void bubbleSort(int[] arr) {
+   >   		if(arr == null || arr.length <=2) {
+   >   			return;
+   >   		}
+   >   		for(int i = 0; i < arr.length - 1; i++) {
+   >   		int flag = 1;
+   >   		for(int j = 0; i < arr.length -1 -i; j++) {
+   >   			if(arr[j] > arr[j + 1]) {
+   >   				flag = 0;
+   >   				swap(arr, j , j + 1);
+   >   			}
+   >   		}
+   >   		if(flag == 1) {
+   >   			break;
+   >   		}
+   >   	}
+   >   }
+   >   
+   >   // 3. insetionSort
+   >   	public static void insertionsSort(int[] arr) {
+   >   		if(arr == null || arr.length <=2) {
+   >   			return;
+   >   		}
+   >   		for(int i = 1; i < arr.length; i++) {
+   >   			for(int pre = i - 1; pre >= 0 && arr[pre] > arr[pre + 1]; pre--) {
+   >   				if(arr[i] >= arr[i - 1]) {
+   >   					continue;
+   >   				}
+   >   				swap(arr,pre, pre + 1);
+   >   			}
+   >   		}
+   >   	}
+   >   	
    >   ```
    >
    >   
+
+   
+
+==二分查找==
+
+* 先定范围，再二分，后查找。
+* 查找怎么查找，找到了怎么样，找不到，下一步又该如何找，去哪个范围找
+
