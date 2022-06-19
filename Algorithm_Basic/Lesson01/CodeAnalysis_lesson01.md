@@ -173,9 +173,9 @@
    >   package Lesson01;
    >   import java.util.Arrays;
    >   // 有序数组中<= num最右的位置
-   >     
+   >   
    >   public class BSNearR_Code06 {
-   >     
+   >   
    >   	// 1. nearestIndex
    >   	public static int nearestIndex(int[] arr, int num) {
    >   		if(arr == null || arr.length <= 0) {
@@ -200,7 +200,7 @@
    >   	
    >   	
    >   	// 2.2 test
-   >   	      public static int test(int[] arr, int num) {
+   >           public static int test(int[] arr, int num) {
    >   		if(arr == null || arr.length <= 0) {
    >   			return -1;
    >   		}
@@ -227,9 +227,9 @@
    >   ```java
    >   package Lesson01;
    >   import java.util.Arrays;
-   >     
+   >   
    >   public class BSExist_Code04 {
-   >     
+   >   
    >   	// 1. exist
    >   	public static boolean exist(int[] arr, int num) {
    >   		if(arr == null || arr.length == 0) {
@@ -250,7 +250,7 @@
    >   		}
    >   		return false;
    >   	}
-   >   	  
+   >   	
    >   	// 2.  对数器
    >   	// 2.1 generateRandomArray
    >   	public static int[] generateRandomArray(int maxSize, int maxValue) {
@@ -260,7 +260,7 @@
    >   		}
    >   		return arr;
    >   	}
-   >   	  
+   >   	
    >   	// 2.2 test
    >   	public static boolean test(int[] arr, int num) {
    >   		for(int cur :arr ) {
@@ -273,22 +273,22 @@
    >   	
    >   	
    >        // 2.3 main
-   >     public static void main(String[] args) {
-   >     	int testTimes = 100000;
-   >     	int maxSize = 100;
-   >     	int maxValue = 100;
-   >     	boolean succeed = true;
-   >     	for(int i = 0; i < testTimes; i++) {
-   >     		int[] arr = generateRandomArray(maxSize, maxValue);
-   >     		Arrays.sort(arr);
-   >     		int num = (int)(Math.random() * (maxValue + 1)) - (int)(Math.random() * maxValue);
-   >     		if(test(arr, num) != exist(arr, num)) {
-   >     			succeed = false;
-   >     			break;
-   >     		}
-   >     	}
-   >     	System.out.println(succeed ? "nice" : "bad");
-   >     }
+   >   	public static void main(String[] args) {
+   >   		int testTimes = 100000;
+   >   		int maxSize = 100;
+   >   		int maxValue = 100;
+   >   		boolean succeed = true;
+   >   		for(int i = 0; i < testTimes; i++) {
+   >   			int[] arr = generateRandomArray(maxSize, maxValue);
+   >   			Arrays.sort(arr);
+   >   			int num = (int)(Math.random() * (maxValue + 1)) - (int)(Math.random() * maxValue);
+   >   			if(test(arr, num) != exist(arr, num)) {
+   >   				succeed = false;
+   >   				break;
+   >   			}
+   >   		}
+   >   		System.out.println(succeed ? "nice" : "bad");
+   >   	}
    >   
    >   }
    >   
@@ -322,10 +322,10 @@
    >   				}
    >   				swap(arr, min, i);
    >   			}
-   >   			  
+   >   			
    >   		}
    >   	}
-   >     
+   >   
    >   // 2. bubbleSort
    >   	public static void bubbleSort(int[] arr) {
    >   		if(arr == null || arr.length <=2) {
@@ -344,7 +344,7 @@
    >   		}
    >   	}
    >   }
-   >     
+   >   
    >   // 3. insetionSort
    >   	public static void insertionsSort(int[] arr) {
    >   		if(arr == null || arr.length <=2) {
@@ -359,15 +359,15 @@
    >   			}
    >   		}
    >   	}
-   >   	  
+   >   	
    >   ```
    >
+   >   
+
    
 
-5. > ==二分查找==
-   >
-   > * 先定范围，再二分，后查找。
-   > * 二分的体现是`mid = (mid + R) / 2`
-   > * 查找怎么查找，找到了怎么样，找不到，下一步又该如何找，去哪个范围找
-   >
+==二分查找==
+
+* 先定范围，再二分，后查找。
+* 查找怎么查找，找到了怎么样，找不到，下一步又该如何找，去哪个范围找
 
