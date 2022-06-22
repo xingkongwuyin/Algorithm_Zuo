@@ -173,9 +173,9 @@
    >   package Lesson01;
    >   import java.util.Arrays;
    >   // 有序数组中<= num最右的位置
-   >     
+   >       
    >   public class BSNearR_Code06 {
-   >     
+   >       
    >   	// 1. nearestIndex
    >   	public static int nearestIndex(int[] arr, int num) {
    >   		if(arr == null || arr.length <= 0) {
@@ -227,9 +227,9 @@
    >   ```java
    >   package Lesson01;
    >   import java.util.Arrays;
-   >     
+   >       
    >   public class BSExist_Code04 {
-   >     
+   >       
    >   	// 1. exist
    >   	public static boolean exist(int[] arr, int num) {
    >   		if(arr == null || arr.length == 0) {
@@ -250,7 +250,7 @@
    >   		}
    >   		return false;
    >   	}
-   >   	  
+   >   	    
    >   	// 2.  对数器
    >   	// 2.1 generateRandomArray
    >   	public static int[] generateRandomArray(int maxSize, int maxValue) {
@@ -260,7 +260,7 @@
    >   		}
    >   		return arr;
    >   	}
-   >   	  
+   >   	    
    >   	// 2.2 test
    >   	public static boolean test(int[] arr, int num) {
    >   		for(int cur :arr ) {
@@ -322,10 +322,10 @@
    >   				}
    >   				swap(arr, min, i);
    >   			}
-   >   			  
+   >   			    
    >   		}
    >   	}
-   >     
+   >       
    >   // 2. bubbleSort
    >   	public static void bubbleSort(int[] arr) {
    >   		if(arr == null || arr.length <=2) {
@@ -344,7 +344,7 @@
    >   		}
    >   	}
    >   }
-   >     
+   >       
    >   // 3. insetionSort
    >   	public static void insertionsSort(int[] arr) {
    >   		if(arr == null || arr.length <=2) {
@@ -359,11 +359,10 @@
    >   			}
    >   		}
    >   	}
-   >   	  
+   >   	    
    >   ```
    >
    
-
 5. > ==二分查找==
    >
    > * 先定范围，再二分，后查找。
@@ -371,3 +370,36 @@
    > * 查找怎么查找，找到了怎么样，找不到，下一步又该如何找，去哪个范围找
    >
 
+------------------------------------------ Note --------------------------------------------------------------------
+
+1. >  常数时间的操作是O(1)
+
+2. >  <img src="https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206222212790.png" alt="image-20220613160034441" style="zoom:150%;" />
+   >
+   >  <img src="https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206222212807.png" alt="image-20220613160119245" style="zoom:200%;" />
+   >
+   >  * 如果流程随着数据情况的变化而变化，应该估计最难的流程
+   >
+   >   <img src="https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206222212786.png" alt="image-20220613162812961" style="zoom:200%;" />
+
+3. > <img src="https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206222212771.png" alt="image-20220613162935566" style="zoom:200%;" />
+
+4. > * 额外空间复杂度给的不算额外空间，即除了样本数据之外的空间。在整个算法流程中开辟的空间是有限的，跟样本数据量无关，用户需要的空间不算做空间复杂度，就是在一个函数中，开辟了一个数组，可是这个数组是函数的返回值，那么这个开辟的空间不算做额外空间复杂度。用户要什么，你给什么，输入什么参数，都不算额外空间。如果需要有限个变量，额外空间复杂度为O(1)。
+   >
+   > * 额外空间也是自主空间，和输入、功能都没有关的
+   >
+   >   ![image-20220613164238983](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206222212811.png)
+
+5. > ![image-20220613170441009](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206222212872.png)
+
+6. > * 拼常数项直接测数据运行时间
+   >
+   > * 算法一定要先对样本有个认识，有了样本数量才能设计更好的算法
+   >
+   > * 最优解：先PK时间复杂度，再PK额外空间复杂度，如果两者都相同，那么这两个算法都是最优解，不用PK常数项
+
+7. > O(1),运行时间和样本没关系，N可以看成样本数量
+   >
+   > O(1),运行时间和样本没关系，N可以看成样本数量
+   >
+   > ![image-20220613171727212](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206222212210.png)
