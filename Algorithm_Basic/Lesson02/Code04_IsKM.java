@@ -2,7 +2,7 @@ package Lesson02;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class Code03_KM {
+public class Code04_IsKM {
 
 	// km
 	public static int km(int[] arr, int k, int m) {
@@ -14,12 +14,28 @@ public class Code03_KM {
 		}
 		int ans = 0;
 	    for(int i = 0; i < 32; i++) {
-	    	help[i] %= m;
-	    	if(help[i] != 0) {
+	    	if(help[i] % m == 0) {
+	    		continue;
+	    	}
+	    	if(help[i] % m == k) {
 	    		ans |= (1 << i);
+	    	}else{
+	    		return -1;
 	    	}
 	    }
-	    return ans;
+	    // 因为ans == 0，但是不能确定0中了没有，所以下步遍历一下0出现的次数
+	  if(0 == ans) {
+		  int count = 0;
+		  for(int num : arr) {
+		    	if (num == ans) {
+		    		count++;
+		    	}
+		    }
+		    if(count != k) {
+		    	return -1;
+		    }
+	  }
+		return ans;
 	}
 	
 	// 对数器
@@ -34,7 +50,7 @@ public class Code03_KM {
 			}
 		}
 		
-		// 这一步的前提是一定会找到出现k次的数，如果没有出现k次的数，最终的结果返回1
+		// 这一步的前提是一定会找到出现k次的数，如果没有出现k次的数，最终的结果都要返回1
 		// 出现了k次
 		for(int num : map.keySet()) {
 			if(map.get(num) == k) {
@@ -47,7 +63,7 @@ public class Code03_KM {
 	// 2. 产生符合要求的随机数组，有kinds种数，且某个数出现k次，其他数都出现m次
 	public static int[] randomArray(int maxKinds, int range, int k, int m) {
 		int kTimesNum = randomNum(range);  // 真命天子
-		int times = k;                    //  真命天子出现的次数
+		int times = Math.random() < 0.5 ? k : (int)(Math.random() * (m - 1)) + 1;                    //  真命天子出现的次数
 		int numKinds = (int)(Math.random() * maxKinds) + 2;   // 一共有numkinds种数
 		int[] arr = new int[times + (numKinds - 1) * m];    
 		int index = 0;
@@ -94,9 +110,9 @@ public class Code03_KM {
 	
 	// 5.测试
 	public static void main(String[] args) {
-		int kinds = 52;
-		int range = 300;
-		int max = 91;
+		int kinds = 41;
+		int range = 110;
+		int max = 9;
 		int testTimes = 100000;
 		System.out.println("begin!!!");
 		for(int i = 0; i < testTimes; i++) {
@@ -115,7 +131,7 @@ public class Code03_KM {
 			if(ans1 != ans2) {
 				print(arr);
 				System.out.println(" ");
-				System.out.println("ans1 =" + ans1 + "ans2 " + ans2 );
+				System.out.println("ans1 = " + ans1 + " ans2 = " + ans2 );
 				System.out.println("bad!!!");
 				break;
 			}
@@ -124,6 +140,7 @@ public class Code03_KM {
 	}
 
 }
+
 
 
 

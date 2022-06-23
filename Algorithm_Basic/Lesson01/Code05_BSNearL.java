@@ -1,8 +1,8 @@
 package Lesson01;
 import java.util.Arrays;
-// ÓĞĞòÊı×éÖĞ>= num×î×óµÄÎ»ÖÃ
+// æ‰¾å‡ºæ•°ç»„ä¸­>= numæœ€å·¦çš„ä½ç½®
 
-public class BSNearL_Code05 {
+public class Code05_BSNearL {
 
 	// 1. nearestIndex
 	public static int nearestIndex(int[] arr, int num) {
@@ -25,7 +25,7 @@ public class BSNearL_Code05 {
 		
 	}
 	
-	// 2. ¶ÔÊıÆ÷
+	// 2. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	// 2.1 generateRandomArray
 	public static int[] generateRandomArray(int maxSize, int maxValue) {
 		int[] arr = new int[(int)(Math.random() * (maxSize  + 1))];
