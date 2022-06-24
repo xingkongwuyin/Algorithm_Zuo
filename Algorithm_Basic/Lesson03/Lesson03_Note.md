@@ -54,7 +54,7 @@
    > >   public static Node reverseLinkedList(Node head) {
    > >       	Node pre = null;
    > >       	Node next = null;
-   > >   
+   > >     
    > >       	while(head != null) {
    > >       		next = head.next;
    > >       		head.next = pre;
@@ -89,12 +89,12 @@
    > >   public static class Node {
    > >   		public int value;
    > >   		public Node next;
-   > >   
+   > >     
    > >   		public Node(int data) {
    > >   			this.value = data;
    > >   		}
    > >   	}
-   > >   
+   > >     
    > >   	// head = removeValue(head, 2);
    > >   	public static Node removeValue(Node head, int num) {
    > >   		// head来到第一个不需要删的位置
@@ -134,5 +134,17 @@
    >
    > ![image-20220624104457156](https://dawn1314.oss-cn-beijing.aliyuncs.com/202206241044213.png)
 
-
-
+5. > ```java
+   > //  栈和队列
+   > //  逻辑概念
+   > //  栈：数据先进后出，犹如弹匣
+   > //  队列：数据先进先出，好似排队
+   > ```
+   >
+   > ```java
+   > // 栈和队列的实际实现
+   > // 双向链表的实现
+   > // 数组实现
+   > ```
+   >
+   > 
