@@ -54,7 +54,7 @@
    > >   public static Node reverseLinkedList(Node head) {
    > >       	Node pre = null;
    > >       	Node next = null;
-   > >       	
+   > >   
    > >       	while(head != null) {
    > >       		next = head.next;
    > >       		head.next = pre;
@@ -78,10 +78,52 @@
    > >       }
    > >   ```
    > >
+   >
+   > * 2）给定单链表，删除指定数
+   >
+   >   ![image-20220624194736194](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206241947239.png)
+   >
+   > > + analysis：首先判断链表非空，非空返回null。用pre表示从头节点到pre符合节点，cur表示去找符合要求的节点，cur没找到，就把cur所指的节点删掉，即让pre的next指向cur的next，如果找到就让pre来到cur的位置，最后返回head
+   > >
+   > >   ```java
+   > >   public static class Node {
+   > >   		public int value;
+   > >   		public Node next;
+   > >   
+   > >   		public Node(int data) {
+   > >   			this.value = data;
+   > >   		}
+   > >   	}
+   > >   
+   > >   	// head = removeValue(head, 2);
+   > >   	public static Node removeValue(Node head, int num) {
+   > >   		// head来到第一个不需要删的位置
+   > >   		while (head != null) {
+   > >   			if (head.value != num) {
+   > >   				break;
+   > >   			}
+   > >   			head = head.next;
+   > >   		}
+   > >   		// 1 ) head == null
+   > >   		// 2 ) head != null
+   > >   		Node pre = head;
+   > >   		Node cur = head;
+   > >   		while (cur != null) {
+   > >   			if (cur.value == num) {
+   > >   				pre.next = cur.next;
+   > >   			} else {
+   > >   				pre = cur;
+   > >   			}
+   > >   			cur = cur.next;
+   > >   		}
+   > >   		return head;
+   > >   	}
+   > >   ```
+   > >
    > >   
    >
    > 
-
+   
 4. >  ==thought==
    >
    > 1. 对于链表的题，每次操作，是针对单个节点进行操作的，也就是每次循环是针对单个节点进行操作，那么对每个节点进行操作之前，要把这个结点的前后节点的指针要展开，即要找到他前后节点的指针pre和next，然后再对这个节点进行操作，一定要记住，链表的操作，从局部来说是对单个结点进行操作，找前后指针，一是为了对结点操作时，用的到，二是为下一步循环搭建环境，
