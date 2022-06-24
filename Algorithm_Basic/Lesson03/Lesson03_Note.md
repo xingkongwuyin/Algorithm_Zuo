@@ -38,7 +38,7 @@
    > //   这里是熟悉的结构。链表还有哪些常见的联系题，后续还有专门的一节来系统学习
    > ```
    >
-   > * 单链表的旋转（利用for/while的思想)
+   > * 1）单链表的旋转（利用for/while的思想)
    >
    > ![image-20220624105910022](https://dawn1314.oss-cn-beijing.aliyuncs.com/202206241059055.png)
    >
@@ -50,7 +50,32 @@
    > > * code
    > >
    > >   ```java
-   > >   
+   > >   // 翻转单向链表 
+   > >   public static Node reverseLinkedList(Node head) {
+   > >       	Node pre = null;
+   > >       	Node next = null;
+   > >       	
+   > >       	while(head != null) {
+   > >       		next = head.next;
+   > >       		head.next = pre;
+   > >       		pre = head;
+   > >       		head = next;
+   > >       	}
+   > >       	return pre;
+   > >       }
+   > >   // 翻转双向链表
+   > >       public static doubleNode reversedoubleList(doubleNode head) {
+   > >       	doubleNode next = null;
+   > >       	doubleNode pre = null;
+   > >       	while(head != null) {
+   > >       		next = head.next;
+   > >       		head.last = next;
+   > >       		head.next = pre;
+   > >       		pre = head;
+   > >       		head = next;
+   > >       	}
+   > >       	return pre;
+   > >       }
    > >   ```
    > >
    > >   
