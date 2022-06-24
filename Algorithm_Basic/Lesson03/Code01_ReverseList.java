@@ -1,4 +1,4 @@
-package lesson03;
+package lesson03;  GitHub
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,19 +132,34 @@ public class Code01_ReverseList {
     		list.add(head);
     		head = head.next;
     	}
+    	// 第一种方法
     	list.get(0).next = null;
-    	doubleNode pre = list.get(0);
-    	int N = list.size();
-    	for(int i = 1; i < N; i++) {
+    	doubleNode pre1 = list.get(0);
+    	int N1 = list.size();
+    	for(int i = 1; i < N1; i++) {
     		doubleNode cur = list.get(i);
-    		cur.next = pre;
-    		pre.last = cur;
+    		cur.next = pre1;
+    		pre1.last = cur;
     		cur.last = null;
     		
-    		pre = cur;
+    		pre1 = cur;
     				
     	}
-    	return list.get(N - 1);
+    	// 第二种方法
+    	doubleNode pre2 = null;
+    	int N2 = list.size();
+    	list.add(null);   // 我想在list表加完节点后，再加一个空指针，不知道这样写可以吗
+    	for(int i = 0; i < N2; i++) {
+    		doubleNode cur = list.get(i);
+    		cur.last = list.get(i + 1);
+    		cur.next = pre2;
+    		
+    		pre2 = cur;
+    		
+    	}
+    		
+    	
+    	return list.get(N1 - 1);
     }
      
     // 2.2 generate random double list
