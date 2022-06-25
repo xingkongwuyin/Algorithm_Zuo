@@ -2,10 +2,12 @@ package lesson03;
 import lesson03.Code01_ReverseList.Node;
 import lesson03.Code01_ReverseList.doubleNode;
 import java.util.Stack;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Code11_Summary {
 
-	// reverse linked list
+	    // 1. reverse linked list
 		public static Node reverseLinkedList(Node head) {
 			Node pre = null;
 			Node next = null;
@@ -20,7 +22,10 @@ public class Code11_Summary {
 			return pre;
 		}
 		
-		// reverse double list
+		
+		
+		
+		// 2. reverse double list
 		public static doubleNode reverseDoubleList(doubleNode head) {
 			doubleNode pre = null;
 			doubleNode next = null;
@@ -36,7 +41,10 @@ public class Code11_Summary {
 			return pre;		
 		}
 		
-		// delete given value
+		
+		
+		
+		// 3. delete given value
 		public static Node deleteGivenValue(Node head, int num) {
 			while(head != null) {
 				if(head.value != num) {
@@ -57,7 +65,10 @@ public class Code11_Summary {
 			return head;
 		}
 		
-		// ring array implements queue
+		
+		
+		
+		// 4. ring array implements queue
 		public static class MyQueue{
 			private int[] arr;
 			private int pushi; // end
@@ -72,7 +83,7 @@ public class Code11_Summary {
 				this.limit = limit;
 			}
 			
-			// push element
+			// 5. push element
 			public void push(int value) {
 				if(size == limit) {
 					throw new RuntimeException("Queue is full");				
@@ -83,7 +94,7 @@ public class Code11_Summary {
 				
 			}
 			
-			// pop element
+			// 6. pop element
 			public int pop() {
 				if(0 == size) {
 					throw new RuntimeException("Queue is empty");
@@ -98,7 +109,10 @@ public class Code11_Summary {
 			}
 		}
 		
-		// getMinStack
+		
+		
+		
+		// 7. getMinStack
 		public static class Mystack{
 			private  Stack<Integer> stackData;
 			private Stack<Integer> stackMin;
@@ -138,7 +152,9 @@ public class Code11_Summary {
 		}
 		
 		
-		// two stacks implement queue
+		
+		
+		// 8. two stacks implement queue
 		public static class TwoStackImplement{
 			public Stack<Integer> stackPush;
 			public Stack<Integer> stackPop;
@@ -179,11 +195,79 @@ public class Code11_Summary {
 			}
 		}
 		
+		
+		
+		// 9. two queues implement stack
+		public static class TwoqueueImplementStack<T>{
+			public Queue<T> queue;
+			public Queue<T> help;
+			
+			public TwoqueueImplementStack(){
+				queue = new LinkedList<>();
+				help = new LinkedList<>();
+			}
+			
+			public void push(T value) {
+				queue.offer(value);
+			}
+			
+			public T poll() {
+				while(queue.size() > 1) {
+					help.offer(queue.poll());
+				}
+				T ans = queue.poll();
+				Queue<T> tmp = queue;
+				queue = help;
+				help = tmp;
+				
+				return ans;
+			}
+			
+			public T peek() {
+				while(queue.size() > 1) {
+					help.offer(queue.poll());
+				}
+				T ans = queue.poll();
+				help.offer(ans);
+				Queue<T> tmp = queue;
+				queue = help;
+				help = tmp;
+				
+				return ans;
+			}
+		}
+		
 	
 		
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
+	
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
