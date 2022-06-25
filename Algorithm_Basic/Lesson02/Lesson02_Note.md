@@ -64,7 +64,7 @@
    > 		for(int i = 0; i < arr.length; i++) {
    > 			eor ^= arr[i];
    > 		}
-   > 		
+   > 
    > 		int mostRightOne = eor & (-eor);
    > 		int onlyOne = 0;
    > 		for(int i = 0; i < arr.length; i++) {
@@ -106,7 +106,7 @@
    >   	    }
    >   	    return ans;
    >   	}
-   >   	
+   >   
    >   	// 对数器
    >   	// 1. 用哈希表的方式求出arr数组中出现k次的那个数
    >   	public static int haspMapNum(int[] arr, int k, int m) {
@@ -118,7 +118,7 @@
    >   				map.put(num, 1);
    >   			}
    >   		}
-   >   		
+   >   
    >   		// 这一步的前提是一定会找到出现k次的数，如果没有出现k次的数，最终的结果都要返回1
    >   		// 出现了k次
    >           for(int num : map.keySet()) {
@@ -128,7 +128,7 @@
    >           }
    >           return -1;
    >   	}
-   >   	
+   >   
    >   	// 2. 产生符合要求的随机数组，有kinds种数，且某个数出现k次，其他数都出现m次
    >   	public static int[] randomArray(int maxKinds, int range, int k, int m) {
    >   		int kTimesNum = randomNum(range);  // 真命天子
@@ -161,69 +161,70 @@
    >   			arr[j] = tmp;
    >   		}
    >   		return arr;
-   >   		
+   >   
    >   	}
-   >   	
-   >   	// 5. 创造随机数 [-range range]
+   >   
+   >   	// 3. 创造随机数 [-range range]
    >   	public static int randomNum(int range) {
    >   		return (int)(Math.random() * (range + 1 )) -(int)(Math.random() * (range + 1 ));
    >   	}
-   >   	
+   >   
    >   	// 4.打印数组
    >   	public static void print(int[] arr) {
    >   		for(int num : arr) {
    >   			System.out.println(num + " ");
    >   		}
    >   	}
-   >   	
-   >   	
-   >   	// 5.测试
-   >   	public static void main(String[] args) {
-   >   		int kinds = 52;
-   >   		int range = 300;
-   >   		int max = 91;
-   >   		int testTimes = 100000;
-   >   		System.out.println("begin!!!");
-   >   		for(int i = 0; i < testTimes; i++) {
-   >   			int a = (int)(Math.random() * max) + 1;
-   >   			int b = (int)(Math.random() * max) + 1;
-   >   			int k = Math.min(a, b);
-   >   			int m = Math.max(a, b);
-   >   			
-   >   			// K < m
-   >   			if(k == m) {
-   >   				m++;
-   >   			}
-   >   			int[] arr = randomArray(kinds, range, k, m);
-   >   			int ans1 = km(arr, k, m);
-   >   			int ans2 = haspMapNum(arr, k, m);
-   >   			if(ans1 != ans2) {
-   >   				print(arr);
-   >   				System.out.println(" ");
-   >   				System.out.println("ans1 =" + ans1 + "ans2 " + ans2 );
-   >   				System.out.println("bad!!!");
-   >   				break;
-   >   			}
-   >   		}
-   >   		System.out.println("end!!!");
-   >   	}
-   >   
+   >
+   >
+   > ```java
+   > // 5.测试
+   > public static void main(String[] args) {
+   > 	int kinds = 52;
+   > 	int range = 300;
+   > 	int max = 91;
+   > 	int testTimes = 100000;
+   > 	System.out.println("begin!!!");
+   > 	for(int i = 0; i < testTimes; i++) {
+   > 		int a = (int)(Math.random() * max) + 1;
+   > 		int b = (int)(Math.random() * max) + 1;
+   > 		int k = Math.min(a, b);
+   > 		int m = Math.max(a, b);
+   > 
+   > 		// K < m
+   > 		if(k == m) {
+   > 			m++;
+   > 		}
+   > 		int[] arr = randomArray(kinds, range, k, m);
+   > 		int ans1 = km(arr, k, m);
+   > 		int ans2 = haspMapNum(arr, k, m);
+   > 		if(ans1 != ans2) {
+   > 			print(arr);
+   > 			System.out.println(" ");
+   > 			System.out.println("ans1 =" + ans1 + "ans2 " + ans2 );
+   > 			System.out.println("bad!!!");
+   > 			break;
+   > 		}
+   > 	}
+   > 	System.out.println("end!!!");
+   > }
+   > ```
+   >
    >   }
-   >   
-   >   
-   >   
-   >   ```
    >
-   >   
+   > 
    >
+   >   ```java
+   > 
+   > 
+   > 
    > ==题目六：一个数组中，有n种数，n - 1种数出现了M次，剩下一种数出现的次数不确定，但肯定大于等于1，且小于M，求 如果剩下的那个数出现的次数等于K次，则找出这个数，如果不是则返回找不到==
-   >
+   > 
    > * analysis：题目四的分析大体一致，不同的是
    >   + 模M的时候要看一下结果是否等于k，不等于k，那就不是要求的数
    >   + 而且最后返回值为0的话，也要判断下，是0出现了k次，还是没经过改变的0。
    >   + 没找到返回-1，这个我有点不理解，是因为HashMap找不到某个数就返回-1，这就相当于，找不到或者-1真的出现k次都会返回-1，这里只是判断这个代码是否正确，这点可以忽略
-   >
-   > ```java
+   > 
    > package Lesson02;
    > import java.util.HashMap;
    > import java.util.HashSet;
@@ -261,10 +262,10 @@
    > 		    	return -1;
    > 		    }
    > 	  }
-   > 	   
+   > 
    > 		return ans;
    > 	}
-   > 	
+   > 
    > 	// 对数器
    > 	// 1. 用哈希表的方式求出arr数组中出现k次的那个数
    > 	public static int haspMapNum(int[] arr, int k, int m) {
@@ -276,7 +277,7 @@
    > 				map.put(num, 1);
    > 			}
    > 		}
-   > 		
+   > 
    > 		// 这一步的前提是一定会找到出现k次的数，如果没有出现k次的数，最终的结果都要返回1
    > 		// 出现了k次
    > 		for(int num : map.keySet()) {
@@ -286,7 +287,7 @@
    > 		}
    > 		return -1;
    > 	}
-   > 	
+   > 
    > 	// 2. 产生符合要求的随机数组，有kinds种数，且某个数出现k次，其他数都出现m次
    > 	public static int[] randomArray(int maxKinds, int range, int k, int m) {
    > 		int kTimesNum = randomNum(range);  // 真命天子
@@ -319,22 +320,22 @@
    > 			arr[j] = tmp;
    > 		}
    > 		return arr;
-   > 		
+   > 
    > 	}
-   > 	
+   > 
    > 	// 5. 创造随机数 [-range range]
    > 	public static int randomNum(int range) {
    > 		return (int)(Math.random() * (range + 1 )) -(int)(Math.random() * (range + 1 ));
    > 	}
-   > 	
+   > 
    > 	// 4.打印数组
    > 	public static void print(int[] arr) {
    > 		for(int num : arr) {
    > 			System.out.println(num + " ");
    > 		}
    > 	}
-   > 	
-   > 	
+   > 
+   > 
    > 	// 5.测试
    > 	public static void main(String[] args) {
    > 		int kinds = 14;
@@ -347,7 +348,7 @@
    > 			int b = (int)(Math.random() * max) + 1;
    > 			int k = Math.min(a, b);
    > 			int m = Math.max(a, b);
-   > 			
+   > 
    > 			// K < m
    > 			if(k == m) {
    > 				m++;
@@ -369,7 +370,7 @@
    > 
    > }
    > 
-   > ```
+   >   ```
    >
    > 
 
