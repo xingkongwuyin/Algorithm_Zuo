@@ -54,7 +54,7 @@
    > >   public static Node reverseLinkedList(Node head) {
    > >       	Node pre = null;
    > >       	Node next = null;
-   > >     
+   > >       
    > >       	while(head != null) {
    > >       		next = head.next;
    > >       		head.next = pre;
@@ -89,12 +89,12 @@
    > >   public static class Node {
    > >   		public int value;
    > >   		public Node next;
-   > >     
+   > >       
    > >   		public Node(int data) {
    > >   			this.value = data;
    > >   		}
    > >   	}
-   > >     
+   > >       
    > >   	// head = removeValue(head, 2);
    > >   	public static Node removeValue(Node head, int num) {
    > >   		// head来到第一个不需要删的位置
@@ -135,10 +135,10 @@
    > ![image-20220624104457156](https://dawn1314.oss-cn-beijing.aliyuncs.com/202206241044213.png)
 
 5. > ```java
-   > //  栈和队列
-   > //  逻辑概念
-   > //  栈：数据先进后出，犹如弹匣
-   > //  队列：数据先进先出，好似排队
+   > // 栈和队列
+   > // 逻辑概念
+   > // 栈：数据先进后出，犹如弹匣
+   > // 队列：数据先进先出，好似排队
    > ```
    >
    > ```java
@@ -147,4 +147,60 @@
    > // 数组实现
    > ```
    >
+   > ```java
+   > // 栈和队列的常见面试题
+   > // 实现一个特殊的栈，在基本功能的基础上，再实现返回栈中最小元素的功能
+   > // 1) pop、push、getMin、操作的时间复杂度都是O(1).
+   > // 2) 设计的栈类型可以使现有的栈结构
+   > ```
+   >
+   > ```java
+   > // 栈和队列的常见面试题
+   > // 1) 如何用栈结构实现队列结构
+   > // 2) 如何用队列结构实现栈结构
    > 
+   > // 这两种结构的应用实在是太多了，在刷题时会我们会大量见到
+   > ```
+   >
+   > ```java
+   > //递归？ 这东西是什么？
+   > // * 怎么从思想上理解递归
+   > // * 怎么从实际的角度出发理解递归
+   > 
+   > ```
+   >
+   > ```java
+   > // 例子
+   > // 求数组arr[L……R]中的最大值，怎么用递归方法实现
+   > // 1) 将[L R]范围分成左右两半。左[L mid] 右[mid R]
+   > // 2) 左部分求最大值，右部分求最大值
+   > // 3) [L R]范围上的最大值，是max{左部分的最大值，右部分最大值}
+   > // 4) 注意2)是个递归过程，当范围上只有一个数，就可以不用递归了
+   > ```
+   >
+   > 
+
+6. > 子问题的规模必须是一致的，比如，T(N)  = T(N / 3) + T(N / 4)，子问题的规模不一致，这类递归就不能用master公式来估计时间复杂度，也就是子问题规模一致的才可以用master公式 
+   >
+   > ![](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206252004298.png)
+
+7. > ==hashmap==
+   >
+   > 1. <DataType, DataType>,DataType如果是原生内置的数据类型，例如String，Integer，会把String类型的数据放进hashMap中；如果是Node，自定义数据类型，那么在hashmap中存放的是其地址
+   >
+   > 2. hashmap的增删查改的时间复杂度都是O(1)
+   >
+   > 3. hashset可以看成只有key，即形式是<DataType>
+   >
+   >    
+
+8. > ```java
+   > int a = 1000;
+   > int b = 1000;
+   > System.out.println(a == b);        // true  按值传递，比对的是值
+   > 
+   > Integer aa = 1000;
+   > Integer bb = 1000;
+   > System.out.println(a == b);        // false  按址传递，比对的是地址
+   > System.out.println(a.equals(b));   // 用equals方法比对的是值    
+   > ```

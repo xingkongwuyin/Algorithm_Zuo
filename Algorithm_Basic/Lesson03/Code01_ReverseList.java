@@ -1,4 +1,4 @@
-package lesson03;  GitHub
+package lesson03; 
 import java.util.ArrayList;
 import java.util.List;
 
