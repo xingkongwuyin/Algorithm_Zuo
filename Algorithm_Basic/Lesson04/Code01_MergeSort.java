@@ -13,17 +13,17 @@ public class Code01_MergeSort {
 	// 请把arr[L R]派有序
 	// T(N) = 2 * T(N / 2) + O(N);
 	// O(N * logN)
-	public static void process(int[]arr, int l, int r) {
-		if(l == r) {
+	public static void process(int[]arr, int L, int R) {
+		if(L == R) {
 			return ;
 		}
-		int mid = l  + ((r - l)>> 1);
-		process(arr, l, mid);
-		process(arr,mid + 1, r);
-		merge(arr, l, mid, r);
+		int mid = L  + ((R - L)>> 1);
+		process(arr, L, mid);
+		process(arr,mid + 1, R);
+		merge(arr, L, mid, R);
 	}
 	public static void merge(int[] arr, int L, int mid, int R) {
-		int[] help = new int[R + L - 1];
+		int[] help = new int[R - L + 1];
 		int p1 = L;
 		int p2 = mid + 1;
 		int i = 0;
@@ -42,7 +42,7 @@ public class Code01_MergeSort {
 	}
 	
 	// not recusion implement
-	public static void mergesort2(int[] arr) {
+	public static void mergeSort2(int[] arr) {
 		if(arr == null || arr.length < 2) {
 			return;
 		}
@@ -67,13 +67,65 @@ public class Code01_MergeSort {
 		}
 	}
 	
+	public static void print(int[] arr) {
+		for(int num : arr) {
+			System.out.println(num + " " );
+		}
+	}
+	public static boolean check(int[] arr1, int[] arr2) {
+		boolean ans = true;
+		if(arr1 == null || arr2 == null) {
+			return false;
+		}
+		if(arr1.length != arr2.length) {
+			return false;
+		}
+		for(int i = 0; i < arr1.length; i++) {
+			if(arr1[i] != arr2[i]) {
+				return false;
+			}
+		}
+		return ans;
+	}
+	
+	public static int[] generateRandomArray(int maxLen, int maxValue) {
+		int len = (int)(Math.random() * (maxLen + 1)); // [0 maxLen]
+		int[] arr = new int[len];
+		for(int  i = 0; i < arr.length; i++) {
+			arr[i] = (int)(Math.random() * (maxValue + 1)) - (int)(Math.random() * (maxValue + 1));
+		}
+		return arr;
+	}
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		int maxValue = 100;
+		int maxLen = 100;
+		int testTimes = 10000;
+		System.out.println("test begins!");
+		int i = 0;
+		for (i = 0; i < testTimes; i++) {
+			int[] arr = generateRandomArray(maxLen, maxValue);
+			int[] tmp1 = arr;
+			//print(tmp1);
+			//System.out.println(" ");
+			int[] tmp2 = arr;
+			//print(tmp2);
+			//System.out.println(" ");
+			mergeSort1(tmp1);
+			mergeSort2(tmp2);
 
+			if (!check(tmp1, tmp2)) {
+				print(arr);
+				System.out.println("bad!");
+				break;
+			}
+		}
+		System.out.println("end!");
 	}
 
 }
+
+
 
 
 
