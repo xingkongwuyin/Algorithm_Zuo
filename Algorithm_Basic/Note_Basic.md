@@ -25,7 +25,7 @@
    >   > （4）左右边界的元素都大于相邻元素，所以在左右边界之间必存在一个局部最小值，
    >   >
    >   >        采用二分查找去找。 因为数组元素相邻不相等，所以第三步就把数组长度为2的数组       
-   >   >     
+   >   >             
    >   >        和数组长度大于2的数组中符合条件的找完了，剩下就是数组长度大于2的且左右
    >   >     
    >   >       边界都大于相邻值的数组。为什么强调数组长度，因为由下面的数组可以看到，如果
@@ -176,9 +176,9 @@
    >   package Lesson01;
    >   import java.util.Arrays;
    >   // 有序数组中<= num最右的位置
-   >   
+   >       
    >   public class BSNearR_Code06 {
-   >   
+   >       
    >   	// 1. nearestIndex
    >   	public static int nearestIndex(int[] arr, int num) {
    >   		if(arr == null || arr.length <= 0) {
@@ -230,9 +230,9 @@
    >   ```java
    >   package Lesson01;
    >   import java.util.Arrays;
-   >   
+   >       
    >   public class BSExist_Code04 {
-   >   
+   >       
    >   	// 1. exist
    >   	public static boolean exist(int[] arr, int num) {
    >   		if(arr == null || arr.length == 0) {
@@ -253,7 +253,7 @@
    >   		}
    >   		return false;
    >   	}
-   >   
+   >       
    >   	// 2.  对数器
    >   	// 2.1 generateRandomArray
    >   	public static int[] generateRandomArray(int maxSize, int maxValue) {
@@ -263,7 +263,7 @@
    >   		}
    >   		return arr;
    >   	}
-   >   
+   >       
    >   	// 2.2 test
    >   	public static boolean test(int[] arr, int num) {
    >   		for(int cur :arr ) {
@@ -295,14 +295,14 @@
    >
    >   }
    >
-   >
-   >   // int mid = left + (right - left) >> 1;   错误 （1）
+   >  // int mid = left + (right - left) >> 1;   错误 （1）
    >   // 错的地方
    >   // 1. 左移运算符和右移运算符不会对变量产生影响，即right << 1,right的变量
    >   //    大小不发生变化
    >   // 2. + - 的优先级比左移和右移运算符高
    >   // 总而言之，left + (right - left) >> 1  == right >> 1,而每次right右移后
    >   // 又不改变大小，所以会造成死循环
+   > 
    >   ```
    > 
    >   ![image-20220619145943275](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206191459330.png)
@@ -325,10 +325,10 @@
    >   				}
    >   				swap(arr, min, i);
    >   			}
-   >   
+   >       
    >   		}
    >   	}
-   >   
+   >       
    >   // 2. bubbleSort
    >   	public static void bubbleSort(int[] arr) {
    >   		if(arr == null || arr.length <=2) {
@@ -347,7 +347,7 @@
    >   		}
    >   	}
    >   }
-   >   
+   >       
    >   // 3. insetionSort
    >   	public static void insertionsSort(int[] arr) {
    >   		if(arr == null || arr.length <=2) {
@@ -362,7 +362,7 @@
    >   			}
    >   		}
    >   	}
-   >   
+   >       
    >   ```
    >
    
@@ -495,9 +495,9 @@
    >   package Lesson02;
    >   import java.util.HashMap;
    >   import java.util.HashSet;
-   >   
+   >       
    >   public class Code03_KM {
-   >   
+   >       
    >   	// km
    >   	public static int km(int[] arr, int k, int m) {
    >   		int[] help = new int[32];
@@ -515,7 +515,7 @@
    >   	    }
    >   	    return ans;
    >   	}
-   >   
+   >       
    >   	// 对数器
    >   	// 1. 用哈希表的方式求出arr数组中出现k次的那个数
    >   	public static int haspMapNum(int[] arr, int k, int m) {
@@ -527,7 +527,7 @@
    >   				map.put(num, 1);
    >   			}
    >   		}
-   >   
+   >       
    >   		// 这一步的前提是一定会找到出现k次的数，如果没有出现k次的数，最终的结果都要返回1
    >   		// 出现了k次
    >           for(int num : map.keySet()) {
@@ -537,7 +537,7 @@
    >           }
    >           return -1;
    >   	}
-   >   
+   >       
    >   	// 2. 产生符合要求的随机数组，有kinds种数，且某个数出现k次，其他数都出现m次
    >   	public static int[] randomArray(int maxKinds, int range, int k, int m) {
    >   		int kTimesNum = randomNum(range);  // 真命天子
@@ -561,7 +561,7 @@
    >   				arr[index++] = curNum;
    >   			}
    >   		}
-   >   
+   >       
    >   		// 打乱顺序
    >   		for(int i = 0; i < arr.length; i++) {
    >   			int j = (int)(Math.random() * arr.length);
@@ -570,14 +570,14 @@
    >   			arr[j] = tmp;
    >   		}
    >   		return arr;
-   >   
+   >       
    >   	}
-   >   
+   >       
    >   	// 3. 创造随机数 [-range range]
    >   	public static int randomNum(int range) {
    >   		return (int)(Math.random() * (range + 1 )) -(int)(Math.random() * (range + 1 ));
    >   	}
-   >   
+   >       
    >   	// 4.打印数组
    >   	public static void print(int[] arr) {
    >   		for(int num : arr) {
@@ -840,7 +840,7 @@
    > >   public static Node reverseLinkedList(Node head) {
    > >       	Node pre = null;
    > >       	Node next = null;
-   > >           
+   > >               
    > >       	while(head != null) {
    > >       		next = head.next;
    > >       		head.next = pre;
@@ -875,12 +875,12 @@
    > >   public static class Node {
    > >   		public int value;
    > >   		public Node next;
-   > >           
+   > >               
    > >   		public Node(int data) {
    > >   			this.value = data;
    > >   		}
    > >   	}
-   > >           
+   > >               
    > >   	// head = removeValue(head, 2);
    > >   	public static Node removeValue(Node head, int num) {
    > >   		// head来到第一个不需要删的位置
@@ -990,6 +990,25 @@
    > System.out.println(a == b);        // false  按址传递，比对的是地址
    > System.out.println(a.equals(b));   // 用equals方法比对的是值    
    > ```
+
+## lesson04
+
+1. > 归并排序
+   >
+   > * 昨天他说，我们现在的递归都是符合master公式的递归，而符合master公式的递归，子问题的规模还必须是一致的，那是不是讲，我们以后思考递归问题如何分解，是不是可以考虑如何将子问题的规模一致作为一个切入点
+   > * O(N^2)的排序大量浪费了比较的时间，而O(N* log(N)),相对他们来说，比较的时间就不是很多
+   >
+   > * 一个问题可以由一个包含8条语句的for循环解决，也可以由两个包含4条语句的for循环解决，选择后中，有助于思维清晰
+   >
+   > * mergedsort把比较的信息，变成有序的东西，而有序的东西，可以做很多事。
+   >
+   > * mergedsort启示：当求某个数的右边或者左边怎么样的，再求整体个数的时候，可以往mergesort靠
+   >
+   > * 技巧：
+   >
+   >   + 指针不回退，前提得是有序的数，即单调性
+   >
+   >   + 表示不存在的数可以用左开右闭
 
 # code
 
@@ -1343,3 +1362,579 @@ public class Code11_Summary {
 
 ```
 
+## Lesson04
+
+
+```java
+// 一. 归并排序
+
+public class Code01_MergeSort {
+
+	// 递归方法实现
+	public static void mergeSort1(int[] arr) {
+		if (arr == null || arr.length < 2) {
+			return;
+		}
+		process(arr, 0, arr.length - 1);
+	} 
+
+	// 请把arr[L..R]排有序
+	// l...r N
+	// T(N) = 2 * T(N / 2) + O(N)
+	// O(N * logN)
+	public static void process(int[] arr, int L, int R) {
+		if (L == R) { // base case
+			return;
+		}
+		int mid = L + ((R - L) >> 1);
+		process(arr, L, mid);
+		process(arr, mid + 1, R);
+		merge(arr, L, mid, R);
+	}
+
+	public static void merge(int[] arr, int L, int M, int R) {
+		int[] help = new int[R - L + 1];
+		int i = 0;
+		int p1 = L;
+		int p2 = M + 1;
+		while (p1 <= M && p2 <= R) {
+			help[i++] = arr[p1] <= arr[p2] ? arr[p1++] : arr[p2++];
+		}
+		// 要么p1越界了，要么p2越界了
+		while (p1 <= M) {
+			help[i++] = arr[p1++];
+		}
+		while (p2 <= R) {
+			help[i++] = arr[p2++];
+		}
+		for (i = 0; i < help.length; i++) {
+			arr[L + i] = help[i];
+		}
+	}
+
+	// 非递归方法实现
+	public static void mergeSort2(int[] arr) {
+		if (arr == null || arr.length < 2) {
+			return;
+		}
+		int N = arr.length;
+		// 步长
+		int mergeSize = 1;
+		while (mergeSize < N) { // log N
+			// 当前左组的，第一个位置
+			int L = 0;
+			while (L < N) {
+				if (mergeSize >= N - L) {
+					break;
+				}
+				int M = L + mergeSize - 1;
+				int R = M + Math.min(mergeSize, N - M - 1);
+				merge(arr, L, M, R);
+				L = R + 1;
+			}
+			// 防止溢出
+			if (mergeSize > N / 2) {
+				break;
+			}
+			mergeSize <<= 1;
+		}
+	}
+
+	// for test
+	public static int[] generateRandomArray(int maxSize, int maxValue) {
+		int[] arr = new int[(int) ((maxSize + 1) * Math.random())];
+		for (int i = 0; i < arr.length; i++) {
+			arr[i] = (int) ((maxValue + 1) * Math.random()) - (int) (maxValue * Math.random());
+		}
+		return arr;
+	}
+
+	// for test
+	public static int[] copyArray(int[] arr) {
+		if (arr == null) {
+			return null;
+		}
+		int[] res = new int[arr.length];
+		for (int i = 0; i < arr.length; i++) {
+			res[i] = arr[i];
+		}
+		return res;
+	}
+
+	// for test
+	public static boolean isEqual(int[] arr1, int[] arr2) {
+		if ((arr1 == null && arr2 != null) || (arr1 != null && arr2 == null)) {
+			return false;
+		}
+		if (arr1 == null && arr2 == null) {
+			return true;
+		}
+		if (arr1.length != arr2.length) {
+			return false;
+		}
+		for (int i = 0; i < arr1.length; i++) {
+			if (arr1[i] != arr2[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	// for test
+	public static void printArray(int[] arr) {
+		if (arr == null) {
+			return;
+		}
+		for (int i = 0; i < arr.length; i++) {
+			System.out.print(arr[i] + " ");
+		}
+		System.out.println();
+	}
+
+	// for test
+	public static void main(String[] args) {
+		int testTime = 500000;
+		int maxSize = 100;
+		int maxValue = 100;
+		System.out.println("测试开始");
+		for (int i = 0; i < testTime; i++) {
+			int[] arr1 = generateRandomArray(maxSize, maxValue);
+			int[] arr2 = copyArray(arr1);
+			mergeSort1(arr1);
+			mergeSort2(arr2);
+			if (!isEqual(arr1, arr2)) {
+				System.out.println("出错了！");
+				printArray(arr1);
+				printArray(arr2);
+				break;
+			}
+		}
+		System.out.println("测试结束");
+	}
+
+}
+```
+
+```java
+// 二. 小盒问题：给定一个数组，先求出每个数左边小于自己的所有数列加起来，最后求出来的
+//             数算一个累加和
+// analysis: 求出每个数的右边多少个数比它大，那么小盒里就有几个它
+
+public class Code02_SmallSum {
+
+	public static int smallSum(int[] arr) {
+		if (arr == null || arr.length < 2) {
+			return 0;
+		}
+		return process(arr, 0, arr.length - 1);
+	}
+
+	// arr[L..R]既要排好序，也要求小和返回
+	// 所有merge时，产生的小和，累加
+	// 左 排序   merge
+	// 右 排序  merge
+	// merge
+	public static int process(int[] arr, int l, int r) {
+		if (l == r) {
+			return 0;
+		}
+		// l < r
+		int mid = l + ((r - l) >> 1);
+		return 
+				process(arr, l, mid) 
+				+ 
+				process(arr, mid + 1, r) 
+				+ 
+				merge(arr, l, mid, r);
+	}
+
+	public static int merge(int[] arr, int L, int m, int r) {
+		int[] help = new int[r - L + 1];
+		int i = 0;
+		int p1 = L;
+		int p2 = m + 1;
+		int res = 0;
+		while (p1 <= m && p2 <= r) {
+			res += arr[p1] < arr[p2] ? (r - p2 + 1) * arr[p1] : 0;
+			help[i++] = arr[p1] < arr[p2] ? arr[p1++] : arr[p2++];
+		}
+		while (p1 <= m) {
+			help[i++] = arr[p1++];
+		}
+		while (p2 <= r) {
+			help[i++] = arr[p2++];
+		}
+		for (i = 0; i < help.length; i++) {
+			arr[L + i] = help[i];
+		}
+		return res;
+	}
+
+	// for test
+	public static int comparator(int[] arr) {
+		if (arr == null || arr.length < 2) {
+			return 0;
+		}
+		int res = 0;
+		for (int i = 1; i < arr.length; i++) {
+			for (int j = 0; j < i; j++) {
+				res += arr[j] < arr[i] ? arr[j] : 0;
+			}
+		}
+		return res;
+	}
+
+	// for test
+	public static int[] generateRandomArray(int maxSize, int maxValue) {
+		int[] arr = new int[(int) ((maxSize + 1) * Math.random())];
+		for (int i = 0; i < arr.length; i++) {
+			arr[i] = (int) ((maxValue + 1) * Math.random()) - (int) (maxValue * Math.random());
+		}
+		return arr;
+	}
+
+	// for test
+	public static int[] copyArray(int[] arr) {
+		if (arr == null) {
+			return null;
+		}
+		int[] res = new int[arr.length];
+		for (int i = 0; i < arr.length; i++) {
+			res[i] = arr[i];
+		}
+		return res;
+	}
+
+	// for test
+	public static boolean isEqual(int[] arr1, int[] arr2) {
+		if ((arr1 == null && arr2 != null) || (arr1 != null && arr2 == null)) {
+			return false;
+		}
+		if (arr1 == null && arr2 == null) {
+			return true;
+		}
+		if (arr1.length != arr2.length) {
+			return false;
+		}
+		for (int i = 0; i < arr1.length; i++) {
+			if (arr1[i] != arr2[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	// for test
+	public static void printArray(int[] arr) {
+		if (arr == null) {
+			return;
+		}
+		for (int i = 0; i < arr.length; i++) {
+			System.out.print(arr[i] + " ");
+		}
+		System.out.println();
+	}
+
+	// for test
+	public static void main(String[] args) {
+		int testTime = 500000;
+		int maxSize = 100;
+		int maxValue = 100;
+		boolean succeed = true;
+		for (int i = 0; i < testTime; i++) {
+			int[] arr1 = generateRandomArray(maxSize, maxValue);
+			int[] arr2 = copyArray(arr1);
+			if (smallSum(arr1) != comparator(arr2)) {
+				succeed = false;
+				printArray(arr1);
+				printArray(arr2);
+				break;
+			}
+		}
+		System.out.println(succeed ? "Nice!" : "Fucking fucked!");
+	}
+
+}
+
+```
+
+```java
+// 三. 在一个数组中，任何一个前面的数a，和任何一个后面的数b，如果(a,b)是降序的，就称为降序对。给定一个数组arr，求数组的降序对总数量
+
+
+public class Code03_ReversePair {
+
+	public static int reverPairNumber(int[] arr) {
+		if (arr == null || arr.length < 2) {
+			return 0;
+		}
+		return process(arr, 0, arr.length - 1);
+	}
+
+	// arr[L..R]既要排好序，也要求逆序对数量返回
+	// 所有merge时，产生的逆序对数量，累加，返回
+	// 左 排序 merge并产生逆序对数量
+	// 右 排序 merge并产生逆序对数量
+	public static int process(int[] arr, int l, int r) {
+		if (l == r) {
+			return 0;
+		}
+		// l < r
+		int mid = l + ((r - l) >> 1);
+		return process(arr, l, mid) + process(arr, mid + 1, r) + merge(arr, l, mid, r);
+	}
+
+	public static int merge(int[] arr, int L, int m, int r) {
+		int[] help = new int[r - L + 1];
+		int i = help.length - 1;
+		int p1 = m;
+		int p2 = r; 
+		int res = 0;
+		while (p1 >= L && p2 > m) {
+			res += arr[p1] > arr[p2] ? (p2 - m) : 0;
+			help[i--] = arr[p1] > arr[p2] ? arr[p1--] : arr[p2--];
+		}
+		while (p1 >= L) {
+			help[i--] = arr[p1--];
+		}
+		while (p2 > m) {
+			help[i--] = arr[p2--];
+		}
+		for (i = 0; i < help.length; i++) {
+			arr[L + i] = help[i];
+		}
+		return res;
+	}
+
+	// for test
+	public static int comparator(int[] arr) {
+		int ans = 0;
+		for (int i = 0; i < arr.length; i++) {
+			for (int j = i + 1; j < arr.length; j++) {
+				if (arr[i] > arr[j]) {
+					ans++;
+				}
+			}
+		}
+		return ans;
+	}
+
+	// for test
+	public static int[] generateRandomArray(int maxSize, int maxValue) {
+		int[] arr = new int[(int) ((maxSize + 1) * Math.random())];
+		for (int i = 0; i < arr.length; i++) {
+			arr[i] = (int) ((maxValue + 1) * Math.random()) - (int) (maxValue * Math.random());
+		}
+		return arr;
+	}
+
+	// for test
+	public static int[] copyArray(int[] arr) {
+		if (arr == null) {
+			return null;
+		}
+		int[] res = new int[arr.length];
+		for (int i = 0; i < arr.length; i++) {
+			res[i] = arr[i];
+		}
+		return res;
+	}
+
+	// for test
+	public static boolean isEqual(int[] arr1, int[] arr2) {
+		if ((arr1 == null && arr2 != null) || (arr1 != null && arr2 == null)) {
+			return false;
+		}
+		if (arr1 == null && arr2 == null) {
+			return true;
+		}
+		if (arr1.length != arr2.length) {
+			return false;
+		}
+		for (int i = 0; i < arr1.length; i++) {
+			if (arr1[i] != arr2[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	// for test
+	public static void printArray(int[] arr) {
+		if (arr == null) {
+			return;
+		}
+		for (int i = 0; i < arr.length; i++) {
+			System.out.print(arr[i] + " ");
+		}
+		System.out.println();
+	}
+
+	// for test
+	public static void main(String[] args) {
+		int testTime = 500000;
+		int maxSize = 100;
+		int maxValue = 100;
+		System.out.println("测试开始");
+		for (int i = 0; i < testTime; i++) {
+			int[] arr1 = generateRandomArray(maxSize, maxValue);
+			int[] arr2 = copyArray(arr1);
+			if (reverPairNumber(arr1) != comparator(arr2)) {
+				System.out.println("Oops!");
+				printArray(arr1);
+				printArray(arr2);
+				break;
+			}
+		}
+		System.out.println("测试结束");
+	}
+
+}
+
+```
+
+```java
+// 四. 在一个数组中，对于任何一个数num，求有多少个(后面的数*2)依然<num，返回总个数
+//     比如：[3,1,7,0,2]
+//     3的后面有：1，0
+//     1的后面有：0
+//     7的后面有：0，2
+//     0的后面没有
+//     2的后面没有
+//     所以总共有5个
+package class04;
+
+//  本题测试链接 : https://leetcode.com/problems/reverse-pairs/
+public class Code04_BiggerThanRightTwice {
+
+	public static int reversePairs(int[] arr) {
+		if (arr == null || arr.length < 2) {
+			return 0;
+		}
+		return process(arr, 0, arr.length - 1);
+	}
+
+	public static int process(int[] arr, int l, int r) {
+		if (l == r) {
+			return 0;
+		}
+		// l < r
+		int mid = l + ((r - l) >> 1);
+		return process(arr, l, mid) + process(arr, mid + 1, r) + merge(arr, l, mid, r);
+	}
+
+	public static int merge(int[] arr, int L, int m, int r) {
+		// [L....M] [M+1....R]
+		int ans = 0;
+		// 目前囊括进来的数，是从[M+1, windowR) 的个数为 windowR - m - 1
+		int windowR = m + 1;  // windowR是指到不了的位置，一开始要表示一个到不了的位置，即让
+		for (int i = L; i <= m; i++) {  // 囊括进来的数为0个
+			while (windowR <= r && (long) arr[i] > (long) arr[windowR] * 2) {
+				windowR++;
+			}
+			ans += windowR - m - 1;
+		}
+		int[] help = new int[r - L + 1];
+		int i = 0;
+		int p1 = L;
+		int p2 = m + 1;
+		while (p1 <= m && p2 <= r) {
+			help[i++] = arr[p1] <= arr[p2] ? arr[p1++] : arr[p2++];
+		}
+		while (p1 <= m) {
+			help[i++] = arr[p1++];
+		}
+		while (p2 <= r) {
+			help[i++] = arr[p2++];
+		}
+		for (i = 0; i < help.length; i++) {
+			arr[L + i] = help[i];
+		}
+		return ans;
+	}
+
+	// for test
+	public static int comparator(int[] arr) {
+		int ans = 0;
+		for (int i = 0; i < arr.length; i++) {
+			for (int j = i + 1; j < arr.length; j++) {
+				if (arr[i] > (arr[j] << 1)) {
+					ans++;
+				}
+			}
+		}
+		return ans;
+	}
+
+	// for test
+	public static int[] generateRandomArray(int maxSize, int maxValue) {
+		int[] arr = new int[(int) ((maxSize + 1) * Math.random())];
+		for (int i = 0; i < arr.length; i++) {
+			arr[i] = (int) ((maxValue + 1) * Math.random()) - (int) ((maxValue + 1) * Math.random());
+		}
+		return arr;
+	}
+
+	// for test
+	public static int[] copyArray(int[] arr) {
+		if (arr == null) {
+			return null;
+		}
+		int[] res = new int[arr.length];
+		for (int i = 0; i < arr.length; i++) {
+			res[i] = arr[i];
+		}
+		return res;
+	}
+
+	// for test
+	public static boolean isEqual(int[] arr1, int[] arr2) {
+		if ((arr1 == null && arr2 != null) || (arr1 != null && arr2 == null)) {
+			return false;
+		}
+		if (arr1 == null && arr2 == null) {
+			return true;
+		}
+		if (arr1.length != arr2.length) {
+			return false;
+		}
+		for (int i = 0; i < arr1.length; i++) {
+			if (arr1[i] != arr2[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	// for test
+	public static void printArray(int[] arr) {
+		if (arr == null) {
+			return;
+		}
+		for (int i = 0; i < arr.length; i++) {
+			System.out.print(arr[i] + " ");
+		}
+		System.out.println();
+	}
+
+	// for test
+	public static void main(String[] args) {
+		int testTime = 500000;
+		int maxSize = 100;
+		int maxValue = 100;
+		System.out.println("测试开始");
+		for (int i = 0; i < testTime; i++) {
+			int[] arr1 = generateRandomArray(maxSize, maxValue);
+			int[] arr2 = copyArray(arr1);
+			if (reversePairs(arr1) != comparator(arr2)) {
+				System.out.println("Oops!");
+				printArray(arr1);
+				printArray(arr2);
+				break;
+			}
+		}
+		System.out.println("测试结束");
+	}
+
+}
+```
