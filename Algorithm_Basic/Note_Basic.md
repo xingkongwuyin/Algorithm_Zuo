@@ -25,7 +25,7 @@
    >   > （4）左右边界的元素都大于相邻元素，所以在左右边界之间必存在一个局部最小值，
    >   >
    >   >        采用二分查找去找。 因为数组元素相邻不相等，所以第三步就把数组长度为2的数组       
-   >   >             
+   >   >                 
    >   >        和数组长度大于2的数组中符合条件的找完了，剩下就是数组长度大于2的且左右
    >   >     
    >   >       边界都大于相邻值的数组。为什么强调数组长度，因为由下面的数组可以看到，如果
@@ -112,96 +112,46 @@
    >   			}	
    >   		}
    >   		return index;
-   >
+   >  
    >   	}
-   >
-   >     // 2. 对数器
-   >     	// 2.1 generateRandomArray
-   >     	public static int[] generateRandomArray(int maxSize, int maxValue) {
-   >     		int[] arr = new int[(int)(Math.random() * (maxSize  + 1))];
-   >     		for(int i = 0; i < arr.length; i++) {
-   >     			arr[i] = (int)(Math.random() * (maxValue + 1)) - (int)(Math.random() * maxValue);
-   >     		}
-   >     		return arr;
-   >     	}
-   >   // 2.2 test
-   >   public static int test(int[] arr, int num) {
-   >   	if(arr == null || arr.length <= 0) {
-   >   		return -1;
-   >   	}
-   >   	for(int i = 0; i < arr.length; i++) {
-   >   		if(arr[i] >= num) {
-   >   			return i;
-   >   		}
-   >   	}
-   >   	return -1;
-   >
-   >   }
-   >
-   >   // printArray
-   >   public static void printArray(int[] arr) {
-   >       for(int i = 0; i < arr.length; i++) {
-   >           System.out.println(arr[i] + " ");
-   >       }
-   >   }
-   >
-   >   public static void main(String[] args) {
-   >       int testTimes = 10000000;
-   >       int maxSize = 10;
-   >       int maxValue = 100;
-   >       boolean succeed = true;
-   >       for(int i = 0; i < testTimes; i++) {
-   >           int[] arr = generateRandomArray(maxSize, maxValue);
-   >           Arrays.sort(arr);
-   >           int num = (int)(Math.random() * (maxValue + 1)) - (int)       (Math.random() * maxValue);
-   >           if(test(arr, num) != nearestIndex(arr, num)) {
-   >               printArray(arr);
-   >               System.out.println(num);
-   >               System.out.println(test(arr, num));
-   >               System.out.println(nearestIndex(arr, num));
-   >               succeed = false;
-   >               break;
-   >           }
-   >       }
-   >       System.out.println(succeed ? "nice!" :"Bad");
-   >   }
-   >
+   >  
+   >   
    > * Question02:
-   >
+   > 
    >   > 有序数组<=num的最右位置
-   >
+   > 
    > * Code
-   >
+   > 
    >   ```java
    >   package Lesson01;
    >   import java.util.Arrays;
    >   // 有序数组中<= num最右的位置
-   >       
+   >   
    >   public class BSNearR_Code06 {
-   >       
+   >   
    >   	// 1. nearestIndex
    >   	public static int nearestIndex(int[] arr, int num) {
    >   		if(arr == null || arr.length <= 0) {
    >   			return -1;
    >   		}
    >   		int index = -1;
-   >   		int L = 0;
+   >  		int L = 0;
    >   		int R = arr.length - 1;
-   >   		while(L <= R) {
+   >  		while(L <= R) {
    >   			int mid = (L + R) /2;
    >   			if(arr[mid] <= num) {
    >   // ---------------不同之处--------------------------------------------		
    >                   index = mid;
    >   				L = mid + 1;
    >   			}else {
-   >   				R = mid - 1;
+   >  				R = mid - 1;
    >   			}
    >   // ------------------------------------------------------------------           		}
    >   		return index;
    >   	}
-   >
    > 
-   >
+   > 
+   > 
    >   	// 2.2 test
    >   	      public static int test(int[] arr, int num) {
    >   		if(arr == null || arr.length <= 0) {
@@ -218,9 +168,9 @@
    >
    >   	}
    >
-   >
-   >   ```
-
+   > 
+   >  ```
+   
 3. > * Question:
    >
    >   二分查找
@@ -230,9 +180,9 @@
    >   ```java
    >   package Lesson01;
    >   import java.util.Arrays;
-   >       
+   >         
    >   public class BSExist_Code04 {
-   >       
+   >         
    >   	// 1. exist
    >   	public static boolean exist(int[] arr, int num) {
    >   		if(arr == null || arr.length == 0) {
@@ -253,7 +203,7 @@
    >   		}
    >   		return false;
    >   	}
-   >       
+   >         
    >   	// 2.  对数器
    >   	// 2.1 generateRandomArray
    >   	public static int[] generateRandomArray(int maxSize, int maxValue) {
@@ -263,7 +213,7 @@
    >   		}
    >   		return arr;
    >   	}
-   >       
+   >         
    >   	// 2.2 test
    >   	public static boolean test(int[] arr, int num) {
    >   		for(int cur :arr ) {
@@ -325,10 +275,10 @@
    >   				}
    >   				swap(arr, min, i);
    >   			}
-   >       
+   >         
    >   		}
    >   	}
-   >       
+   >         
    >   // 2. bubbleSort
    >   	public static void bubbleSort(int[] arr) {
    >   		if(arr == null || arr.length <=2) {
@@ -347,7 +297,7 @@
    >   		}
    >   	}
    >   }
-   >       
+   >         
    >   // 3. insetionSort
    >   	public static void insertionsSort(int[] arr) {
    >   		if(arr == null || arr.length <=2) {
@@ -362,7 +312,7 @@
    >   			}
    >   		}
    >   	}
-   >       
+   >         
    >   ```
    >
    
@@ -495,9 +445,9 @@
    >   package Lesson02;
    >   import java.util.HashMap;
    >   import java.util.HashSet;
-   >       
+   >         
    >   public class Code03_KM {
-   >       
+   >         
    >   	// km
    >   	public static int km(int[] arr, int k, int m) {
    >   		int[] help = new int[32];
@@ -515,7 +465,7 @@
    >   	    }
    >   	    return ans;
    >   	}
-   >       
+   >         
    >   	// 对数器
    >   	// 1. 用哈希表的方式求出arr数组中出现k次的那个数
    >   	public static int haspMapNum(int[] arr, int k, int m) {
@@ -527,7 +477,7 @@
    >   				map.put(num, 1);
    >   			}
    >   		}
-   >       
+   >         
    >   		// 这一步的前提是一定会找到出现k次的数，如果没有出现k次的数，最终的结果都要返回1
    >   		// 出现了k次
    >           for(int num : map.keySet()) {
@@ -537,92 +487,11 @@
    >           }
    >           return -1;
    >   	}
-   >       
-   >   	// 2. 产生符合要求的随机数组，有kinds种数，且某个数出现k次，其他数都出现m次
-   >   	public static int[] randomArray(int maxKinds, int range, int k, int m) {
-   >   		int kTimesNum = randomNum(range);  // 真命天子
-   >   		int times = k;                    //  真命天子出现的次数
-   >   		int numKinds = (int)(Math.random() * maxKinds) + 2;   // 一共有numkinds种数
-   >   		int[] arr = new int[times + (numKinds - 1) * m];    
-   >   		int index = 0;
-   >   		for(; index < times; index++) {
-   >   			arr[index] = kTimesNum;
-   >   		}
-   >   		numKinds--;
-   >   		HashSet<Integer> set = new HashSet<>();
-   >   		set.add(kTimesNum);
-   >   		while(numKinds != 0) {
-   >   			int curNum = 0;
-   >   			do {
-   >   				curNum = randomNum(range);
-   >   			}while(set.contains(curNum));
-   >   			numKinds--;
-   >   			for(int i = 0; i < m; i++) {
-   >   				arr[index++] = curNum;
-   >   			}
-   >   		}
-   >       
-   >   		// 打乱顺序
-   >   		for(int i = 0; i < arr.length; i++) {
-   >   			int j = (int)(Math.random() * arr.length);
-   >   			int tmp = arr[i];
-   >   			arr[i] = arr[j];
-   >   			arr[j] = tmp;
-   >   		}
-   >   		return arr;
-   >       
-   >   	}
-   >       
-   >   	// 3. 创造随机数 [-range range]
-   >   	public static int randomNum(int range) {
-   >   		return (int)(Math.random() * (range + 1 )) -(int)(Math.random() * (range + 1 ));
-   >   	}
-   >       
-   >   	// 4.打印数组
-   >   	public static void print(int[] arr) {
-   >   		for(int num : arr) {
-   >   			System.out.println(num + " ");
-   >   		}
-   >   	}
-   >
-   >
-   > ```java
-   > // 5.测试
-   > public static void main(String[] args) {
-   > 	int kinds = 52;
-   > 	int range = 300;
-   > 	int max = 91;
-   > 	int testTimes = 100000;
-   > 	System.out.println("begin!!!");
-   > 	for(int i = 0; i < testTimes; i++) {
-   > 		int a = (int)(Math.random() * max) + 1;
-   > 		int b = (int)(Math.random() * max) + 1;
-   > 		int k = Math.min(a, b);
-   > 		int m = Math.max(a, b);
+   >         
+   >   
    > 
-   > 		// K < m
-   > 		if(k == m) {
-   > 			m++;
-   > 		}
-   > 		int[] arr = randomArray(kinds, range, k, m);
-   > 		int ans1 = km(arr, k, m);
-   > 		int ans2 = haspMapNum(arr, k, m);
-   > 		if(ans1 != ans2) {
-   > 			print(arr);
-   > 			System.out.println(" ");
-   > 			System.out.println("ans1 =" + ans1 + "ans2 " + ans2 );
-   > 			System.out.println("bad!!!");
-   > 			break;
-   > 		}
-   > 	}
-   > 	System.out.println("end!!!");
-   > }
-   > ```
-   >
-   >   }
-   >
    > 
-   >
+   > 
    >   ```java
    > 
    > 
@@ -642,7 +511,7 @@
    > 
    > 	// km
    > 	public static int km(int[] arr, int k, int m) {
-   > 		int[] help = new int[32];
+   >       		int[] help = new int[32];
    > 		for(int num : arr) {
    > 			for(int i = 0; i < 32; i++) {
    > 				help[i] += ((num >> i) & 1);    // arr上的num，从第1位到32位遍历num的二进制的每                                // 然后加到help数组中
@@ -651,22 +520,22 @@
    > 		int ans = 0;
    > 	    for(int i = 0; i < 32; i++) {
    > 	    	if(help[i] % m == 0) {
-   > 	    		continue;
+   >       	    		continue;
    > 	    	}
-   > 	    	if(help[i] % m == k) {
+   >       	    	if(help[i] % m == k) {
    > 	    		ans |= (1 << i);
    > 	    	}else{
    > 	    		return -1;
    > 	    	}
-   > 	    }
+   >       	    }
    > 	    // 因为ans == 0，但是不能确定0中了没有，所以下步遍历一下0出现的次数
    > 	  if(0 == ans) {
    > 		  int count = 0;
    > 		  for(int num : arr) {
    > 		    	if (num == ans) {
    > 		    		count++;
-   > 		    	}
-   > 		    }
+   >		    	}
+   >		    }
    > 		    if(count != k) {
    > 		    	return -1;
    > 		    }
@@ -699,11 +568,11 @@
    > 
    > 	// 2. 产生符合要求的随机数组，有kinds种数，且某个数出现k次，其他数都出现m次
    > 	public static int[] randomArray(int maxKinds, int range, int k, int m) {
-   > 		int kTimesNum = randomNum(range);  // 真命天子
+   >		int kTimesNum = randomNum(range);  // 真命天子
    > 		int times = Math.random() < 0.5 ? k : (int)(Math.random() * (m - 1)) + 1;                    //  真命天子出现的次数,且以50%的概率出现k，50概率出现1到m-1次
-   > 		int numKinds = (int)(Math.random() * maxKinds) + 2;   // 一共有numkinds种数
+   >		int numKinds = (int)(Math.random() * maxKinds) + 2;   // 一共有numkinds种数
    > 		int[] arr = new int[times + (numKinds - 1) * m];    
-   > 		int index = 0;
+   >		int index = 0;
    > 		for(; index < times; index++) {
    > 			arr[index] = kTimesNum;
    > 		}
@@ -745,42 +614,10 @@
    > 	}
    > 
    > 
-   > 	// 5.测试
-   > 	public static void main(String[] args) {
-   > 		int kinds = 14;
-   > 		int range = 110;
-   > 		int max = 9;
-   > 		int testTimes = 100000;
-   > 		System.out.println("begin!!!");
-   > 		for(int i = 0; i < testTimes; i++) {
-   > 			int a = (int)(Math.random() * max) + 1;
-   > 			int b = (int)(Math.random() * max) + 1;
-   > 			int k = Math.min(a, b);
-   > 			int m = Math.max(a, b);
    > 
-   > 			// K < m
-   > 			if(k == m) {
-   > 				m++;
-   > 			}
-   > 			//int[] arr = randomArray(kinds, range, k, m);
-   > 			int[] arr = {-6, 8, -6, 8, 8}; k = 2; m = 3;
-   > 			int ans1 = km(arr, k, m);
-   > 			int ans2 = haspMapNum(arr, k, m);
-   > 			if(ans1 != ans2) {
-   > 				print(arr);
-   > 				System.out.println(" ");
-   > 				System.out.println("ans1 = " + ans1 + " ans2 = " + ans2 );
-   > 				System.out.println("bad!!!");
-   > 				break;
-   > 			}
-   > 		}
-   > 		System.out.println("end!!!");
-   > 	}
-   > 
-   > }
    > 
    >   ```
-   >
+   > 
    > 
 
 ## lesson03
@@ -840,7 +677,7 @@
    > >   public static Node reverseLinkedList(Node head) {
    > >       	Node pre = null;
    > >       	Node next = null;
-   > >               
+   > >                 
    > >       	while(head != null) {
    > >       		next = head.next;
    > >       		head.next = pre;
@@ -875,12 +712,12 @@
    > >   public static class Node {
    > >   		public int value;
    > >   		public Node next;
-   > >               
+   > >                 
    > >   		public Node(int data) {
    > >   			this.value = data;
    > >   		}
    > >   	}
-   > >               
+   > >                 
    > >   	// head = removeValue(head, 2);
    > >   	public static Node removeValue(Node head, int num) {
    > >   		// head来到第一个不需要删的位置
@@ -1440,79 +1277,7 @@ public class Code01_MergeSort {
 		}
 	}
 
-	// for test
-	public static int[] generateRandomArray(int maxSize, int maxValue) {
-		int[] arr = new int[(int) ((maxSize + 1) * Math.random())];
-		for (int i = 0; i < arr.length; i++) {
-			arr[i] = (int) ((maxValue + 1) * Math.random()) - (int) (maxValue * Math.random());
-		}
-		return arr;
-	}
 
-	// for test
-	public static int[] copyArray(int[] arr) {
-		if (arr == null) {
-			return null;
-		}
-		int[] res = new int[arr.length];
-		for (int i = 0; i < arr.length; i++) {
-			res[i] = arr[i];
-		}
-		return res;
-	}
-
-	// for test
-	public static boolean isEqual(int[] arr1, int[] arr2) {
-		if ((arr1 == null && arr2 != null) || (arr1 != null && arr2 == null)) {
-			return false;
-		}
-		if (arr1 == null && arr2 == null) {
-			return true;
-		}
-		if (arr1.length != arr2.length) {
-			return false;
-		}
-		for (int i = 0; i < arr1.length; i++) {
-			if (arr1[i] != arr2[i]) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	// for test
-	public static void printArray(int[] arr) {
-		if (arr == null) {
-			return;
-		}
-		for (int i = 0; i < arr.length; i++) {
-			System.out.print(arr[i] + " ");
-		}
-		System.out.println();
-	}
-
-	// for test
-	public static void main(String[] args) {
-		int testTime = 500000;
-		int maxSize = 100;
-		int maxValue = 100;
-		System.out.println("测试开始");
-		for (int i = 0; i < testTime; i++) {
-			int[] arr1 = generateRandomArray(maxSize, maxValue);
-			int[] arr2 = copyArray(arr1);
-			mergeSort1(arr1);
-			mergeSort2(arr2);
-			if (!isEqual(arr1, arr2)) {
-				System.out.println("出错了！");
-				printArray(arr1);
-				printArray(arr2);
-				break;
-			}
-		}
-		System.out.println("测试结束");
-	}
-
-}
 ```
 
 ```java
@@ -1570,91 +1335,6 @@ public class Code02_SmallSum {
 		return res;
 	}
 
-	// for test
-	public static int comparator(int[] arr) {
-		if (arr == null || arr.length < 2) {
-			return 0;
-		}
-		int res = 0;
-		for (int i = 1; i < arr.length; i++) {
-			for (int j = 0; j < i; j++) {
-				res += arr[j] < arr[i] ? arr[j] : 0;
-			}
-		}
-		return res;
-	}
-
-	// for test
-	public static int[] generateRandomArray(int maxSize, int maxValue) {
-		int[] arr = new int[(int) ((maxSize + 1) * Math.random())];
-		for (int i = 0; i < arr.length; i++) {
-			arr[i] = (int) ((maxValue + 1) * Math.random()) - (int) (maxValue * Math.random());
-		}
-		return arr;
-	}
-
-	// for test
-	public static int[] copyArray(int[] arr) {
-		if (arr == null) {
-			return null;
-		}
-		int[] res = new int[arr.length];
-		for (int i = 0; i < arr.length; i++) {
-			res[i] = arr[i];
-		}
-		return res;
-	}
-
-	// for test
-	public static boolean isEqual(int[] arr1, int[] arr2) {
-		if ((arr1 == null && arr2 != null) || (arr1 != null && arr2 == null)) {
-			return false;
-		}
-		if (arr1 == null && arr2 == null) {
-			return true;
-		}
-		if (arr1.length != arr2.length) {
-			return false;
-		}
-		for (int i = 0; i < arr1.length; i++) {
-			if (arr1[i] != arr2[i]) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	// for test
-	public static void printArray(int[] arr) {
-		if (arr == null) {
-			return;
-		}
-		for (int i = 0; i < arr.length; i++) {
-			System.out.print(arr[i] + " ");
-		}
-		System.out.println();
-	}
-
-	// for test
-	public static void main(String[] args) {
-		int testTime = 500000;
-		int maxSize = 100;
-		int maxValue = 100;
-		boolean succeed = true;
-		for (int i = 0; i < testTime; i++) {
-			int[] arr1 = generateRandomArray(maxSize, maxValue);
-			int[] arr2 = copyArray(arr1);
-			if (smallSum(arr1) != comparator(arr2)) {
-				succeed = false;
-				printArray(arr1);
-				printArray(arr2);
-				break;
-			}
-		}
-		System.out.println(succeed ? "Nice!" : "Fucking fucked!");
-	}
-
-}
 
 ```
 
@@ -1706,90 +1386,6 @@ public class Code03_ReversePair {
 		return res;
 	}
 
-	// for test
-	public static int comparator(int[] arr) {
-		int ans = 0;
-		for (int i = 0; i < arr.length; i++) {
-			for (int j = i + 1; j < arr.length; j++) {
-				if (arr[i] > arr[j]) {
-					ans++;
-				}
-			}
-		}
-		return ans;
-	}
-
-	// for test
-	public static int[] generateRandomArray(int maxSize, int maxValue) {
-		int[] arr = new int[(int) ((maxSize + 1) * Math.random())];
-		for (int i = 0; i < arr.length; i++) {
-			arr[i] = (int) ((maxValue + 1) * Math.random()) - (int) (maxValue * Math.random());
-		}
-		return arr;
-	}
-
-	// for test
-	public static int[] copyArray(int[] arr) {
-		if (arr == null) {
-			return null;
-		}
-		int[] res = new int[arr.length];
-		for (int i = 0; i < arr.length; i++) {
-			res[i] = arr[i];
-		}
-		return res;
-	}
-
-	// for test
-	public static boolean isEqual(int[] arr1, int[] arr2) {
-		if ((arr1 == null && arr2 != null) || (arr1 != null && arr2 == null)) {
-			return false;
-		}
-		if (arr1 == null && arr2 == null) {
-			return true;
-		}
-		if (arr1.length != arr2.length) {
-			return false;
-		}
-		for (int i = 0; i < arr1.length; i++) {
-			if (arr1[i] != arr2[i]) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	// for test
-	public static void printArray(int[] arr) {
-		if (arr == null) {
-			return;
-		}
-		for (int i = 0; i < arr.length; i++) {
-			System.out.print(arr[i] + " ");
-		}
-		System.out.println();
-	}
-
-	// for test
-	public static void main(String[] args) {
-		int testTime = 500000;
-		int maxSize = 100;
-		int maxValue = 100;
-		System.out.println("测试开始");
-		for (int i = 0; i < testTime; i++) {
-			int[] arr1 = generateRandomArray(maxSize, maxValue);
-			int[] arr2 = copyArray(arr1);
-			if (reverPairNumber(arr1) != comparator(arr2)) {
-				System.out.println("Oops!");
-				printArray(arr1);
-				printArray(arr2);
-				break;
-			}
-		}
-		System.out.println("测试结束");
-	}
-
-}
 
 ```
 
@@ -1853,88 +1449,5 @@ public class Code04_BiggerThanRightTwice {
 		return ans;
 	}
 
-	// for test
-	public static int comparator(int[] arr) {
-		int ans = 0;
-		for (int i = 0; i < arr.length; i++) {
-			for (int j = i + 1; j < arr.length; j++) {
-				if (arr[i] > (arr[j] << 1)) {
-					ans++;
-				}
-			}
-		}
-		return ans;
-	}
 
-	// for test
-	public static int[] generateRandomArray(int maxSize, int maxValue) {
-		int[] arr = new int[(int) ((maxSize + 1) * Math.random())];
-		for (int i = 0; i < arr.length; i++) {
-			arr[i] = (int) ((maxValue + 1) * Math.random()) - (int) ((maxValue + 1) * Math.random());
-		}
-		return arr;
-	}
-
-	// for test
-	public static int[] copyArray(int[] arr) {
-		if (arr == null) {
-			return null;
-		}
-		int[] res = new int[arr.length];
-		for (int i = 0; i < arr.length; i++) {
-			res[i] = arr[i];
-		}
-		return res;
-	}
-
-	// for test
-	public static boolean isEqual(int[] arr1, int[] arr2) {
-		if ((arr1 == null && arr2 != null) || (arr1 != null && arr2 == null)) {
-			return false;
-		}
-		if (arr1 == null && arr2 == null) {
-			return true;
-		}
-		if (arr1.length != arr2.length) {
-			return false;
-		}
-		for (int i = 0; i < arr1.length; i++) {
-			if (arr1[i] != arr2[i]) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	// for test
-	public static void printArray(int[] arr) {
-		if (arr == null) {
-			return;
-		}
-		for (int i = 0; i < arr.length; i++) {
-			System.out.print(arr[i] + " ");
-		}
-		System.out.println();
-	}
-
-	// for test
-	public static void main(String[] args) {
-		int testTime = 500000;
-		int maxSize = 100;
-		int maxValue = 100;
-		System.out.println("测试开始");
-		for (int i = 0; i < testTime; i++) {
-			int[] arr1 = generateRandomArray(maxSize, maxValue);
-			int[] arr2 = copyArray(arr1);
-			if (reversePairs(arr1) != comparator(arr2)) {
-				System.out.println("Oops!");
-				printArray(arr1);
-				printArray(arr2);
-				break;
-			}
-		}
-		System.out.println("测试结束");
-	}
-
-}
 ```
