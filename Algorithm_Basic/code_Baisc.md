@@ -207,9 +207,9 @@
 
 # Lesson02
 
-0. > ==前置知识==
+0. > **==前置知识==**
    >
-   > ==异或==
+   > **==异或==**
    >
    > ```java
    > // 相同为0，相异为1
@@ -227,7 +227,7 @@
 
 
 
-1. ==交换两个不相等的数，不用第三个变量==
+1. **==交换两个不相等的数，不用第三个变量==**
 
    ```java
    a = a ^ b;
@@ -239,7 +239,7 @@
 
 
 
-2. ==一个数组中有一个数出现了奇数次，其他数都出现了偶数次，怎么找到并打印这个数==
+2. **==一个数组中有一个数出现了奇数次，其他数都出现了偶数次，怎么找到并打印这个数==**
 
    ```java
    	public static void printOddTimesNum(int[] arr) {
@@ -251,7 +251,7 @@
    	}
    ```
 
-3. ==怎么把一个int类型的数，提出最右侧的1来==
+3. **==怎么把一个int类型的数，提出最右侧的1来==**
 
    ```java
    a = 01011000  ----> ans = 00001000
@@ -260,7 +260,7 @@
 
 
 
-4. ==一个数组中有两种数出现了奇数次，其它数出现了偶数次，怎么找到并打印这两种数==
+4. **==一个数组中有两种数出现了奇数次，其它数出现了偶数次，怎么找到并打印这两种数==**
 
    ```java
    // analysis：两个数不相同 ——> 异或后eor必不等于0 ——> eor的某位必等于1 -----> 两个数必有一个数在eor最右侧等于1的那个位置，是1，另一个是0
@@ -283,7 +283,7 @@
 
 
 
-5. ==一个数组中有一种数出现了K次，其他数都出现了M次，M  > K >= 1,找到出现k次的数，要求额外空间复杂度为O(1)==
+5. **==一个数组中有一种数出现了K次，其他数都出现了M次，M  > K >= 1,找到出现k次的数，要求额外空间复杂度为O(1)==**
 
    ```java
    //analysis：因为每个数可以看成32为二进制，所以将每个数的32个二进制位求出来，创建个数组help，来盛放二进制序列，分别加进数组中，然后模M，等于0，则说明那个数在该二进制位为0，否则为1，因为一个数出现了M次，那么这某位二进制为1，剩下的6个相同的数也得为1，所以得是M的倍数。
@@ -310,7 +310,7 @@
 
 
 
-6. ==题目六：一个数组中，有n种数，n - 1种数出现了M次，剩下一种数出现的次数不确定，但肯定大于等于1，且小于M，求 如果剩下的那个数出现的次数等于K次，则找出这个数，如果不是则返回找不到==
+6. **==题目六：一个数组中，有n种数，n - 1种数出现了M次，剩下一种数出现的次数不确定，但肯定大于等于1，且小于M，求 如果剩下的那个数出现的次数等于K次，则找出这个数，如果不是则返回找不到==**
 
    ```java
    public static int km(int[] arr, int k, int m) {
@@ -395,8 +395,9 @@
    > System.out.println(a.equals(b));   // 用equals方法比对的是值    
    > ```
    >
-   > 
-
+   
+   
+   
 1. **==单向链表和双向链表的结构==**
 
    ```java
@@ -421,6 +422,8 @@
     }
    }
    ```
+
+   
 
 2. **==单链表和双链表的翻转==**
 
@@ -638,6 +641,8 @@
    }
    ```
 
+   
+
 5. **==用环形数组实现栈和队列==**
 
    ```java
@@ -683,6 +688,8 @@
    		}
    ```
 
+   
+
 6. **==实现有getMin的栈==**
 
    ```java
@@ -724,6 +731,8 @@
    			}
    		}
    ```
+   
+   
 
 
 7. **==两个栈实现队列==**
@@ -833,6 +842,8 @@
 
 1. **==归并排序的递归实现和非递归实现==**
 
+   ![image-20220628111916971](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206281119051.png)
+
    ```java
    public class Code01_MergeSort {
    	
@@ -903,7 +914,9 @@
    }
    ```
 
-2.  **==在一个数组中，一个数左边比它小的数的总和，叫该数的小和，所有数的小和累加起来，求数组小和==**
+   
+
+2. **==在一个数组中，一个数左边比它小的数的总和，叫该数的小和，所有数的小和累加起来，求数组小和==**
 
    ```java
    // 小黑盒
@@ -928,45 +941,23 @@
    				merge2(arr, L, M, R);
    	}
    
-   	public static int merge1(int[] arr, int L, int M, int R) {
-   	// int[]  help = new int[R + L -1]; bad!	
-   		int[] help = new int[R - L + 1];
-   	//  int p1 = 0; bad!	
-   		int p1 = L;
-   		int p2 = M + 1;
+   	public static int merge(int[] arr, int L, int M, int R) {
+   		
+   		int windows = L;
    		int ans = 0;
-   		int i = 0;
-   		while (p1 <= M && p2 <= R) {
-   			ans += arr[p1] < arr[p2] ? (arr[p1] * (R - p2 + 1)) : 0;
-   			help[i++] = arr[p1] < arr[p2] ? arr[p1++] : arr[p2++];
+   		for(int i = M + 1; i <= R; i++) {
+   			while(windows <= M && arr[windows] < arr[i]) {
+   				windows++;
+   			}
+   			for(int j = L; j < windows; j++) {
+   				ans += arr[j];
+   			}
    		}
-   		while (p1 <= M) {
-   			help[i++] = arr[p1++];
-   		}
-   		while (p2 <= R) {
-   			help[i++] = arr[p2++];
-   		}
-   		for (i = 0; i < help.length; i++) {
-   			arr[L + i] = help[i++];
-   		}
-   		return ans;
-   	}
-   	
-   	public static int merge2(int[] arr, int L, int M, int R) {
+   		
    		int[] help = new int[R - L + 1];
    		int p1 = L;
    		int p2 = M + 1 ;
-   		int windowsR = M;
-   		int ans = 0;
    		int k = 0;
-   		for(int i = M + 1; i <= R; i++) {
-   			while(windowsR >= L && arr[windowsR] >= arr[i]) {
-   				windowsR--;
-   			}
-   			for(int j = L; j <= windowsR; j++) {
-   				ans += arr[j];
-   			}
-   		}	
    		while(p1 <= M && p2 <= R) {
    			help[k++] = arr[p1] < arr[p2] ? arr[p1++] : arr[p2++];
    		}
@@ -976,15 +967,18 @@
    		while(p2 <= R) {
    			help[k++] = arr[p2++];
    		}
-   		for (k = 0; k < help.length; k++) { 
+   		for ( k = 0; k < help.length; k++) { 
    		// 	arr[k] = help[k++];  bad!
    			arr[L + k] = help[k++];
    		}
    		return ans;
    	}
+       
    }
    ```
-
+   
+   
+   
 3. **==在一个数组中，任何一个前面的数a，和任何一个后面的数b，如果(a,b)是降序的，就称为降序对，给定一个数组arr，求数组的降序对总数量==**
 
    ```java
@@ -1066,6 +1060,8 @@
    	}
    }
    ```
+
+   
 
 4. **==在一个数组中，对于任何一个数num，求有多少个(后面的数*2)依然<num，返回总个数==**
 
@@ -1185,7 +1181,9 @@
    }
    ```
 
-2. ==荷兰国旗、快速排序1.0、 快速排序2.0、 快速排序3.0（随机快排）==
+2. **==荷兰国旗、快速排序1.0、 快速排序2.0、 快速排序3.0（随机快排）==**
+
+   ![image-20220628110539878](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206281105978.png)
 
    ```java
    package lesson05;
@@ -1247,7 +1245,7 @@
    		return new int[] {lessL + 1, moreR};
    	}
    	
-   	// 去重数组
+   	// 划分区域为<= 和 > 区域
    	public static void qiucksort1(int[] arr) {
    		if(arr == null || arr.length <= 1) {
    			return;
@@ -1264,7 +1262,7 @@
    		process1(arr, M + 1, R);
    	}
    	
-   	// 非去重数组
+   	// 划分区域为 < = >三个区域
    	public static void quicksort2(int[] arr) {
    		if(arr == null || arr.length <= 1) {
    			return;
@@ -1309,7 +1307,9 @@
    
    ```
 
-3. ==快速排序的递归实现和非递归实现（栈版本、队列版本）==
+   
+
+3. **==快速排序的递归实现和非递归实现（栈版本、队列版本）==**
 
    ```java
    package lesson05;
@@ -1447,7 +1447,7 @@
    
    ```
 
-4. ==双向链表进行快速排序的实现==
+4. **==双向链表进行快速排序的实现==**
 
    ```java
    public class Code04_DoubleLinkedListQuickSort {
@@ -1631,7 +1631,7 @@
 
 # Lesson06
 
-1. ==比较器==
+1. **==比较器==**
 
    ```java
    package lesson06;
@@ -1746,8 +1746,6 @@
    	}
    
    }
-   
    ```
-
    
 
