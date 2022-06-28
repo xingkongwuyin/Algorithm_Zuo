@@ -1,15 +1,365 @@
 # lesson01
 
+0. > ==**前置知识**==
+   >
+   > <img src="https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206260750748.png" alt="image-20220613160034441" style="zoom:150%;" />
+   >
+   > <img src="https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206260750731.png" alt="image-20220613160119245" style="zoom:200%;" />
+   >
+   > <img src="https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206260750711.png" alt="image-20220613162935566" style="zoom:200%;" />
+   >
+   > > * 额外空间复杂度给的不算额外空间，即除了样本数据之外的空间。在整个算法流程中开辟的空间是有限的，跟样本数据量无关，用户需要的空间不算做空间复杂度，就是在一个函数中，开辟了一个数组，可是这个数组是函数的返回值，那么这个开辟的空间不算做额外空间复杂度。用户要什么，你给什么，输入什么参数，都不算额外空间。如果需要有限个变量，额外空间复杂度为O(1)。
+   > > * 额外空间也是自主空间，和输入、功能都没有关的
+   >
+   > <img src="https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206281015183.png" alt="image-20220613164238983" style="zoom:200%;" />
+   >
+   > ![image-20220613170441009](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206281015736.png)
+   >
+   > > * 拼常数项直接测数据运行时间
+   > > * 算法一定要先对样本有个认识，有了样本数量才能设计更好的算法
+   > > * 最优解：先PK时间复杂度，再PK额外空间复杂度，如果两者都相同，那么这两个算法都是最优解，不用PK常数项
+   >
+   > > O(1),运行时间和样本没关系，N可以看成样本数量
+   > >
+   > > 常数时间的操作的时间复杂度为O(1)
+   >
+   > ![image-20220613171727212](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206281016814.png)
+
+   
+
+1. **==选择排序、冒泡排序和插入排序==**
+
+   ```java
+   // 1. selectionSort
+   	public static void selectionSort(int[] arr) {
+   		if(arr == null || arr.length <=2) {
+   			return;
+   		}
+   		for(int i = 0; i < arr.length - 1; i++) {
+   			int min = i;
+   			for(int j = i + 1; j < arr.length; j++) {
+   				if(arr[min] > arr[j]) {
+   					min = j;
+   				}
+   				swap(arr, min, i);
+   			}
+   
+   		}
+   	}
+   
+   // 2. bubbleSort
+   	public static void bubbleSort(int[] arr) {
+   		if(arr == null || arr.length <=2) {
+   			return;
+   		}
+   		for(int i = 0; i < arr.length - 1; i++) {
+   		int flag = 1;
+   		for(int j = 0; i < arr.length -1 -i; j++) {
+   			if(arr[j] > arr[j + 1]) {
+   				flag = 0;
+   				swap(arr, j , j + 1);
+   			}
+   		}
+   		if(flag == 1) {
+   			break;
+   		}
+   	}
+   }
+   
+   // 3. insetionSort
+   	public static void insertionsSort(int[] arr) {
+   		if(arr == null || arr.length <=2) {
+   			return;
+   		}
+   		for(int i = 1; i < arr.length; i++) {
+   			for(int pre = i - 1; pre >= 0 && arr[pre] > arr[pre + 1]; pre--) {
+   				if(arr[i] >= arr[i - 1]) {
+   					continue;
+   				}
+   				swap(arr,pre, pre + 1);
+   			}
+   		}
+   	}
+   ```
+
+2. **==二分查找==**
+
+   > * 先定范围，再二分，后查找。
+   > * 二分的体现是`mid = (mid + R) / 2`
+   > * 查找怎么查找，找到了怎么样，找不到，下一步又该如何找，去哪个范围找
+
+     ![image-20220619145943275](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206281004716.png)
+
+   ```java
+   	public static boolean exist(int[] arr, int num) {
+   		if(arr == null || arr.length == 0) {
+   			return false;
+   		}
+   		int left = 0;
+   		int right = arr.length - 1;
+   		while(left <= right) {
+   		//	int mid = left + (right - left) >> 1;   错误 （1）
+   			int mid = left + ((right - left) >> 1);
+   			if(arr[mid] == num) {
+   				return true;
+   			}else if (arr[mid] < num) {
+   				left = mid + 1;
+   			}else {
+   				right = mid - 1;
+   			}
+   		}
+   		return false;
+   	}
+     // 1. 左移运算符和右移运算符不会对变量产生影响，即right << 1,right的变量
+     //    大小不发生变化
+     // 2. + - 的优先级比左移和右移运算符高
+     // left + (right - left) >> 1  == (right - left) / 2
+     
+   
+     
+   ```
+
+   
+
+3. **==有序数组中找到>=num最左的位置，和>=num最右的位置==**
+
+   ```java
+   // >=num
+   public static int nearestLeftIndex(int[] arr, int num) {
+   		if(arr == null || arr.length <= 0) {
+   			return -1;
+   		}
+   		int index = -1;
+   		int L = 0;
+   		int R = arr.length - 1;
+   		while(L <= R) {
+   			int mid = (L + R) /2;
+   			if(arr[mid] >= num) {
+   				index = mid;
+   				R = mid - 1;
+   			}else {
+   				L = mid + 1;
+   			}	
+   		}
+   		return index;
+   
+   	}
+   
+   // <= num
+   public static int nearestIndex(int[] arr, int num) {
+       if(arr == null || arr.length <= 0) {
+           return -1;
+       }
+       int index = -1;
+       int L = 0;
+       int R = arr.length - 1;
+       while(L <= R) {
+           int mid = (L + R) /2;
+           if(arr[mid] <= num) {
+               index = mid;
+               L = mid + 1;
+           }else {
+               R = mid - 1;
+           }
+           return index;
+       }
+           
+   ```
+
+4. **==给定一个数组，找到该数组中的一个局部最小值==**
+
+   ![image-20220619091420121](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206281012581.png)
+
+   ```java
+   // 定义何为局部最小值：
+   // arr[0] < arr[1]，0位置是局部最小；
+   // arr[N-1] < arr[N-2]，N-1位置是局部最小；
+   // arr[i-1] > arr[i] < arr[i+1]，i位置是局部最小；
+   // 给定一个数组arr，已知任何两个相邻的数都不相等，找到随便一个局部最小位置返回
+   public static int getLessIndex(int[] arr) {
+   		if(arr == null || arr.length == 0) {
+   			return -1;
+   		}
+   		if(arr.length == 1 || arr[0] < arr[1]) {
+   			return 0;
+   		}
+   	     if(arr[arr.length - 1] < arr[arr.length - 2]) {
+   			return arr.length - 1;
+   		}
+   	    int R = arr.length - 2;                 // （1）
+   	    int L = 1;                      
+   		while(L <= R) {
+   			int mid = L + ((R - L) >> 1);       // （2）
+          //   int mid = L + ((R - L) >> 2);       错误
+   			if(arr[mid] > arr[mid + 1]) {
+   				L = mid + 1;
+   			}else if(arr[mid] > arr[mid - 1]) {
+   				R = mid - 1;
+   			}else {
+   				return mid;
+   			}
+   		}
+   		return -1;                             //  （3）
+   	}
+   ```
+
+
+
+# Lesson02
+
+0. > ==前置知识==
+   >
+   > ==异或==
+   >
+   > ```java
+   > // 相同为0，相异为1
+   > // 可以看成无进位相加
+   > // 0 ^ N = N   N ^ N = 0
+   > // 满足交换律和结合律，且同时满足交换律和结合律
+   > 
+   > // 交换律
+   > a ^ b = b ^ a;
+   > // 结合律
+   > (a ^ b) ^ c = a ^ (b ^ c);
+   > // 同时
+   > (a ^ b) ^ c = (a ^ c) ^ b
+   > ```
+
+
+
+1. ==交换两个不相等的数，不用第三个变量==
+
+   ```java
+   a = a ^ b;
+   b = a ^ b;
+   a = a ^ b; 
+   ```
+
+   ![image-20220609204101268](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206281022177.png)
+
+
+
+2. ==一个数组中有一个数出现了奇数次，其他数都出现了偶数次，怎么找到并打印这个数==
+
+   ```java
+   	public static void printOddTimesNum(int[] arr) {
+   		int eor = 0;
+   		for(int i = 0; i < arr.length; i++) {
+   			eor ^= arr[i];
+   		}
+   		System.out.println(eor);
+   	}
+   ```
+
+3. ==怎么把一个int类型的数，提出最右侧的1来==
+
+   ```java
+   a = 01011000  ----> ans = 00001000
+   ans = a & (-a) = a & (~a + 1);    
+   ```
+
+
+
+4. ==一个数组中有两种数出现了奇数次，其它数出现了偶数次，怎么找到并打印这两种数==
+
+   ```java
+   // analysis：两个数不相同 ——> 异或后eor必不等于0 ——> eor的某位必等于1 -----> 两个数必有一个数在eor最右侧等于1的那个位置，是1，另一个是0
+   public static void printOddTimesNum2(int[] arr) {
+   		int eor = 0;
+   		for(int i = 0; i < arr.length; i++) {
+   			eor ^= arr[i];
+   		}
+   
+   		int mostRightOne = eor & (-eor);
+   		int onlyOne = 0;
+   		for(int i = 0; i < arr.length; i++) {
+   			if((mostRightOne & arr[i]) != 0) {
+   				onlyOne ^= arr[i];
+   			}
+   		}
+   		System.out.println(eor + " " + (eor ^ onlyOne));		
+   	} 
+   ```
+
+
+
+5. ==一个数组中有一种数出现了K次，其他数都出现了M次，M  > K >= 1,找到出现k次的数，要求额外空间复杂度为O(1)==
+
+   ```java
+   //analysis：因为每个数可以看成32为二进制，所以将每个数的32个二进制位求出来，创建个数组help，来盛放二进制序列，分别加进数组中，然后模M，等于0，则说明那个数在该二进制位为0，否则为1，因为一个数出现了M次，那么这某位二进制为1，剩下的6个相同的数也得为1，所以得是M的倍数。
+   
+   // 建立长度为32的数组arr ——》循环求出每个数的2进制位，同时加到数组arr中 ——》对数组的每个元素取模M，如果等于0，那么要求的数在该位为1，否则为0
+   
+   public static int km(int[] arr, int k, int m) {
+   		int[] help = new int[32];
+   		for(int num : arr) {
+   			for(int i = 0; i < 32; i++) {
+   				help[i] += ((num >> i) & 1);    // arr上的num，从第1位到32位遍历num的二进制的每                                // 然后加到help数组中
+   			}                                   // 一位，第i位是1，就在help数组第i个元素加一
+   		}
+   		int ans = 0;
+   	    for(int i = 0; i < 32; i++) {
+   	    	help[i] %= m;
+   	    	if(help[i] != 0) {
+   	    		ans |= (1 << i);
+   	    	}
+   	    }
+   	    return ans;
+   	}
+   ```
+
+
+
+6. ==题目六：一个数组中，有n种数，n - 1种数出现了M次，剩下一种数出现的次数不确定，但肯定大于等于1，且小于M，求 如果剩下的那个数出现的次数等于K次，则找出这个数，如果不是则返回找不到==
+
+   ```java
+   public static int km(int[] arr, int k, int m) {
+         		int[] help = new int[32];
+   		for(int num : arr) {
+   			for(int i = 0; i < 32; i++) {
+   				help[i] += ((num >> i) & 1);    // arr上的num，从第1位到32位遍历num的二进制的每                                // 然后加到help数组中
+   			}                                   // 一位，第i位是1，就在help数组第i个元素加一
+   		}
+   		int ans = 0;
+   	    for(int i = 0; i < 32; i++) {
+   	    	if(help[i] % m == 0) {
+         	    		continue;
+   	    	}
+         	    	if(help[i] % m == k) {
+   	    		ans |= (1 << i);
+   	    	}else{
+   	    		return -1;
+   	    	}
+         	    }
+   	    // 因为ans == 0，但是不能确定0中了没有，所以下步遍历一下0出现的次数
+   	  if(0 == ans) {
+   		  int count = 0;
+   		  for(int num : arr) {
+   		    	if (num == ans) {
+   		    		count++;
+   		    	}
+   		    }
+   		    if(count != k) {
+   		    	return -1;
+   		    }
+   	  }
+   
+   		return ans;
+   	}
+   ```
+
+   
+
 # Lesson03
 
-0. > ==前置知识 for\while思想==
+0. > ==**前置知识 for\while思想**==
    >
    > + 首先明确，大问题是指什么，大问题是指，翻转整个链表，也就是将链表中的每个结点翻转过来，那么小问题就是将链表中的每个结点进行翻转，这就是把大问题转换成了小问题，解决完小问题就等同于大问题解决了。这里值得注意的是，一个小问题的解决需要上一个小问题搭建环境，最主要的就是解决完小问题后，要来到下一个小问题，还有的是，需要用到上一步的结论
    > + 解决单链表
    >   * 方法：将每个只头指针指向的结点的前后结点和其指针，也就是pre和next，给找出来，每次将头节点翻转后，pre和head就往前移（这一步的目的是为下一步问题搭建环境，即来到下一个问题）
    >   * 步骤：将pre和next指向null（主要是将pre指向null，可以想象null是在head结点之后，而next的作用主要是为翻转结点前找到结点的下一个结点）——> 将head指向的结点翻转（小问题的核心就是这个）——> 将pre和head指针往前移(来到下一个结点) 
    >
-   > ==thought==
+   > ==**thought**==
    >
    > 1. 对于链表的题，每次操作，是针对单个节点进行操作的，也就是每次循环是针对单个节点进行操作，那么对每个节点进行操作之前，要把这个结点的前后节点的指针要展开，即要找到他前后节点的指针pre和next，然后再对这个节点进行操作，一定要记住，链表的操作，从局部来说是对单个结点进行操作，找前后指针，一是为了对结点操作时，用的到，二是为下一步循环搭建环境，
    > 2. 对于while循环
@@ -20,19 +370,19 @@
    >
    > 
    >
-   > ==Master公式==
+   > **==Master公式==**
    >
    > > 子问题的规模必须是一致的，比如，T(N)  = T(N / 3) + T(N / 4)，子问题的规模不一致，这类递归就不能用master公式来估计时间复杂度，也就是子问题规模一致的才可以用master公式 
    >
    > ![](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206272146524.png)
    >
-   > ==HashMap==
+   > **==HashMap==**
    >
    > > 1. <DataType, DataType>,DataType如果是原生内置的数据类型，例如String，Integer，会把String类型的数据放进hashMap中；如果是Node，自定义数据类型，那么在hashmap中存放的是其地址
    > > 2. hashmap的增删查改的时间复杂度都是O(1)
    > > 3. hashset可以看成只有key，即形式是<DataType>
    >
-   > ==按值传递和按址传递==
+   > **==按值传递和按址传递==**
    >
    > ```java
    > int a = 1000;
@@ -47,7 +397,7 @@
    >
    > 
 
-1. ==单向链表和双向链表的结构==
+1. **==单向链表和双向链表的结构==**
 
    ```java
    // 单向链表结点结构（可以实现成泛型）
@@ -72,7 +422,7 @@
    }
    ```
 
-2. ==单链表和双链表的翻转==
+2. **==单链表和双链表的翻转==**
 
    ![image-20220624105910022](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206272141643.png)
 
@@ -105,7 +455,7 @@
        }
    ```
 
-3. ==在链表中删除指定值的所有节点==
+3. **==在链表中删除指定值的所有节点==**
 
    > 首先判断链表非空，非空返回null。用pre表示从头节点到pre符合节点，cur表示去找符合要求的节点，cur没找到，就把cur所指的节点删掉，即让pre的next指向cur的next，如果找到就让pre来到cur的位置，最后返回head
 
@@ -146,7 +496,7 @@
    	}
    ```
 
-4. ==用双链表实现栈和队列==
+4. **==用双链表实现栈和队列==**
 
    ```java
    import java.util.LinkedList;
@@ -288,7 +638,7 @@
    }
    ```
 
-5. ==用环形数组实现栈和队列==
+5. **==用环形数组实现栈和队列==**
 
    ```java
    // 目前只有队列
@@ -333,7 +683,7 @@
    		}
    ```
 
-6. ==实现有getMin的栈==
+6. **==实现有getMin的栈==**
 
    ```java
    public static class Mystack{
@@ -375,98 +725,101 @@
    		}
    ```
 
-   7. ==两个栈实现队列==
 
-      ```java
-      public static class TwoStackImplement{
-      			public Stack<Integer> stackPush;
-      			public Stack<Integer> stackPop;
-      			
-      			public TwoStackImplement() {
-      				stackPush = new Stack<Integer>();
-      				stackPop = new Stack<Integer>();
-      			}
-      			
-      			// push data from stackpush to stackpop
-      			private void pushToPop() {
-      				if(stackPop.empty()) {
-      					while(!stackPush.empty()) {
-      						stackPop.push(stackPush.pop());
-      					}
-      				}
-      			}
-      			
-      			public void add(int pushInt) {
-      				stackPush.push(pushInt);
-      				pushToPop();
-      			}
-      			
-      			public int poll() {
-      				if(stackPop.empty() && stackPush.empty()) {
-      					throw new RuntimeException("queue is empty");
-      				}
-      				pushToPop();
-      				return stackPop.pop();
-      			}
-      			
-      			public int peek() {
-      				if(stackPop.empty() && stackPush.empty()) {
-      					throw new RuntimeException("queue is empty");
-      				}
-      				pushToPop();
-      				return stackPop.peek();
-      			}
-      		}
-      ```
+7. **==两个栈实现队列==**
 
-   8. ==两个队列实现栈==
+   ```java
+   public static class TwoStackImplement{
+   			public Stack<Integer> stackPush;
+   			public Stack<Integer> stackPop;
+   			
+   			public TwoStackImplement() {
+   				stackPush = new Stack<Integer>();
+   				stackPop = new Stack<Integer>();
+   			}
+   			
+   			// push data from stackpush to stackpop
+   			private void pushToPop() {
+   				if(stackPop.empty()) {
+   					while(!stackPush.empty()) {
+   						stackPop.push(stackPush.pop());
+   					}
+   				}
+   			}
+   			
+   			public void add(int pushInt) {
+   				stackPush.push(pushInt);
+   				pushToPop();
+   			}
+   			
+   			public int poll() {
+   				if(stackPop.empty() && stackPush.empty()) {
+   					throw new RuntimeException("queue is empty");
+   				}
+   				pushToPop();
+   				return stackPop.pop();
+   			}
+   			
+   			public int peek() {
+   				if(stackPop.empty() && stackPush.empty()) {
+   					throw new RuntimeException("queue is empty");
+   				}
+   				pushToPop();
+   				return stackPop.peek();
+   			}
+   		}
+   ```
 
-      ```java
-      public static class TwoqueueImplementStack<T>{
-      			public Queue<T> queue;
-      			public Queue<T> help;
-      			
-      			public TwoqueueImplementStack(){
-      				queue = new LinkedList<>();
-      				help = new LinkedList<>();
-      			}
-      			
-      			public void push(T value) {
-      				queue.offer(value);
-      			}
-      			
-      			public T poll() {
-      				while(queue.size() > 1) {
-      					help.offer(queue.poll());
-      				}
-      				T ans = queue.poll();
-      				Queue<T> tmp = queue;
-      				queue = help;
-      				help = tmp;
-      				
-      				return ans;
-      			}
-      			
-      			public T peek() {
-      				while(queue.size() > 1) {
-      					help.offer(queue.poll());
-      				}
-      				T ans = queue.poll();
-      				help.offer(ans);
-      				Queue<T> tmp = queue;
-      				queue = help;
-      				help = tmp;
-      				
-      				return ans;
-      			}
-      		}		
-      ```
+   
 
-      
+8. **==两个队列实现栈==**
+
+   ```java
+   public static class TwoqueueImplementStack<T>{
+   			public Queue<T> queue;
+   			public Queue<T> help;
+   			
+   			public TwoqueueImplementStack(){
+   				queue = new LinkedList<>();
+   				help = new LinkedList<>();
+   			}
+   			
+   			public void push(T value) {
+   				queue.offer(value);
+   			}
+   			
+   			public T poll() {
+   				while(queue.size() > 1) {
+   					help.offer(queue.poll());
+   				}
+   				T ans = queue.poll();
+   				Queue<T> tmp = queue;
+   				queue = help;
+   				help = tmp;
+   				
+   				return ans;
+   			}
+   			
+   			public T peek() {
+   				while(queue.size() > 1) {
+   					help.offer(queue.poll());
+   				}
+   				T ans = queue.poll();
+   				help.offer(ans);
+   				Queue<T> tmp = queue;
+   				queue = help;
+   				help = tmp;
+   				
+   				return ans;
+   			}
+   		}		
+   ```
+
+   
 
 # lesson04
 
-0. > ==前置知识  归并排序==
+0. > **==前置知识  归并排序==**
    >
    > * 昨天他说，我们现在的递归都是符合master公式的递归，而符合master公式的递归，子问题的规模还必须是一致的，那是不是讲，我们以后思考递归问题如何分解，是不是可以考虑如何将子问题的规模一致作为一个切入点
    > * O(N^2)的排序大量浪费了比较的时间，而O(N* log(N)),相对他们来说，比较的时间就不是很多
@@ -478,7 +831,7 @@
    >   + 指针不回退，前提得是有序的数，即单调性
    >   + 表示不存在的数可以用左开右闭
 
-1. ==归并排序的递归实现和非递归实现==
+1. **==归并排序的递归实现和非递归实现==**
 
    ```java
    public class Code01_MergeSort {
@@ -550,7 +903,7 @@
    }
    ```
 
-2.  ==在一个数组中，一个数左边比它小的数的总和，叫该数的小和，所有数的小和累加起来，求数组小和==
+2.  **==在一个数组中，一个数左边比它小的数的总和，叫该数的小和，所有数的小和累加起来，求数组小和==**
 
    ```java
    // 小黑盒
@@ -632,7 +985,7 @@
    }
    ```
 
-3. ==在一个数组中，任何一个前面的数a，和任何一个后面的数b，如果(a,b)是降序的，就称为降序对，给定一个数组arr，求数组的降序对总数量==
+3. **==在一个数组中，任何一个前面的数a，和任何一个后面的数b，如果(a,b)是降序的，就称为降序对，给定一个数组arr，求数组的降序对总数量==**
 
    ```java
    public class Code03_ReversePair {
@@ -714,7 +1067,7 @@
    }
    ```
 
-4. ==在一个数组中，对于任何一个数num，求有多少个(后面的数*2)依然<num，返回总个数==
+4. **==在一个数组中，对于任何一个数num，求有多少个(后面的数*2)依然<num，返回总个数==**
 
    ```java
    public class Code04_BiggerThanRightTwice {
@@ -768,7 +1121,7 @@
 
 # Lesson05
 
-1. ==给定一个数组arr，两个整数lower和upper，返回arr中多少个子数组的累加和在[lowwer  upper]的范围上==
+1. **==给定一个数组arr，两个整数lower和upper，返回arr中多少个子数组的累加和在[lowwer  upper]的范围上==**
 
    ```java
    public class Code01_CountOfRangeSum {
@@ -1272,6 +1625,128 @@
    		return new Info(lh, lt, ls, rh, rt, rs, eh, et);
    	}
    }
+   ```
+
+   ​	
+
+# Lesson06
+
+1. ==比较器==
+
+   ```java
+   package lesson06;
+   
+   import java.util.Arrays;
+   import java.util.TreeMap;
+   import java.util.ArrayList;
+   import java.util.Comparator; 
+   
+   
+   public class Code01_Comparator {
+   	
+   	public static class Student{
+   		public String name;
+   		public int id;
+   		public int age;
+   		
+   		public Student(String name, int id, int age) {
+   			this.name = name;
+   			this.id = id;
+   			this.age = age;
+   		}
+   	}
+   	
+   	// 比较器的思想： 只要知道如何比大小，比较器就可以调用内部统一的策略进行排序
+   	// 任何比较：
+   	// compare方法里，遵循一个同一的思想：
+   	// 返回负数的时候，认为第一个参数应该排在前面
+   	// 返回正数的时候，认为第二个参数应该排在前面
+   	// 返回0的时候，认为无所谓谁放在前面
+   	// 系统的排序的时间复杂度是O(N * log(N));
+   	
+   	// 根据id从小到大，但是如果id一样，按照年龄从小到大 
+   	public static class IdUpAgeDownOrder implements Comparator<Student>{
+   		
+   		public int compare (Student s1, Student s2) {
+   			return s1.id != s2.id ? s1.id - s2.id : s2.age - s1.age;
+   		}
+   	}
+   	
+   	// 根据id从小到大排
+   	public static class idUpComparator implements Comparator<Student>{
+   		public int compare(Student s1, Student s2) {
+   			return s1.id - s2.id;
+   		}
+   	}
+   	
+   	// 根据id从大到小排
+   	public static class idDownComparator implements Comparator<Student>{
+   		public int compare(Student s1, Student s2) {
+   			return s2.id - s1.id;
+   		}
+   	}
+   	
+   	// for test
+   	public static void main(String[] args) {
+   
+   		Student s1 = new Student("A", 1, 11);
+   		Student s2 = new Student("B", 2, 12);
+   		Student s3 = new Student("C", 3, 14);
+   		Student s4 = new Student("D", 6, 115);
+   		Student s5 = new Student("E", 4, 131);
+   		Student s6 = new Student("F", 4, 1111);
+   		
+   	//  数组排序
+   	    Student[] students = new Student[] {s1, s2, s3, s4, s5, s6};	
+       //	Arrays.sort(students, new idDownComparator());
+       //  Arrays.sort(students, new idUpComparator());
+           Arrays.sort(students, new IdUpAgeDownOrder());
+   	//  System.out.println("ArraysSort IdUp");
+   	    for(int i = 0; i < students.length; i++)
+   	    {
+   	//		System.out.println(students[i].name);
+   	    }
+   	  
+   	//  链表排序
+   	    ArrayList<Student> studentList = new ArrayList<>();
+   	    studentList.add(s1);
+   	    studentList.add(s2);
+   	    studentList.add(s3);
+   	    studentList.add(s4);
+   	    studentList.add(s5);
+   	    studentList.add(s6);
+   	    
+       //  studentList.sort(new idDownComparator());
+       //  studentList.sort(new idUpComparator());
+       //  studentList.sort(new IdUpAgeDownOrder());
+           
+           for(int i = 0; i < studentList.size(); i++) {
+           	Student s =  studentList.get(i);
+           	System.out.println(s.name);
+           }
+          
+           
+       // 有序表排序
+       // 比较器里没有相同的Key，在这里也就是没有相同的对象。当放进去相同的key进去，有序表不会覆盖掉旧的，但是hashmap
+       // 会。根据对象的某一属性进行比较 
+          System.out.println("treemap sort"); 
+       // TreeMap<Student, String>treeMap = new TreeMap<>(new idDownComparator()); 
+       // TreeMap<Student, String>treeMap = new TreeMap<>((a, b) -> a.id - b.id);
+          TreeMap<Student, String>treeMap = new TreeMap<>((a, b) -> a.id != b.id ? (a.id - b.id) : (b.hashCode() - a.hashCode()));  
+          treeMap.put(s1, "A");
+          treeMap.put(s2, "B");
+          treeMap.put(s3, "C");
+          treeMap.put(s4, "D");
+          treeMap.put(s5, "E");
+          treeMap.put(s6, "F");
+          
+          for(Student s : treeMap.keySet()) {
+       	   System.out.println(s.name);
+          }
+   	}
+   
+   }
+   
    ```
 
    
