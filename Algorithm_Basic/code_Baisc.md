@@ -922,58 +922,91 @@
    // 小黑盒
    public class Code02_SmallSum {
    
-   	public static int smallSum(int[] arr) {
-   		if (arr == null || arr.length < 2) {
-   			return 0;
-   		}
-   		return process(arr, 0, arr.length - 1);
-   	}
+       public static int smallSum(int[] arr) {
+           if (arr == null || arr.length < 2) {
+               return 0;
+           }
+           return process(arr, 0, arr.length - 1);
+       }
    
-   	public static int process(int[] arr, int L, int R) {
-   		if (L == R) {
-   			return 0;
-   		}
-   		int M = L + ((R - L) >> 1);
-   		return process(arr, L, M) 
-   				+ 
-   				process(arr, M + 1, R) 
-   				+ 
-   				merge2(arr, L, M, R);
-   	}
+       public static int process(int[] arr, int L, int R) {
+           if (L == R) {
+               return 0;
+           }
+           int M = L + ((R - L) >> 1);
+           return process(arr, L, M) 
+               + 
+               process(arr, M + 1, R) 
+               + 
+               merge2(arr, L, M, R);
+       }
    
-   	public static int merge(int[] arr, int L, int M, int R) {
-   		
-   		int windows = L;
-   		int ans = 0;
-   		for(int i = M + 1; i <= R; i++) {
-   			while(windows <= M && arr[windows] < arr[i]) {
-   				windows++;
-   			}
-   			for(int j = L; j < windows; j++) {
-   				ans += arr[j];
-   			}
-   		}
-   		
-   		int[] help = new int[R - L + 1];
-   		int p1 = L;
-   		int p2 = M + 1 ;
-   		int k = 0;
-   		while(p1 <= M && p2 <= R) {
-   			help[k++] = arr[p1] < arr[p2] ? arr[p1++] : arr[p2++];
-   		}
-   		while(p1 <= M) {
-   			help[k++] = arr[p1++];
-   		}
-   		while(p2 <= R) {
-   			help[k++] = arr[p2++];
-   		}
-   		for ( k = 0; k < help.length; k++) { 
-   		// 	arr[k] = help[k++];  bad!
-   			arr[L + k] = help[k++];
-   		}
-   		return ans;
-   	}
-       
+       public static int merge1(int[] arr, int L, int M, int R) {
+   
+           int windows = L;
+           int ans = 0;
+           for(int i = M + 1; i <= R; i++) {
+               while(windows <= M && arr[windows] < arr[i]) {
+                   windows++;
+               }
+               for(int j = L; j < windows; j++) {
+                   ans += arr[j];
+               }
+           }
+   
+           int[] help = new int[R - L + 1];
+           int p1 = L;
+           int p2 = M + 1 ;
+           int k = 0;
+           while(p1 <= M && p2 <= R) {
+               help[k++] = arr[p1] < arr[p2] ? arr[p1++] : arr[p2++];
+           }
+           while(p1 <= M) {
+               help[k++] = arr[p1++];
+           }
+           while(p2 <= R) {
+               help[k++] = arr[p2++];
+           }
+           for ( k = 0; k < help.length; k++) { 
+               // 	arr[k] = help[k++];  bad!
+               arr[L + k] = help[k++];
+           }
+           return ans;
+       }
+   	
+       // 这种方法是直接遍历，没有利用有序这个条件
+       public static int merge2(int[] arr, int L, int M, int R) {
+           // 求返回值	
+           int ans = 0;
+           for(int i = M + 1; i <= R; i++) {
+               for(int j = L ; j <= M; j++) {
+                   if(arr[j] < arr[i]) {
+                       ans += arr[j];
+                   }
+               }
+           }
+   
+           // 排序
+           int[] help = new int[R - L + 1];
+           int p1 = L;
+           int p2 = M + 1 ;
+           int k = 0;
+           while(p1 <= M && p2 <= R) {
+               help[k++] = arr[p1] < arr[p2] ? arr[p1++] : arr[p2++];
+           }
+           while(p1 <= M) {
+               help[k++] = arr[p1++];
+           }
+           while(p2 <= R) {
+               help[k++] = arr[p2++];
+           }
+           for ( k = 0; k < help.length; k++) { 
+               //	arr[k] = help[k++];  bad!
+               arr[L + k] = help[k];
+           }
+           return ans;
+       }
+   
    }
    ```
    
