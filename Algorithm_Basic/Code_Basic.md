@@ -2051,6 +2051,8 @@
    > 1）线段的开始和结束位置一定都是整数值
    > 2）线段重合区域的长度必须>=1
 
+   > 思路：最大重合区域的左边界与某个线段的左边界重合。所以分别求出以每个线段的左边界为重合区域的左边界的重合线段数，最大的重合线段数就是所要求得
+   
    ```java
    package lesson07;
    
@@ -2257,5 +2259,268 @@
    }
    ```
 
+
+
+
+# Lesson08
+
+0. ==前置知识==
+
+   > ==前缀树==
+   >
+   > * 哈希表的增删改查的时间复杂度是O(1),前提是单样本的数据的大小无足轻重。例如，放一个整型，32位，这样的数据大小无足轻重，如果放一个字符串，哈希表首先是要遍历一遍字符串的所有字符，再算出一个哈希值（用来内部组织），再放进哈希表，它的时间复杂度为O(K),k是字符串的长度。比如放100万个字符串，而平均长度为100，一个字符串那么放进哈希表的时候就是O(100),不能忽略字符串的长度
+   > * 当一个字符串数组放进哈希表的时间复杂度是O(M),M是字符的总个数。因为进哈希表的前提是遍历一遍字符。查询的某个字符是否存在的复杂度也是O(M),因为还是得遍历。
+   > * 而前缀树的放字符串的时间复杂度虽然也是O(M),但是查某个字符就不用每个都遍历，直接从头节点出发，看有没有通往所要查询字符串的字符的路即可。且功能比哈希表更加强大，因为可以查前缀。
+
+1. ==前缀树==
+
+   > * 求"abc"字符串出现得次数，出现得次数等于e，也就是如果有c的路，那么c的路下面的节点的e值就是"abc"字符串出现的次数
+   > * 有没有以字符串"bc"做前缀的字符串。从头节点出发，若是有b的路和c的路，可以看c的路下面的节点p的值
+
+   <img src="https://dawn1314.oss-cn-beijing.aliyuncs.com/202207011423198.png" alt="image-20220701070613837" style="zoom:200%;" />
+
+   ![image-20220701073531704](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207011423802.png)
+
+   ```java
+   public class Code01_Trietree {
+   	
+   	// 前缀树节点类型 
+   	public static class Node1{
+   		// 0. 属性
+   		public int pass;
+   		public int end;
+   		public Node1[] nexts; // 表示有多少路。用底层节点是否为null了，表示路是否存在
+   		
+   		// 1. 构造器
+   		public Node1() {
+               // 0  a  0位置表示通往a的路
+               // 1  b
+               // 2  c
+               // ……
+               // 25 c
+               // nexts[i] null i方向的路不存在
+               // nexts[i] != null i方向的路存在   
+   			pass = 0;
+   			end = 0;
+   			nexts = new Node1[26];
+   		}
+   	}
+   	
+   	// 前缀树类型1
+   	public static class  Trietree1{
+   		
+   		// 0. 属性
+   		private Node1 root;
+   		
+   		// 1. 构造器
+   		public Trietree1() {
+   			root = new Node1();
+   		}
+   		
+   		// 2.1 insert method
+   		public void insert(String word) {
+   			if(word == null) {
+   				return;
+   			}
+   			char[] chs = word.toCharArray();
+   			Node1 node = root;
+   			node.pass++;
+   			for(int i = 0; i < chs.length; i++) {
+   				int tmp = chs[i] - 'a';
+   				if(node.nexts[tmp] == null) {
+   					node.nexts[tmp] = new Node1();
+   				}
+   				node = node.nexts[tmp];
+   				node.pass++;
+   			}
+   			node.end++;
+   		}
+   		
+   		// 2.2 delete method
+   		public void delete(String word) {
+   			if(search(word) != 0) {
+   				char[] chs = word.toCharArray();
+   				Node1 node = root;
+   				node.pass--;
+   				int index = 0;
+   				for(int i = 0; i < chs.length; i++) {
+   					index = chs[i] - 'a';
+   					if(--node.nexts[index].pass == 0) {
+   						node.nexts[index] = null;
+   						return;
+   					}
+   					node = node.nexts[index];
+   				}
+   				node.end--;
+   			}
+   		}
+   		
+   		
+   		// 2.3 search method.  word这个单词之前加过几次    有一个问题，这个方法不传root进来，构造器又是空参构造，那root下面
+   		public int search(String word) {          // 怎么会有路
+   			if(word == null) {
+   				return 0;
+               }
+               char[] chs = word.toCharArray();
+               Node1 node = root;
+               int index = 0;
+               for(int i = 0; i < chs.length; i++) {
+                   index = chs[i] - 'a';
+                   if(node.nexts[index] == null) {
    
+                       return 0;
+                   }
+                   node = node.nexts[index];
+               }
+               return node.end;
+   		}
+   		
+   	}
+   
+   }
+   
+   ```
+   
+
+
+
+2. ==计数排序==
+
+   > * 数据限制：本身的大小须在一定范围内，即单个数据在`10<= num =< 100`
+   > * 桶排序的思想，桶就是容器，所以利用容器的思想排序就是桶排序。在这里每一个年纪就是一个桶，看每个年纪有多少人
+   > * 
+   >
+   > 
+   >
+   > * 排序
+   >   * 基于比较的排序：冒泡、插入、选择、归并、快排和希尔排序。这类排序的时间复杂度极限为O(N * logN)
+   >   * 不基于比较的排序：桶排序（计数排序）。这类排序时间复杂度极限为O(N)
+
+   ![image-20220701200234470](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207012002565.png)
+
+​	
+
+3.  ==基数排序==
+
+   > * 数据限制：非负的，能够表达成十进制的数
+   >
+   > * 先按个位排序，再按十位排序、、、最后按数据中的最高位排序。这里注意的是，先放进去的时候，那拿出来的时候也先拿出来
+
+   ![image-20220701211825902](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207012118023.png)
+
+   ![image-20220701210900872](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207012109973.png)
+
+   ```java
+   package class08;
+   
+   import java.util.Arrays;
+   
+   public class Code04_RadixSort {
+   
+   	// only for no-negative value
+   	public static void radixSort(int[] arr) {
+   		if (arr == null || arr.length < 2) {
+   			return;
+   		}
+   		radixSort(arr, 0, arr.length - 1, maxbits(arr));
+   	}
+   
+   	public static int maxbits(int[] arr) {
+   		int max = Integer.MIN_VALUE;
+   		for (int i = 0; i < arr.length; i++) {
+   			max = Math.max(max, arr[i]);
+   		}
+   		int res = 0;
+   		while (max != 0) {
+   			res++;
+   			max /= 10;
+   		}
+   		return res;
+   	}
+   
+   	// arr[L..R]排序  ,  最大值的十进制位数digit
+       // L..R,就扩展了，不一定将整个数组都要排序，也可以从L到R上排序、
+       // 这个代码就是为了省十个桶，但还是利用了进桶出桶的思想
+   	public static void radixSort(int[] arr, int L, int R, int digit) {
+   		final int radix = 10;
+   		int i = 0, j = 0;
+   		// 有多少个数准备多少个辅助空间
+   		int[] help = new int[R - L + 1];
+   		for (int d = 1; d <= digit; d++) { // 有多少位就进出几次
+   			// 10个空间
+   		    // count[0] 当前位(d位)是0的数字有多少个
+   			// count[1] 当前位(d位)是(0和1)的数字有多少个
+   			// count[2] 当前位(d位)是(0、1和2)的数字有多少个
+   			// count[i] 当前位(d位)是(0~i)的数字有多少个
+   			int[] count = new int[radix]; // count[0..9]
+   			for (i = L; i <= R; i++) {
+   				// 103  1   3
+   				// 209  1   9
+   				j = getDigit(arr[i], d); // 将d位的数字提取出来，然后在count数组
+   				count[j]++;              // 所对应的下表加1，表示该数字的个数加一
+   			}
+   			for (i = 1; i < radix; i++) {
+   				count[i] = count[i] + count[i - 1];
+   			}
+   			for (i = R; i >= L; i--) {
+   				j = getDigit(arr[i], d);
+   				help[count[j] - 1] = arr[i];
+   				count[j]--;
+   			}
+   			for (i = L, j = 0; i <= R; i++, j++) {
+   				arr[i] = help[j];
+   			}
+   		}
+   	}
+   
+   	public static int getDigit(int x, int d) {
+   		return ((x / ((int) Math.pow(10, d - 1))) % 10);
+   	}
+   }
+   
+   ```
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
