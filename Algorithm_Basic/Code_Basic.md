@@ -2605,8 +2605,362 @@
    
    ```
 
+
+
+
+# Lesson09
+
+0. ==**排序总结**==
+
+<img src="https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207021654761.png" alt="image-20220702165422682" style="zoom:200%;" />
+
+<img src="https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207021659805.png" alt="image-20220702165935732" style="zoom:200%;" />
+
+> * 快排的常数时间要远远小于堆排和归并的，所以虽然时间复杂度一样，快排的速度最优 
+
+<img src="https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207021707138.png" alt="image-20220702170734068" style="zoom:200%;" />
+
+<img src="https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207021710589.png" alt="image-20220702171046532" style="zoom:200%;" />
+
+<img src="https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207021718015.png" alt="image-20220702171856967" style="zoom:200%;" />
+
+> 面试中可能会出这样的面试题
+>
+> * 为什么对不同的数据类型，排序的方法不一样，从上图中的两点回答
+> * 
+
+![](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207021725988.png)
+
+![image-20220702174133196](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207021741306.png)
+
+> *  上图的程序，结合了数据量小时，插排常数项小的优势和数据量大时，快排的调度优势。
+> * 上面的60不是随机设的，是快排和插排的一个分解。
+> * 也就是说，考虑一个算法时，要从数据量大时和小时两方面考虑，大时看复杂度，小时，看常数项。
+> * 排序不仅仅解决排序的问题，可以利用排序的思想解其他的一些问题，就像前几几节课，讲到的利用归并排序解决小数和的问题
+
+
+
+
+
+1. ==**前置知识 链表**==
+
+   ![image-20220702200757084](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207022007173.png)
+
+   ![image-20220702201959007](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207022019103.png)
+
    
 
+2. **==快慢指针==**
+
+   > 快指针：一次走两步；慢指针：一次走一步
+
+   ![image-20220702201743557](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207022017650.png)
+
+   
+
+3. **==给定一个单链表的头节点head，请判断该链表是否为回文结构==**
+
+   ![image-20220702202222751](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207022022850.png)
+
+   ![image-20220702202517410](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207022025499.png)
+
+   ![image-20220702203046334](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207022030452.png)
+
+   ```java
+   package class09;
+   
+   import java.util.Stack;
+   
+   public class Code02_IsPalindromeList {
+   
+   	public static class Node {
+   		public int value;
+   		public Node next;
+   
+   		public Node(int data) {
+   			this.value = data;
+   		}
+   	}
+   
+   	// need n extra space stack slotution
+   	public static boolean isPalindrome1(Node head) {
+   		Stack<Node> stack = new Stack<Node>();
+   		Node cur = head;
+   		while (cur != null) {
+   			stack.push(cur);
+   			cur = cur.next;
+   		}
+   		while (head != null) {
+   			if (head.value != stack.pop().value) {
+   				return false;
+   			}
+   			head = head.next;
+   		}
+   		return true;
+   	}
+   
+   	// need n/2 extra space
+   	public static boolean isPalindrome2(Node head) {
+   		if (head == null || head.next == null) {
+   			return true;
+   		}
+   		Node right = head.next;
+   		Node cur = head;
+   		while (cur.next != null && cur.next.next != null) {
+   			right = right.next;
+   			cur = cur.next.next;
+   		}
+   		Stack<Node> stack = new Stack<Node>();
+   		while (right != null) {
+   			stack.push(right);
+   			right = right.next;
+   		}
+   		while (!stack.isEmpty()) {
+   			if (head.value != stack.pop().value) {
+   				return false;
+   			}
+   			head = head.next;
+   		}
+   		return true;
+   	}
+   
+   	// need O(1) extra space
+   	public static boolean isPalindrome3(Node head) {
+   		if (head == null || head.next == null) {
+   			return true;
+   		}
+   		Node n1 = head;
+   		Node n2 = head;
+           // 快慢指针  看一下如果是偶数的时候，中点是否为上中点
+   		while (n2.next != null && n2.next.next != null) { // find mid node
+   			n1 = n1.next; // n1 -> mid
+   			n2 = n2.next.next; // n2 -> end
+   		}
+   		// n1 中点
+   		
+   		
+   		n2 = n1.next; // n2 -> right part first node
+   		n1.next = null; // mid.next -> null
+   		Node n3 = null;
+   		while (n2 != null) { // right part convert
+   			n3 = n2.next; // n3 -> save next node
+   			n2.next = n1; // next of right node convert
+   			n1 = n2; // n1 move
+   			n2 = n3; // n2 move
+   		}
+   		n3 = n1; // n3 -> save last node
+   		n2 = head;// n2 -> left first node
+   		boolean res = true;
+   		while (n1 != null && n2 != null) { // check palindrome
+   			if (n1.value != n2.value) {
+   				res = false;
+   				break;
+   			}
+   			n1 = n1.next; // left to mid
+   			n2 = n2.next; // right to mid
+   		}
+   		n1 = n3.next;
+   		n3.next = null;
+   		while (n1 != null) { // recover list
+   			n2 = n1.next;
+   			n1.next = n3;
+   			n3 = n1;
+   			n1 = n2;
+   		}
+   		return res;
+   	}
+   
+   	public static void printLinkedList(Node node) {
+   		System.out.print("Linked List: ");
+   		while (node != null) {
+   			System.out.print(node.value + " ");
+   			node = node.next;
+   		}
+   		System.out.println();
+   	}
+   
+   
+   }
+   
+   ```
+
+   
+
+4. **==回文变形题==**
+
+   > * 将原来的L1L2L3L4R1R2R3R4变成L1R1L2R2L3R3L4R4
+   >
+   > * 思路：还是先将上中点以下的结构反转，然后一对一对连接
+
+   ![image-20220702204519382](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207022045478.png)
+
+   ![image-20220702204609486](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207022046598.png)
+
+   
+
+5. ==将单向链表按某值划分成左边小、中间相等、右边大的形式==
+
+   ![image-20220702205247145](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207022052223.png)
+
+   ![image-20220702205459125](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207022054217.png)
+
+   ![image-20220702210100585](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207022101711.png)
+
+   > 有稳定性的需求把大尾留着，没有则把大尾去掉
+
+   ```java
+   package class09;
+   
+   public class Code03_SmallerEqualBigger {
+   
+   	public static class Node {
+   		public int value;
+   		public Node next;
+   
+   		public Node(int data) {
+   			this.value = data;
+   		}
+   	}
+   
+   	public static Node listPartition1(Node head, int pivot) {
+   		if (head == null) {
+   			return head;
+   		}
+   		Node cur = head;
+   		int i = 0;
+   		while (cur != null) {
+   			i++;
+   			cur = cur.next;
+   		}
+   		Node[] nodeArr = new Node[i];
+   		i = 0;
+   		cur = head;
+   		for (i = 0; i != nodeArr.length; i++) {
+   			nodeArr[i] = cur;
+   			cur = cur.next;
+   		}
+   		arrPartition(nodeArr, pivot);
+   		for (i = 1; i != nodeArr.length; i++) {
+   			nodeArr[i - 1].next = nodeArr[i];
+   		}
+   		nodeArr[i - 1].next = null;
+   		return nodeArr[0];
+   	}
+   
+   	public static void arrPartition(Node[] nodeArr, int pivot) {
+   		int small = -1;
+   		int big = nodeArr.length;
+   		int index = 0;
+   		while (index != big) {
+   			if (nodeArr[index].value < pivot) {
+   				swap(nodeArr, ++small, index++);
+   			} else if (nodeArr[index].value == pivot) {
+   				index++;
+   			} else {
+   				swap(nodeArr, --big, index);
+   			}
+   		}
+   	}
+   
+   	public static void swap(Node[] nodeArr, int a, int b) {
+   		Node tmp = nodeArr[a];
+   		nodeArr[a] = nodeArr[b];
+   		nodeArr[b] = tmp;
+   	}
+   
+   	public static Node listPartition2(Node head, int pivot) {
+   		Node sH = null; // small head
+   		Node sT = null; // small tail
+   		Node eH = null; // equal head
+   		Node eT = null; // equal tail
+   		Node mH = null; // big head
+   		Node mT = null; // big tail
+   		Node next = null; // save next node
+   		// every node distributed to three lists
+   		while (head != null) {
+   			next = head.next;
+   			head.next = null;
+   			if (head.value < pivot) {
+   				if (sH == null) {
+   					sH = head;
+   					sT = head;
+   				} else {
+   					sT.next = head;
+   					sT = head;
+   				}
+   			} else if (head.value == pivot) {
+   				if (eH == null) {
+   					eH = head;
+   					eT = head;
+   				} else {
+   					eT.next = head;
+   					eT = head;
+   				}
+   			} else {
+   				if (mH == null) {
+   					mH = head;
+   					mT = head;
+   				} else {
+   					mT.next = head;
+   					mT = head;
+   				}
+   			}
+   			head = next;
+   		}
+   		// 小于区域的尾巴，连等于区域的头，等于区域的尾巴连大于区域的头
+   		if (sT != null) { // 如果有小于区域
+   			sT.next = eH;
+   			eT = eT == null ? sT : eT; // 下一步，谁去连大于区域的头，谁就变成eT
+   		}
+   		// 下一步，一定是需要用eT 去接 大于区域的头
+   		// 有等于区域，eT -> 等于区域的尾结点
+   		// 无等于区域，eT -> 小于区域的尾结点
+   		// eT 尽量不为空的尾巴节点
+   		if (eT != null) { // 如果小于区域和等于区域，不是都没有
+   			eT.next = mH;
+   		}
+   		return sH != null ? sH : (eH != null ? eH : mH);
+   	}
+   
+   	public static void printLinkedList(Node node) {
+   		System.out.print("Linked List: ");
+   		while (node != null) {
+   			System.out.print(node.value + " ");
+   			node = node.next;
+   		}
+   		System.out.println();
+   	}
+   
+   	public static void main(String[] args) {
+   		Node head1 = new Node(7);
+   		head1.next = new Node(9);
+   		head1.next.next = new Node(1);
+   		head1.next.next.next = new Node(8);
+   		head1.next.next.next.next = new Node(5);
+   		head1.next.next.next.next.next = new Node(2);
+   		head1.next.next.next.next.next.next = new Node(5);
+   		printLinkedList(head1);
+   		// head1 = listPartition1(head1, 4);
+   		head1 = listPartition2(head1, 5);
+   		printLinkedList(head1);
+   
+   	}
+   
+   }
+   
+   ```
+
+
+
+6. **==特殊的单链表节点==**
+
+   ![image-20220702215258925](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207022152043.png)
+
+   ![image-20220702220858241](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207022208394.png)
+
+   ![image-20220702221400140](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207022214280.png)
+
+​	
 
 
 
@@ -2614,6 +2968,11 @@
 
 
 
+
+
+ 
+
+ 
 
 
 
