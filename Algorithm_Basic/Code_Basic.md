@@ -2264,9 +2264,9 @@
 
 # Lesson08
 
-0. ==前置知识==
+0. **==前置知识==**
 
-    > ==前缀树==
+    > **==前缀树==**
     >
     > * 哈希表的增删改查的时间复杂度是O(1),前提是单样本的数据的大小无足轻重。例如，放一个整型，32位，这样的数据大小无足轻重，如果放一个字符串，哈希表首先是要遍历一遍字符串的所有字符，再算出一个哈希值（用来内部组织），再放进哈希表，它的时间复杂度为O(K),k是字符串的长度。比如放100万个字符串，而平均长度为100，一个字符串那么放进哈希表的时候就是O(100),不能忽略字符串的长度
     >
@@ -2274,13 +2274,13 @@
     >
     > * 而前缀树的放字符串的时间复杂度虽然也是O(M),但是查某个字符就不用每个都遍历，直接从头节点出发，看有没有通往所要查询字符串的字符的路即可。且功能比哈希表更加强大，因为可以查前缀。
     >
-    > * ==排序算法的稳定性==
+    > * **==排序算法的稳定性==**
     >
     >   ![image-20220702094218021](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207020942093.png)
     >
     > * 
 
-1. ==前缀树==
+1. **==前缀树==**
 
    > * 求"abc"字符串出现得次数，出现得次数等于e，也就是如果有c的路，那么c的路下面的节点的e值就是"abc"字符串出现的次数
    > * 有没有以字符串"bc"做前缀的字符串。从头节点出发，若是有b的路和c的路，可以看c的路下面的节点p的值
@@ -2290,109 +2290,226 @@
    ![image-20220701073531704](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207011423802.png)
 
    ```java
-   public class Code01_Trietree {
-   	
-   	// 前缀树节点类型 
-   	public static class Node1{
-   		// 0. 属性
-   		public int pass;
-   		public int end;
-   		public Node1[] nexts; // 表示有多少路。用底层节点是否为null了，表示路是否存在
-   		
-   		// 1. 构造器
+   package lesson08;
+   
+   import java.util.HashMap;
+   
+   public class Code01_TrieTree {
+   
+   	// letter type
+   	public static class Node1 {
+   		// 0. field
+   		public int pass; // 建一条路，就要来到新路的下端节点，则pass加1
+   		public int end; // 每个字符串最后一个字符的那条路的下端节点加1
+   		public Node1[] nexts; // 每个节点建立后，建立26条null路
+   
+   		// 1. constructor
+   		// char tmp = 'b'; (tmp - 'a')
    		public Node1() {
-               // 0  a  0位置表示通往a的路
-               // 1  b
-               // 2  c
-               // ……
-               // 25 c
-               // nexts[i] null i方向的路不存在
-               // nexts[i] != null i方向的路存在   
    			pass = 0;
    			end = 0;
    			nexts = new Node1[26];
    		}
    	}
-   	
-   	// 前缀树类型1
-   	public static class  Trietree1{
-   		
-   		// 0. 属性
+   
+   	// suitable for 26 letters
+   	public static class trieTree1 {
+   
+   		// 0. field
    		private Node1 root;
-   		
-   		// 1. 构造器
-   		public Trietree1() {
+   
+   		// 1.constructor
+   		public trieTree1() {
    			root = new Node1();
    		}
+   
+   		// 2.1 insert
+   		public void insert(String word) {
+   			if (word == null) {
+   				return;
+   			}
+   			char[] chs = word.toCharArray();
+   			root.pass++;
+   			Node1 node = root;
+   			for (int i = 0; i < chs.length; i++) {
+   				int index = chs[i] - 'a';
+   				if (node.nexts[index] == null) {
+   					node.nexts[index] = new Node1();
+   				}
+   				node = node.nexts[index];
+   				node.pass++;
+   			}
+   			node.end++;
+   		}
+   
+   		// 2.2 search out of the number of occurrence
+   		public int search(String word) {
+   			if (word == null) {
+   				return 0;
+   			}
+   			char[] chs = word.toCharArray();
+   			Node1 node = root;
+   			for (int i = 0; i < chs.length; i++) {
+   				int index = chs[i] - 'a';
+   				if (node.nexts[index] == null) {
+   					return 0;
+   				}
+   				node = node.nexts[index];
+   			}
+   			return node.end;
+   		}
+   
+   		// 2.3 delete "word"
+   		public void detele(String word) {
+   			if (search(word) == 0) {
+   				return;
+   			}
+   			char[] chs = word.toCharArray();
+   			Node1 node = root;
+   			node.pass--;
+   			for (int i = 0; i < chs.length; i++) {
+   				int index = chs[i] - 'a';
+   				node.nexts[index].pass--;
+   				if (node.nexts[index].pass == 0) {
+   					node.nexts[index] = null;
+   					return;
+   				}
+   				node = node.nexts[index];
+   			}
+   			node.end--;
+   		}
+   
+   		// 2.4 prefixNumber
+   		// how many of all the joined strings are
+   		// prefixed with the string "word".
+   		public int prefixNumber(String word) {
+   			if (word == null) {
+   				return 0;
+   			}
+   			Node1 node = root;
+   			char[] chs = word.toCharArray();
+   			for (int i = 0; i < chs.length; i++) {
+   				int index = chs[i] - 'a';
+   				if (node.nexts[index] == null) {
+   					return 0;
+   				}
+   				node = node.nexts[index];
+   			}
+   			return node.pass;
+   		}
+   
+   	}
+   	
+   	
+   	// ASCII type
+   	public static class Node2{
    		
-   		// 2.1 insert method
+   		public int pass;
+   		public int end;
+   		public HashMap<Integer, Node2> nexts;
+   		
+   		public Node2(){
+   			pass = 0;
+   			end = 0;
+   			nexts = new HashMap<>();
+   		}
+   
+   	}
+   	
+   	// trieTree2
+   	public static class trieTree2{
+   		// 0. field
+   		private Node2 root;
+   		
+   		// 1. constructor
+   		public trieTree2() {
+   			root = new Node2();
+   		}
+   		
+   		// 2.1 insert node
    		public void insert(String word) {
    			if(word == null) {
    				return;
    			}
    			char[] chs = word.toCharArray();
-   			Node1 node = root;
-   			node.pass++;
+   			Node2 node2 = root;
+   			node2.pass++;
    			for(int i = 0; i < chs.length; i++) {
-   				int tmp = chs[i] - 'a';
-   				if(node.nexts[tmp] == null) {
-   					node.nexts[tmp] = new Node1();
+   				int index = (int)chs[i];
+   				if(!node2.nexts.containsKey(index)) {
+   					node2.nexts.put(index, new Node2());
    				}
-   				node = node.nexts[tmp];
-   				node.pass++;
+   				node2 = node2.nexts.get(index);
+   				node2.pass++;
    			}
-   			node.end++;
+   			node2.end++;
    		}
-   		
-   		// 2.2 delete method
-   		public void delete(String word) {
-   			if(search(word) != 0) {
-   				char[] chs = word.toCharArray();
-   				Node1 node = root;
-   				node.pass--;
-   				int index = 0;
-   				for(int i = 0; i < chs.length; i++) {
-   					index = chs[i] - 'a';
-   					if(--node.nexts[index].pass == 0) {
-   						node.nexts[index] = null;
-   						return;
-   					}
-   					node = node.nexts[index];
-   				}
-   				node.end--;
-   			}
-   		}
-   		
-   		
-   		// 2.3 search method.  word这个单词之前加过几次    有一个问题，这个方法不传root进来，构造器又是空参构造，那root下面
-   		public int search(String word) {          // 怎么会有路
+   	
+   		// 2.2 search out the number of occurrence
+   		public int search(String word) {
    			if(word == null) {
    				return 0;
-               }
-               char[] chs = word.toCharArray();
-               Node1 node = root;
-               int index = 0;
-               for(int i = 0; i < chs.length; i++) {
-                   index = chs[i] - 'a';
-                   if(node.nexts[index] == null) {
-   
-                       return 0;
-                   }
-                   node = node.nexts[index];
-               }
-               return node.end;
+   			}
+   			char[] chs = word.toCharArray();
+   			int index = 0;
+   			Node2 node2 = root;
+   			for(int i = 0; i < chs.length; i++) {
+   				index = (int)chs[i];
+   				if(!node2.nexts.containsKey(index)) {
+   					return 0;
+   				}
+   				node2 = node2.nexts.get(index);
+   			}
+   			return node2.end;
    		}
    		
+   		// 2.3 delete "word"
+   		public void delete(String word) {
+   			if(search(word) == 0) {
+   				return;
+   			}
+   			char[] chs = word.toCharArray();
+   			int index = 0;
+   			Node2 node2 = root;
+   			node2.pass--;
+   			for(int i = 0; i < chs.length; i++) {
+   				index = (int)chs[i];
+   				if(--node2.nexts.get(index).pass == 0) {
+   					node2.nexts.remove(index);
+   					return;
+   				}
+   				node2 = node2.nexts.get(index);			
+   			}
+   			node2.end--;
+   		}
+   		
+   		// 2.4 prefixNumber
+   		// how many of all the joined String are prefixed with
+   		// "word".
+   		public int prefixNumber(String word) {
+   			if(word == null) {
+   				return 0;
+   			}
+   			char[] chs = word.toCharArray();
+   			int index = 0;
+   			Node2 node2 = root;
+   			for(int i = 0; i < chs.length; i++) {
+   				index = (int)chs[i];
+   				if(!node2.nexts.containsKey(index)) {
+   					return 0;
+   				}
+   				node2 = node2.nexts.get(index);
+   			}
+   			return node2.pass;
+   		}
    	}
-   
-   }
-   
+   }	  
    ```
    
 
 
 
-2. ==计数排序==
+2. **==计数排序==**
 
    > * 数据限制：本身的大小须在一定范围内，即单个数据在`10<= num =< 100`
    > * 桶排序的思想，桶就是容器，所以利用容器的思想排序就是桶排序。在这里每一个年纪就是一个桶，看每个年纪有多少人
@@ -2408,7 +2525,7 @@
 
 ​	
 
-3.  ==基数排序==
+3.  **==基数排序==**
 
    > * 数据限制：非负的，能够表达成十进制的数
    >
