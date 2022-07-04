@@ -2959,92 +2959,260 @@
    ![image-20220702220858241](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207022208394.png)
 
    ![image-20220702221400140](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207022214280.png)
+   
+   ```java
+   import java.util.HashMap;
+   
+   public class Code04_CopyListWithRandom {
+   
+   	public static class Node {
+   		int val;
+   		Node next;
+   		Node random;
+   
+   		public Node(int val) {
+   			this.val = val;
+   			this.next = null;
+   			this.random = null;
+   		}
+   	}
+   
+   	public static Node copyRandomList1(Node head) {
+   		// key 老节点
+   		// value 新节点
+   		HashMap<Node, Node> map = new HashMap<Node, Node>();
+   		Node cur = head;
+   		while (cur != null) {
+   			map.put(cur, new Node(cur.val));
+   			cur = cur.next;
+   		}
+   		cur = head;
+   		while (cur != null) {
+   			// cur 老
+   			// map.get(cur) 新
+   			// 新.next ->  cur.next克隆节点找到
+   			map.get(cur).next = map.get(cur.next);
+   			map.get(cur).random = map.get(cur.random);
+   			cur = cur.next;
+   		}
+   		return map.get(head);
+   	}
+   
+   	public static Node copyRandomList2(Node head) {
+   		if (head == null) {
+   			return null;
+   		}
+   		Node cur = head;
+   		Node next = null;
+   		// 1 -> 2 -> 3 -> null
+   		// 1 -> 1' -> 2 -> 2' -> 3 -> 3'
+   		while (cur != null) {
+   			next = cur.next;
+   			cur.next = new Node(cur.val);
+   			cur.next.next = next;
+   			cur = next;
+   		}
+   		cur = head;
+   		Node copy = null;
+   		// 1 1' 2 2' 3 3'
+   		// 依次设置 1' 2' 3' random指针
+   		while (cur != null) {
+   			next = cur.next.next;
+   			copy = cur.next;
+   			copy.random = cur.random != null ? cur.random.next : null;
+   			cur = next;
+   		}
+   		Node res = head.next;
+   		cur = head;
+   		// 老 新 混在一起，next方向上，random正确
+   		// next方向上，把新老链表分离
+   		while (cur != null) {
+   			next = cur.next.next;
+   			copy = cur.next;
+   			cur.next = next;
+   			copy.next = next != null ? next.next : null;
+   			cur = next;
+   		}
+   		return res;
+   	}
+   
+   }
+   
+   ```
+   
+   
 
 ​	
 
+# Lesson10
 
+1. ==**链表相交**==
 
-```java
-import java.util.HashMap;
+   ![image-20220703195346320](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207031953386.png)
 
-public class Code04_CopyListWithRandom {
+   ![image-20220703200130971](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207032001049.png)
 
-	public static class Node {
-		int val;
-		Node next;
-		Node random;
+   
 
-		public Node(int val) {
-			this.val = val;
-			this.next = null;
-			this.random = null;
-		}
-	}
+   ![image-20220703200732880](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207032007953.png)
 
-	public static Node copyRandomList1(Node head) {
-		// key 老节点
-		// value 新节点
-		HashMap<Node, Node> map = new HashMap<Node, Node>();
-		Node cur = head;
-		while (cur != null) {
-			map.put(cur, new Node(cur.val));
-			cur = cur.next;
-		}
-		cur = head;
-		while (cur != null) {
-			// cur 老
-			// map.get(cur) 新
-			// 新.next ->  cur.next克隆节点找到
-			map.get(cur).next = map.get(cur.next);
-			map.get(cur).random = map.get(cur.random);
-			cur = cur.next;
-		}
-		return map.get(head);
-	}
+   ![image-20220703201833180](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207032018263.png)
 
-	public static Node copyRandomList2(Node head) {
-		if (head == null) {
-			return null;
-		}
-		Node cur = head;
-		Node next = null;
-		// 1 -> 2 -> 3 -> null
-		// 1 -> 1' -> 2 -> 2' -> 3 -> 3'
-		while (cur != null) {
-			next = cur.next;
-			cur.next = new Node(cur.val);
-			cur.next.next = next;
-			cur = next;
-		}
-		cur = head;
-		Node copy = null;
-		// 1 1' 2 2' 3 3'
-		// 依次设置 1' 2' 3' random指针
-		while (cur != null) {
-			next = cur.next.next;
-			copy = cur.next;
-			copy.random = cur.random != null ? cur.random.next : null;
-			cur = next;
-		}
-		Node res = head.next;
-		cur = head;
-		// 老 新 混在一起，next方向上，random正确
-		// next方向上，把新老链表分离
-		while (cur != null) {
-			next = cur.next.next;
-			copy = cur.next;
-			cur.next = next;
-			copy.next = next != null ? next.next : null;
-			cur = next;
-		}
-		return res;
-	}
+   > ==上一张图的rules==
+   >
+   > * 如果fast pointer走到空，肯定无环（真有环，带环的链表无空的）
+   >
+   > * 如果有环，快慢指针一定会相遇的，但不一定会在第一个入环节点相遇。快指针的步伐为2，慢指针为1
+   >
+   > * 当快慢指针相遇时，然后将快指针指向头节点，慢指针还在相遇的位置，且快指针的
+   >
+   >   步伐变为1，然后快慢指针一起走，最后肯定会在第一个入环节点相遇
 
-}
+   ![image-20220703204910163](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207032049259.png)
 
-```
+   ![image-20220703205818155](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207032058245.png)
 
+   ![image-20220703211935452](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207032119530.png)
 
+   ![image-20220703212256285](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207032122364.png)
+
+   ![image-20220703213310636](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207032133711.png)
+
+   ```java
+   
+   
+   public class Code01_FindFirstIntersectNode {
+   
+   	public static class Node {
+   		public int value;
+   		public Node next;
+   
+   		public Node(int data) {
+   			this.value = data;
+   		}
+   	}
+   
+   	public static Node getIntersectNode(Node head1, Node head2) {
+   		if (head1 == null || head2 == null) {
+   			return null;
+   		}
+   		Node loop1 = getLoopNode(head1);
+   		Node loop2 = getLoopNode(head2);
+   		// 若是相交，肯定两个都是无环，要么都是有环
+           // 如果一个链表有环，一个链表无环，不可能相交
+           if (loop1 == null && loop2 == null) {
+   			return noLoop(head1, head2);
+   		}
+   		if (loop1 != null && loop2 != null) {
+   			return bothLoop(head1, loop1, head2, loop2);
+   		}
+   		return null;
+   	}
+   
+   	// 找到链表第一个入环节点，如果无环，返回null
+   	public static Node getLoopNode(Node head) {
+   		if (head == null || head.next == null || head.next.next == null) {
+   			return null;
+   		}
+   		// n1 慢  n2 快
+   		Node slow = head.next; // n1 -> slow
+   		Node fast = head.next.next; // n2 -> fast
+   		while (slow != fast) {
+   			if (fast.next == null || fast.next.next == null) {
+   				return null;
+   			}
+   			fast = fast.next.next;
+   			slow = slow.next;
+   		}
+   		// slow fast  相遇
+   		fast = head; // n2 -> walk again from head
+   		while (slow != fast) {
+   			slow = slow.next;
+   			fast = fast.next;
+   		}
+   		return slow;
+   	}
+   
+   	// 如果两个链表都无环，返回第一个相交节点，如果不想交，返回null
+   	public static Node noLoop(Node head1, Node head2) {
+   		if (head1 == null || head2 == null) {
+   			return null;
+   		}
+   		Node cur1 = head1;
+   		Node cur2 = head2;
+   		int n = 0;
+   		while (cur1.next != null) {
+   			n++;
+   			cur1 = cur1.next;
+   		}
+   		while (cur2.next != null) {
+   			n--;
+   			cur2 = cur2.next;
+   		}
+   		if (cur1 != cur2) {
+   			return null;
+   		}
+   		// n  :  链表1长度减去链表2长度的值
+   		cur1 = n > 0 ? head1 : head2; // 谁长，谁的头变成cur1
+   		cur2 = cur1 == head1 ? head2 : head1; // 谁短，谁的头变成cur2
+   		n = Math.abs(n);
+   		while (n != 0) {
+   			n--;
+   			cur1 = cur1.next;
+   		}
+   		while (cur1 != cur2) { 
+   			cur1 = cur1.next;
+   			cur2 = cur2.next;
+   		}
+   		return cur1;
+   	}
+   
+   	// 两个有环链表，返回第一个相交节点，如果不相交返回null
+   	public static Node bothLoop(Node head1, Node loop1, Node head2, Node loop2) {
+   		Node cur1 = null;
+   		Node cur2 = null;
+   		if (loop1 == loop2) {
+   			cur1 = head1;
+   			cur2 = head2;
+   			int n = 0;
+   			while (cur1 != loop1) {
+   				n++;
+   				cur1 = cur1.next;
+   			}
+   			while (cur2 != loop2) {
+   				n--;
+   				cur2 = cur2.next;
+   			}
+   			cur1 = n > 0 ? head1 : head2;
+   			cur2 = cur1 == head1 ? head2 : head1;
+   			n = Math.abs(n);
+   			while (n != 0) {
+   				n--;
+   				cur1 = cur1.next;
+   			}
+   			while (cur1 != cur2) {
+   				cur1 = cur1.next;
+   				cur2 = cur2.next;
+   			}
+   			return cur1;
+   		}      else {
+   			cur1 = loop1.next;
+   			while (cur1 != loop1) {
+   				if (cur1 == loop2) {
+   					return loop1;
+   				}
+   				cur1 = cur1.next;
+   			}
+   			return null;
+   		}
+   	}
+   }
+   
+   ```
+
+   
+
+* 
 
 
 
