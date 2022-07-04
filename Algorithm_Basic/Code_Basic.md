@@ -3229,11 +3229,82 @@
    > * 后续遍历中，x结点的前面是，它的孩子结点（可以用反证法去证）和作为右树的左兄弟结点；x结点的后边是它的祖先结点和它的作为左树的右兄弟结点（可以用左 右  头去证）
    > * 所以A和B的交集只有祖先结点
 
+3. **==非递归实现先序遍历后序遍历==**
+
+   ```java
+   // preface 
+   public static void pre(Node head) {
+       System.out.println("pre-order");
+       if(head != null) {
+           Stack<Node> stack = new Stack<Node>();
+           stack.add(head);
+           while(!stack.isEmpty()) {
+               head = stack.pop();
+               System.out.println(head.value + " ");
+               if(head.right != null) {
+                   stack.push(head.right);
+               }
+               if(head.left != null) {
+                   stack.push(head.left);
+               }
+           }
+       }
+       // post
+       public static void pos(Node head) {
+           System.out.println("in-order");
+           if(head != null) {
+               Stack<Node> stack1 = new Stack<Node>();
+               Stack<Node> stack2 = new Stack<Node>();
+               stack1.push(head);
+               while(!stack1.isEmpty()) {
+                   head = stack1.pop();
+                   stack1.push(head);
+                   if(head.left != null) {
+                       stack1.push(head.left);
+                   }
+                   if(head.right != head.right) {
+                       stack2.push(head.right);
+                   }
+               }
+               while(!stack2.isEmpty()) {
+                   head = stack2.pop();
+                   System.out.print( head.value + " ");
+               }
+           }
+       }
+   ```
+
+   
+
+4. **==非递归实现中序遍历==**
+
+![image-20220704225951625](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207042259740.png)
+
+```java
+public static void in(Node cur) {
+		System.out.print("in-order: ");
+		if (cur != null) {
+			Stack<Node> stack = new Stack<Node>();
+			while (!stack.isEmpty() || cur != null) {
+				if (cur != null) {
+					stack.push(cur);
+					cur = cur.left;
+				} else {
+					cur = stack.pop();
+					System.out.print(cur.value + " ");
+					cur = cur.right;
+				}
+			}
+		}
+		System.out.println();
+	}
+```
 
 
-  
 
+ 
 
+ 
 
 
 
