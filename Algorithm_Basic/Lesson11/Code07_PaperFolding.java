@@ -12,6 +12,7 @@ public class Code07_PaperFolding {
 		// 这个节点如果是凹的话，down = T
 		// 这个节点如果是凸的话，down = F
 		// 函数的功能：中序打印以你想象的节点为头的整棵树！
+	    // 功能: 将以处于N层大树的第i层的某个凸结点（或凹结点）的树进行中序遍历	
 	public static void process(int i, int N, boolean down) {
 		if(i > N) {
 			return;
