@@ -3410,7 +3410,7 @@
    
    	public static Queue<String> preSerial(Node head) {
    		Queue<String> ans = new LinkedList<>();
-   		// 将以head为头结点的是树的序列化的结果填到ans里面
+   		// 将以head为头结点的树的序列化的结果填到ans里面
            pres(head, ans);
    		return ans;
    	}
