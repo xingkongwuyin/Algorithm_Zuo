@@ -3214,6 +3214,8 @@
 
 2. ==**递归序**==
 
+   > 一个结点总可以到自己三次，第一次自己的双亲结点到自己的时候，第二次跑完自己的左树到自己的时候，第三次跑完自己的右树到自己的时候。这也是二叉树递归能够返回的机制。
+
    ![image-20220704200734060](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207042007145.png)
 
 3. ==**证明已知某一个二叉树节点的先序遍历和后序遍历，则A和B的交集是且尽是x的所有的祖先节点**==
@@ -3278,41 +3280,678 @@
 
 4. **==非递归实现中序遍历==**
 
-![image-20220704225951625](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207042259740.png)
+   ![image-20220704225951625](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207050815120.png)
 
-```java
-public static void in(Node cur) {
-		System.out.print("in-order: ");
-		if (cur != null) {
-			Stack<Node> stack = new Stack<Node>();
-			while (!stack.isEmpty() || cur != null) {
-				if (cur != null) {
-					stack.push(cur);
-					cur = cur.left;
-				} else {
-					cur = stack.pop();
-					System.out.print(cur.value + " ");
-					cur = cur.right;
-				}
-			}
-		}
-		System.out.println();
-	}
-```
+   ```java
+   public static void in(Node cur) {
+   		System.out.print("in-order: ");
+   		if (cur != null) {
+   			Stack<Node> stack = new Stack<Node>();
+   			while (!stack.isEmpty() || cur != null) {
+   				if (cur != null) {
+   					stack.push(cur);
+   					cur = cur.left;
+   				} else {
+   					cur = stack.pop();
+   					System.out.print(cur.value + " ");
+   					cur = cur.right;
+   				}
+   			}
+   		}
+   		System.out.println();
+   	}
+   ```
+
+   
+
+# lesson11
+
+1. **==给定一个单链表的结点，要求从这个单链表删除这个这节点（没有给该单链表的头节点）==**
+
+   > * 一个比较抖机灵的做法：将这个结点的属性刷成后面一个结点的属性，然后删除后面那个结点。
+   > * 缺点：
+   >   * 尾结点删除不掉，因为尾结点指向空，没有办法用刷值得方法去做
+   >   * 如果存在这样的拷贝，如果结点是服务器，需要对外部依赖提供信息，这种拷贝的方法，就会导致被删除的结点无法给外部依赖提供信息
+   >   * 可能不存在这样的拷贝，因为如果结点的属性都是一些指纹等机密信息，是不允许拷贝的
+   > * 总结：想要删除一个结点，一定要找到这个节点的前一个结点
+
+   ![image-20220705083849432](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207050838510.png)
+
+
+
+2. **==实现二叉树的按层遍历 1）==**
+
+   ![image-20220705084029825](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207050840879.png)
+
+   ![image-20220705085808279](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207050858376.png)
+
+   ![image-20220705090236503](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207050902602.png)
+
+   ```java
+   import java.util.LinkedList;
+   import java.util.Queue;
+   
+   public class Code01_LevelTraversalBT {
+   
+   	public static class Node {
+   		public int value;
+   		public Node left;
+   		public Node right;
+   
+   		public Node(int v) {
+   			value = v;
+   		}
+   	}
+   
+   	public static void level(Node head) {
+   		if (head == null) {
+   			return;
+   		}
+           // queue是一个接口名。stack直接是一个类
+           // LinkedList底层是双端队列，可以用来实现单向队列
+   		Queue<Node> queue = new LinkedList<>();
+   		queue.add(head);
+   		while (!queue.isEmpty()) {
+   			Node cur = queue.poll();
+   			System.out.println(cur.value);
+   			if (cur.left != null) {
+   				queue.add(cur.left);
+   			}
+   			if (cur.right != null) {
+   				queue.add(cur.right);
+   			}
+   		}
+   	} 
+   }
+   
+   ```
+
+
+
+3. **==二叉树的序列化和反序列化==**
+
+   ![image-20220705090822434](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207050908482.png)
+
+   ![image-20220705091344117](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207050913207.png)
+
+   ![image-20220705092208614](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207050922697.png)
+
+   ```java
+   import java.util.LinkedList;
+   import java.util.Queue;
+   import java.util.Stack;
+   
+   public class Code02_SerializeAndReconstructTree {
+       /*
+        * 二叉树可以通过先序、后序或者按层遍历的方式序列化和反序列化，
+        * 以下代码全部实现了。
+        * 但是，二叉树无法通过中序遍历的方式实现序列化和反序列化
+        * 因为不同的两棵树，可能得到同样的中序序列，即便补了空位置也可能一样。
+        * 比如如下两棵树
+        *         __2
+        *        /
+        *       1
+        *       和
+        *       1__
+        *          \
+        *           2
+        * 补足空位置的中序遍历结果都是{ null, 1, null, 2, null}
+        *       
+        * */
+   	public static class Node {
+   		public int value;
+   		public Node left;
+   		public Node right;
+   
+   		public Node(int data) {
+   			this.value = data;
+   		}
+   	}
+   
+   	public static Queue<String> preSerial(Node head) {
+   		Queue<String> ans = new LinkedList<>();
+   		// 将以head为头结点的是树的序列化的结果填到ans里面
+           pres(head, ans);
+   		return ans;
+   	}
+   
+   	public static void pres(Node head, Queue<String> ans) {
+   		if (head == null) {
+               // 队列里面是可以放空的，所以可以放null。也可以放其他的占                位符，例如“#”
+   			ans.add(null);
+   		} else {
+   			ans.add(String.valueOf(head.value));
+   			pres(head.left, ans);
+   			pres(head.right, ans);
+   		}
+   	}
+   
+   	
+   
+   	public static Node buildByPreQueue(Queue<String> prelist) {
+   		if (prelist == null || prelist.size() == 0) {
+   			return null;
+   		}
+   		return preb(prelist);
+   	}
+   
+   	public static Node preb(Queue<String> prelist) {
+   		String value = prelist.poll();
+   		if (value == null) {
+   			return null;
+   		}
+   		Node head = new Node(Integer.valueOf(value));
+   		head.left = preb(prelist);
+   		head.right = preb(prelist);
+   		return head;
+   	}
+   
+   
+   
+   
+   	public static Queue<String> levelSerial(Node head) {
+   		Queue<String> ans = new LinkedList<>();
+   		if (head == null) {
+   			ans.add(null);
+   		} else {
+   			ans.add(String.valueOf(head.value));
+   			Queue<Node> queue = new LinkedList<Node>();
+   			queue.add(head);
+   			while (!queue.isEmpty()) {
+   				head = queue.poll();    // head 父   子
+   				if (head.left != null) {// 每一个结点只序列化自己                                            的孩子
+   					ans.add(String.valueOf(head.left.value));
+   					queue.add(head.left);
+   				} else {
+   					ans.add(null);
+   				}
+   				if (head.right != null) {
+   					ans.add(String.valueOf(head.right.value));
+   					queue.add(head.right);
+   				} else {
+   					ans.add(null);
+   				}
+   			}
+   		}
+   		return ans;
+   	}
+   
+   	public static Node buildByLevelQueue(Queue<String> levelList) {
+   		if (levelList == null || levelList.size() == 0) {
+   			return null;
+   		}
+   		Node head = generateNode(levelList.poll());
+   		Queue<Node> queue = new LinkedList<Node>();
+   		if (head != null) {
+   			queue.add(head);
+   		}
+   		Node node = null;
+           // 利用父来反序列化自己的孩子
+   		while (!queue.isEmpty()) {
+   			node = queue.poll(); 
+   			node.left = generateNode(levelList.poll());
+   			node.right = generateNode(levelList.poll());
+   			if (node.left != null) {
+   				queue.add(node.left);
+   			}
+   			if (node.right != null) {
+   				queue.add(node.right);
+   			}
+   		}
+   		return head;
+   	}
+   
+   	public static Node generateNode(String val) {
+   		if (val == null) {
+   			return null;
+   		}
+   		return new Node(Integer.valueOf(val));
+   	}
+   }
+   ```
+
+   
+
+4. **==Encode N—ary Tree to Binary Tree==**
+
+   > 将一颗多叉树序列化成一棵二叉树，反过来，也可以将一个二叉树反序列化成一个多叉树
+
+   ![image-20220705103149433](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207051031478.png)
+
+   ![image-20220705105928273](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207051059345.png)
+
+   > 看一个结点有没有孩子，就看有没有左树右边界有没有结点
+
+   ![image-20220705105308926](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207051053006.png)
+
+   ```java
+   package class11;
+   
+   import java.util.ArrayList;
+   import java.util.List;
+   
+   // 本题测试链接：https://leetcode.com/problems/encode-n-ary-tree-to-binary-tree
+   public class Code03_EncodeNaryTreeToBinaryTree {
+   
+   	// 提交时不要提交这个类
+   	public static class Node {
+   		public int val;
+   		public List<Node> children;
+   
+   		public Node() {
+   		}
+   
+   		public Node(int _val) {
+   			val = _val;
+   		}
+   
+   		public Node(int _val, List<Node> _children) {
+   			val = _val;
+   			children = _children;
+   		}
+   	};
+   
+   	// 提交时不要提交这个类
+   	public static class TreeNode {
+   		int val;
+   		TreeNode left;
+   		TreeNode right;
+   
+   		TreeNode(int x) {
+   			val = x;
+   		}
+   	}
+   
+   	// 只提交这个类即可
+   	class Codec {
+   		// Encodes an n-ary tree to a binary tree.
+   		public TreeNode encode(Node root) {
+   			if (root == null) {
+   				return null;
+   			}
+   			TreeNode head = new TreeNode(root.val);
+               // en：先让root.children挂起来，再让root.children
+               //     下面每一个结点的所有子节点挂在自己左树右边界上
+   			head.left = en(root.children);
+   			return head;
+   		}
+   
+   		private TreeNode en(List<Node> children) {
+   			TreeNode head = null;
+   			TreeNode cur = null;
+   			for (Node child : children) {
+   				TreeNode tNode = new TreeNode(child.val);
+   				if (head == null) {
+   					head = tNode;
+   				} else {
+   					cur.right = tNode;
+   				}
+   				cur = tNode;
+   				cur.left = en(child.children);
+   			}
+   			return head;
+   		}
+   
+   		// Decodes your binary tree to an n-ary tree.
+   		public Node decode(TreeNode root) {
+   			if (root == null) {
+   				return null;
+   			}
+   			return new Node(root.val, de(root.left));
+   		}
+   
+           // root相当于长兄，将它的兄弟们弄成一个链表，返回给上游的父亲
+           // 深度遍历，先将各自的孩子弄好，再几个原来的兄弟结点连在一起
+   		public List<Node> de(TreeNode root) {
+   			List<Node> children = new ArrayList<>();
+   			while (root != null) {
+   				Node cur = new Node(root.val, de(root.left));
+   				children.add(cur);
+   				root = root.right;
+   			}
+   			return children;
+   		}
+   
+   	}
+   
+   }
+   
+   ```
+
+   
+
+5. ==**如何设计一个打印整棵树的打印函数**==
+
+   ![image-20220705144543642](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207051445694.png)
+
+   ```java
+   package class11;
+   
+   public class Code04_PrintBinaryTree {
+   
+   	public static class Node {
+   		public int value;
+   		public Node left;
+   		public Node right;
+   
+   		public Node(int data) {
+   			this.value = data;
+   		}
+   	}
+   
+   	public static void printTree(Node head) {
+   		System.out.println("Binary Tree:");
+   		printInOrder(head, 0, "H", 17);
+   		System.out.println();
+   	}
+   
+   	public static void printInOrder(Node head, int height, String to, int len) {
+   		if (head == null) {
+   			return;
+   		}
+   		printInOrder(head.right, height + 1, "v", len);
+   		String val = to + head.value + to;
+   		int lenM = val.length();
+   		int lenL = (len - lenM) / 2;
+   		int lenR = len - lenM - lenL;
+   		val = getSpace(lenL) + val + getSpace(lenR);
+   		System.out.println(getSpace(height * len) + val);
+   		printInOrder(head.left, height + 1, "^", len);
+   	}
+   
+   	public static String getSpace(int num) {
+   		String space = " ";
+   		StringBuffer buf = new StringBuffer("");
+   		for (int i = 0; i < num; i++) {
+   			buf.append(space);
+   		}
+   		return buf.toString();
+   	}
+   
+   	public static void main(String[] args) {
+   		Node head = new Node(1);
+   		head.left = new Node(-222222222);
+   		head.right = new Node(3);
+   		head.left.left = new Node(Integer.MIN_VALUE);
+   		head.right.left = new Node(55555555);
+   		head.right.right = new Node(66);
+   		head.left.left.right = new Node(777);
+   		printTree(head);
+   
+   		head = new Node(1);
+   		head.left = new Node(2);
+   		head.right = new Node(3);
+   		head.left.left = new Node(4);
+   		head.right.left = new Node(5);
+   		head.right.right = new Node(6);
+   		head.left.left.right = new Node(7);
+   		printTree(head);
+   
+   		head = new Node(1);
+   		head.left = new Node(1);
+   		head.right = new Node(1);
+   		head.left.left = new Node(1);
+   		head.right.left = new Node(1);
+   		head.right.right = new Node(1);
+   		head.left.left.right = new Node(1);
+   		printTree(head);
+   
+   	}
+   
+   }
+   
+   ```
+
+   
+
+6. **==求二叉树最宽的层有多少个结点==**
+
+   > 每层的结点的个数，叫做该层的宽度
+
+   > curEnd:当前层结束的的结点
+   >
+   > nextEnd：下一层结束的结点
+
+   ![image-20220705150943519](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207051509618.png)
+
+   ```java
+   // 在层序遍历的基础上，增加一个知道每层结束的标志
+   
+   package class11;
+   
+   import java.util.HashMap;
+   import java.util.LinkedList;
+   import java.util.Queue;
+   
+   public class Code05_TreeMaxWidth {
+   
+   	public static class Node {
+   		public int value;
+   		public Node left;
+   		public Node right;
+   
+   		public Node(int data) {
+   			this.value = data;
+   		}
+   	}
+   
+   	public static int maxWidthUseMap(Node head) {
+   		if (head == null) {
+   			return 0;
+   		}
+   		Queue<Node> queue = new LinkedList<>();
+   		queue.add(head);
+   		// key 在 哪一层，value
+   		HashMap<Node, Integer> levelMap = new HashMap<>();
+   		levelMap.put(head, 1);
+   		int curLevel = 1; // 当前你正在统计哪一层的宽度
+   		int curLevelNodes = 0; // 当前层curLevel层，宽度目前是多少
+   		int max = 0;
+   		while (!queue.isEmpty()) {
+   			Node cur = queue.poll();
+   			int curNodeLevel = levelMap.get(cur);
+   			if (cur.left != null) {
+   				levelMap.put(cur.left, curNodeLevel + 1);
+   				queue.add(cur.left);
+   			}
+   			if (cur.right != null) {
+   				levelMap.put(cur.right, curNodeLevel + 1);
+   				queue.add(cur.right);
+   			}
+   			if (curNodeLevel == curLevel) {
+   				curLevelNodes++;
+   			} else {
+   				max = Math.max(max, curLevelNodes);
+   				curLevel++;
+   				curLevelNodes = 1;
+   			}
+   		}
+   		max = Math.max(max, curLevelNodes);
+   		return max;
+   	}
+   
+   	public static int maxWidthNoMap(Node head) {
+   		if (head == null) {
+   			return 0;
+   		}
+   		Queue<Node> queue = new LinkedList<>();
+   		queue.add(head);
+   		Node curEnd = head; // 当前层，最右节点是谁
+   		Node nextEnd = null; // 下一层，最右节点是谁
+   		int max = 0;
+   		int curLevelNodes = 0; // 当前层的节点数
+   		while (!queue.isEmpty()) {
+   			Node cur = queue.poll();
+   			if (cur.left != null) {
+   				queue.add(cur.left);
+   				nextEnd = cur.left;
+   			}
+   			if (cur.right != null) {
+   				queue.add(cur.right);
+   				nextEnd = cur.right;
+   			}
+   			curLevelNodes++;
+   			if (cur == curEnd) {
+   				max = Math.max(max, curLevelNodes);
+   				curLevelNodes = 0;
+   				curEnd = nextEnd;
+   			}
+   		}
+   		return max;
+   	}
+   
+   	// for test
+   	public static Node generateRandomBST(int maxLevel, int maxValue) {
+   		return generate(1, maxLevel, maxValue);
+   	}
+   
+   	// for test
+   	public static Node generate(int level, int maxLevel, int maxValue) {
+   		if (level > maxLevel || Math.random() < 0.5) {
+   			return null;
+   		}
+   		Node head = new Node((int) (Math.random() * maxValue));
+   		head.left = generate(level + 1, maxLevel, maxValue);
+   		head.right = generate(level + 1, maxLevel, maxValue);
+   		return head;
+   	}
+   
+   	public static void main(String[] args) {
+   		int maxLevel = 10;
+   		int maxValue = 100;
+   		int testTimes = 1000000;
+   		for (int i = 0; i < testTimes; i++) {
+   			Node head = generateRandomBST(maxLevel, maxValue);
+   			if (maxWidthUseMap(head) != maxWidthNoMap(head)) {
+   				System.out.println("Oops!");
+   			}
+   		}
+   		System.out.println("finish!");
+   
+   	}
+   
+   }
+   
+   
+   ```
+
+   
+
+  
+
+7. **==给定一颗二叉树的某个结点，返回该结点的后继结点==**
+
+   > * 每一个结点可以看作是一个树的头节点
+   > * 不管是中序遍历，还是前序遍历出来的序列，序列上的每一个结点，可以看作是一个树的头结点，然后再按头 左树 右树或者其他方式去推。也就是说，一个结点能够写进序列里面，肯定是以某个树的头节点写进去的
+
+   ![image-20220705152544399](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207051525453.png)
+
+   ![image-20220705153413690](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207051534799.png)
+
+   ![image-20220705153547889](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207051535977.png)
+
+   > 后继结点的两种情况
+   >
+   > * 如果这个结点有右树，则其后继结点就是其右树的最左的结点
+   > * 如果这个结点没有右树，如下
+
+   ![image-20220705160931580](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207051609659.png)
+
+   ![image-20220705161219595](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207051612677.png)
+
+   ```java
+   package class11;
+   
+   public class Code06_SuccessorNode {
+   
+   	public static class Node {
+   		public int value;
+   		public Node left;
+   		public Node right;
+   		public Node parent;
+   
+   		public Node(int data) {
+   			this.value = data;
+   		}
+   	}
+   
+   	public static Node getSuccessorNode(Node node) {
+   		if (node == null) {
+   			return node;
+   		}
+   		if (node.right != null) {
+   			return getLeftMost(node.right);
+   		} else { // 无右子树
+   			Node parent = node.parent;
+     // parent == null，中的是这个结点是中序遍历的最后一个结点，无后继
+   			while (parent != null && parent.right == node) { // 当前节点是其父亲节点右孩子
+   				node = parent;
+   				parent = node.parent;
+   			}
+   			return parent;
+   		}
+   	}
+   
+   	public static Node getLeftMost(Node node) {
+   		if (node == null) {
+   			return node;
+   		}
+   		while (node.left != null) {
+   			node = node.left;
+   		}
+   		return node;
+   	}
+   }
+   
+   ```
+
+   
+
+8. **==折纸条==**
+
+   ![image-20220705162512806](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207051625878.png)
+
+   ![image-20220705164907880](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207051649968.png)
+
+   ```java
+   package class11;
+   // O(N): N是深度 
+   public class Code07_PaperFolding {
+   
+   	public static void printAllFolds(int N) {
+   		process(1, N, true);
+   		System.out.println();
+   	}
+   
+   	// 当前你来了一个节点，脑海中想象的！
+   	// 这个节点在第i层，一共有N层，N固定不变的
+   	// 这个节点如果是凹的话，down = T
+   	// 这个节点如果是凸的话，down = F
+   	// 函数的功能：中序打印以你想象的节点为头的整棵树！
+   	public static void process(int i, int N, boolean down) {
+   		if (i > N) {
+   			return;
+   		}
+   		process(i + 1, N, true); // true代表左树
+   		System.out.print(down ? "凹 " : "凸 ");
+   		process(i + 1, N, false);
+   	}
+   
+   	public static void main(String[] args) {
+   		int N = 4;
+   		printAllFolds(N);
+   	}
+   }
+   
+   ```
+
+   
+
+
 
 
 
  
-
- 
-
-
-
-
-
-
-
-
 
 
 
