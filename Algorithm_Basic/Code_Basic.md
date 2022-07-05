@@ -3549,7 +3549,7 @@
    			val = _val;
    			children = _children;
    		}
-   	};
+   	}
    
    	// 提交时不要提交这个类
    	public static class TreeNode {
@@ -3625,8 +3625,6 @@
    ![image-20220705144543642](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207051445694.png)
 
    ```java
-   package class11;
-   
    public class Code04_PrintBinaryTree {
    
    	public static class Node {
@@ -3701,14 +3699,14 @@
    }
    
    ```
-
+   
    
 
 6. **==求二叉树最宽的层有多少个结点==**
 
    > 每层的结点的个数，叫做该层的宽度
 
-   > curEnd:当前层结束的的结点
+   > curEnd:     当前层结束的的结点
    >
    > nextEnd：下一层结束的结点
 
@@ -3800,41 +3798,12 @@
    		return max;
    	}
    
-   	// for test
-   	public static Node generateRandomBST(int maxLevel, int maxValue) {
-   		return generate(1, maxLevel, maxValue);
-   	}
-   
-   	// for test
-   	public static Node generate(int level, int maxLevel, int maxValue) {
-   		if (level > maxLevel || Math.random() < 0.5) {
-   			return null;
-   		}
-   		Node head = new Node((int) (Math.random() * maxValue));
-   		head.left = generate(level + 1, maxLevel, maxValue);
-   		head.right = generate(level + 1, maxLevel, maxValue);
-   		return head;
-   	}
-   
-   	public static void main(String[] args) {
-   		int maxLevel = 10;
-   		int maxValue = 100;
-   		int testTimes = 1000000;
-   		for (int i = 0; i < testTimes; i++) {
-   			Node head = generateRandomBST(maxLevel, maxValue);
-   			if (maxWidthUseMap(head) != maxWidthNoMap(head)) {
-   				System.out.println("Oops!");
-   			}
-   		}
-   		System.out.println("finish!");
-   
-   	}
    
    }
    
    
    ```
-
+   
    
 
   
