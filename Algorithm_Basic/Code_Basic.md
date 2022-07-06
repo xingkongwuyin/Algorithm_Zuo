@@ -3831,7 +3831,7 @@
    ```java
    package class11;
    
-   public class Code06_SuccessorNode {
+   pubpublic class Code06_SuccessorNode {
    
    	public static class Node {
    		public int value;
@@ -3920,6 +3920,12 @@
 # Lesson12
 
 1. **==判断二叉树是否为完全二叉树==**
+
+   > * 判断：
+   >   * 如果左右子树都是满二叉树，且左子树的高度比左子树的高度大1，则这棵树是完全二叉树。
+   >   * 如果左右子树都是满二叉树，且左子树的高度比左子树的高度相等，则这棵树是完全二叉树
+   >   * 如果左子树是满二叉树，右子树是完全二叉树，且左子树的高度等于右子树的高度，则这棵树是完全二叉树
+   >   * 如果左子树是完全二叉树，右子树是满二叉树，且左子树的高度等右子树的高度加1，则这棵树是完全二叉树。
 
    ![image-20220706075301460](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207060753741.png)
 
