@@ -4049,13 +4049,463 @@
 
    
 
+2. **==二叉树的递归套路==**
+
+   ![image-20220706081008299](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207060810397.png)
+
+   ![image-20220706081025598](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207060810801.png)
+
+3. **==给定一棵二叉树的头节点head,返回这颗树是不是平衡二叉树==**
+
+   > * 平衡二叉树：在一个二叉树中，任何一颗子树的左右子树的高度之差不超过1。也就是说在一棵二叉树中，每一棵子树都是平衡二叉树，且这颗二叉树的左右子树的高度差不超过1，这棵树是平衡二叉树。
+   > * 递归方法：
+   >   + x（头节点）的右子树是平衡二叉树
+   >   + x的左子树是平衡二叉树
+   >   + x的左右子树的高度之差的绝对值小于1
+   >
+   > 
+
+   ![image-20220706081142999](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207060811092.png)
+
+   ![image-20220706081522483](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207060815606.png)
+
+   ![image-20220706082041502](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207060820756.png)
+
+   ```java
+   package class12;
+   
+   public class Code03_IsBalanced {
+   
+   	public static class Node {
+   		public int value;
+   		public Node left;
+   		public Node right;
+   
+   		public Node(int data) {
+   			this.value = data;
+   		}
+   	}
+   
+   
+   	public static boolean isBalanced2(Node head) {
+   		return process(head).isBalanced;
+   	}
+   	
+   	public static class Info{
+   		public boolean isBalanced;
+   		public int height;
+   		
+   		public Info(boolean i, int h) {
+   			isBalanced = i;
+   			height = h;
+   		}
+   	}
+   	
+   	public static Info process(Node x) {
+   		if(x == null) {
+   			return new Info(true, 0);
+   		}
+   		Info leftInfo = process(x.left);
+   		Info rightInfo = process(x.right);
+   		int height = Math.max(leftInfo.height, rightInfo.height)  + 1;
+   		boolean isBalanced = true;
+   		if(!leftInfo.isBalanced) {
+   			isBalanced = false;
+   		}
+   		if(!rightInfo.isBalanced) {
+   			isBalanced = false;
+   		}
+   		if(Math.abs(leftInfo.height - rightInfo.height) > 1) {
+   			isBalanced = false;
+   		}
+   		return new Info(isBalanced, height);
+   	}
+   }
+   
+   ```
+
+   
+
+4. **==判断二叉树是否是搜索二叉树==**
+
+   > * 搜索二叉树：在一颗二叉树中，左子树的每个结点都比头节点小，右子树的每个结点都比头节点大。经典二叉树是没有重复值的。也就是说任意一颗子树都必须是搜索二叉树，且这颗左子树的最大值比头节点，右子树的最小值比头节点大，这才能说这棵树是搜索二叉树。
+   >
+   > * 判断搜索二叉树的经典方法：
+   >   * 用中序遍历一遍二叉树，得到序列，如果这个序列是递增的，则这颗树是搜索二叉树。
+   > * 判断搜索二叉树的递归方法：
+   >   * 先列可能性（是搜索二叉树的可能性，是在可以向左子树和右子树的情况下要信息）
+   >   * x的左子树是搜索二叉树
+   >   * x的右子树是搜索二叉树
+   >   * x的左子树的最大值小于x
+   >   * x的右子树的最小值大于x
+   >
+   > 
+
+   ![image-20220706113531837](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207061135953.png)
+
+   ![image-20220706113844318](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207061138434.png)
+
+   ![image-20220706114556631](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207061145877.png)
+
+   ![image-20220706115709683](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207061157931.png)
+
+   ```java
+   package class12;
+   
+   import java.util.ArrayList;
+   
+   public class Code02_IsBST {
+   
+   	public static class Node {
+   		public int value;
+   		public Node left;
+   		public Node right;
+   
+   		public Node(int data) {
+   			this.value = data;
+   		}
+   	}
+   
+   	public static boolean isBST2(Node head) {
+   		if (head == null) {
+   			return true;
+   		}
+   		return process(head).isBST;
+   	}
+   
+   	public static class Info {
+   		public boolean isBST;
+   		public int max;
+   		public int min;
+   
+   		public Info(boolean i, int ma, int mi) {
+   			isBST = i;
+   			max = ma;
+   			min = mi;
+   		}
+   
+   	}
+   
+   	public static Info process(Node x) {
+   		if (x == null) {// 如果是空树，且它的信息不好设，那就返回空，在上游处理空 
+   			return null;
+   		}
+   		Info leftInfo = process(x.left);
+   		Info rightInfo = process(x.right);
+   		int max = x.value;
+   		if (leftInfo != null) {
+   			max = Math.max(max, leftInfo.max);
+   		}
+   		if (rightInfo != null) {
+   			max = Math.max(max, rightInfo.max);
+   		}
+   		int min = x.value;
+   		if (leftInfo != null) {
+   			min = Math.min(min, leftInfo.min);
+   		}
+   		if (rightInfo != null) {
+   			min = Math.min(min, rightInfo.min);
+   		}
+   		boolean isBST = true;
+   		if (leftInfo != null && !leftInfo.isBST) {
+   			isBST = false;
+   		}
+   		if (rightInfo != null && !rightInfo.isBST) {
+   			isBST = false;
+   		}
+   		if (leftInfo != null && leftInfo.max >= x.value) {
+   			isBST = false;
+   		}
+   		if (rightInfo != null && rightInfo.min <= x.value) {
+   			isBST = false;
+   		}
+   		return new Info(isBST, max, min);
+   	}
+   
+   
+   }
+   
+   ```
+
+   
+
+5. **==判断一棵树是不是满二叉树==**
+
+      > 判断满二叉树（可能性）：如果这棵树的高度是H，那么这棵满二叉树的结点数是(2^H) -1个结点
+
+      ```java
+      package class12;
+      
+      public class Code04_IsFull {
+      
+      	public static class Node {
+      		public int value;
+      		public Node left;
+      		public Node right;
+      
+      		public Node(int data) {
+      			this.value = data;
+      		}
+      	}
+      
+      	// 第一种方法
+      	// 收集整棵树的高度h，和节点数n
+      	// 只有满二叉树满足 : 2 ^ h - 1 == n
+      	public static boolean isFull1(Node head) {
+      		if (head == null) {
+      			return true;
+      		}
+      		Info1 all = process1(head);
+      		return (1 << all.height) - 1 == all.nodes;
+      	}
+      
+      	public static class Info1 {
+      		public int height;
+      		public int nodes;
+      
+      		public Info1(int h, int n) {
+      			height = h;
+      			nodes = n;
+      		}
+      	}
+      
+      	public static Info1 process1(Node head) {
+      		if (head == null) {
+      			return new Info1(0, 0);
+      		}
+      		Info1 leftInfo = process1(head.left);
+      		Info1 rightInfo = process1(head.right);
+      		int height = Math.max(leftInfo.height, rightInfo.height) + 1;
+      		int nodes = leftInfo.nodes + rightInfo.nodes + 1;
+      		return new Info1(height, nodes);
+      	}
+      
+      	// 第二种方法
+      	// 收集子树是否是满二叉树
+      	// 收集子树的高度
+      	// 左树满 && 右树满 && 左右树高度一样 -> 整棵树是满的
+      	public static boolean isFull2(Node head) {
+      		if (head == null) {
+      			return true;
+      		}
+      		return process2(head).isFull;
+      	}
+      
+      	public static class Info2 {
+      		public boolean isFull;
+      		public int height;
+      
+      		public Info2(boolean f, int h) {
+      			isFull = f;
+      			height = h;
+      		}
+      	}
+      
+      	public static Info2 process2(Node h) {
+      		if (h == null) {
+      			return new Info2(true, 0);
+      		}
+      		Info2 leftInfo = process2(h.left);
+      		Info2 rightInfo = process2(h.right);
+      		boolean isFull = leftInfo.isFull && rightInfo.isFull && leftInfo.height == rightInfo.height;
+      		int height = Math.max(leftInfo.height, rightInfo.height) + 1;
+      		return new Info2(isFull, height);
+      	}
+      
+      	// for test
+      	public static Node generateRandomBST(int maxLevel, int maxValue) {
+      		return generate(1, maxLevel, maxValue);
+      	}
+      
+      	// for test
+      	public static Node generate(int level, int maxLevel, int maxValue) {
+      		if (level > maxLevel || Math.random() < 0.5) {
+      			return null;
+      		}
+      		Node head = new Node((int) (Math.random() * maxValue));
+      		head.left = generate(level + 1, maxLevel, maxValue);
+      		head.right = generate(level + 1, maxLevel, maxValue);
+      		return head;
+      	}
+      
+      	public static void main(String[] args) {
+      		int maxLevel = 5;
+      		int maxValue = 100;
+      		int testTimes = 1000000;
+      		System.out.println("测试开始");
+      		for (int i = 0; i < testTimes; i++) {
+      			Node head = generateRandomBST(maxLevel, maxValue);
+      			if (isFull1(head) != isFull2(head)) {
+      				System.out.println("出错了!");
+      			}
+      		}
+      		System.out.println("测试结束");
+      	}
+      
+      }
+      
+      ```
+
+   
+
+6. ==**给定一颗二叉树的头结点head，任何两个结点之间都存在距离，返回整棵二叉树的最大距离**==
+
+   ![image-20220706152758125](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207061527193.png)
+
+   ![image-20220706153341429](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207061533505.png)
+
+   ![image-20220706154602333](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207061546430.png)
+
+   ![image-20220706154728792](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207061547897.png)
+
+   ```java
+   import java.util.ArrayList;
+   import java.util.HashMap;
+   import java.util.HashSet;
+   
+   public class Code06_MaxDistance {
+   
+   	public static class Node {
+   		public int value;
+   		public Node left;
+   		public Node right;
+   
+   		public Node(int data) {
+   			this.value = data;
+   		}
+   	}
+       
+   	public static int maxDistance2(Node head) {
+   		return process(head).maxDistance;
+   	}
+   
+   	public static class Info {
+   		public int maxDistance;
+   		public int height;
+   
+   		public Info(int m, int h) {
+   			maxDistance = m;
+   			height = h;
+   		}
+   
+   	}
+   
+   	public static Info process(Node x) {
+   		if (x == null) {
+   			return new Info(0, 0);
+   		}
+   		Info leftInfo = process(x.left);
+   		Info rightInfo = process(x.right);
+   		int height = Math.max(leftInfo.height, rightInfo.height) + 1;
+   		int p1 = leftInfo.maxDistance;
+   		int p2 = rightInfo.maxDistance;
+   		int p3 = leftInfo.height + rightInfo.height + 1;
+   		int maxDistance = Math.max(Math.max(p1, p2), p3);
+   		return new Info(maxDistance, height);
+   	}
+   }
+   ```
+
+   ![image-20220706155723726](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207061557797.png)
 
 
- 
 
- 
+7. **==给定一棵二叉树的头节点head，返回这颗二叉树中最大的二叉搜索子树的大小（即结点的个数）==**
 
+   ![image-20220706162033338](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207061620400.png)
 
+   ![image-20220706162935304](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207061629378.png)
+
+   ![image-20220706163017605](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207061630669.png)
+
+   ![image-20220706163810754](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207061638834.png)
+
+   ```java
+   package class12;
+   
+   // 在线测试链接 : https://leetcode.com/problems/largest-bst-subtree
+   public class Code05_MaxSubBSTSize {
+   
+   	// 提交时不要提交这个类
+   	public static class TreeNode {
+   		public int val;
+   		public TreeNode left;
+   		public TreeNode right;
+   
+   		public TreeNode(int value) {
+   			val = value;
+   		}
+   	}
+   
+   	// 提交如下的代码，可以直接通过
+   	public static int largestBSTSubtree(TreeNode head) {
+   		if (head == null) {
+   			return 0;
+   		}
+   		return process(head).maxBSTSubtreeSize;
+   	}
+   
+   	public static class Info {
+   		public int maxBSTSubtreeSize;
+   		public int allSize;
+   		public int max;
+   		public int min;
+   
+   		public Info(int m, int a, int ma, int mi) {
+   			maxBSTSubtreeSize = m;
+   			allSize = a;
+   			max = ma;
+   			min = mi;
+   		}
+   	}
+   
+   	public static Info process(TreeNode x) {
+   		if (x == null) {
+   			return null;
+   		}
+   		Info leftInfo = process(x.left);
+   		Info rightInfo = process(x.right);
+   		int max = x.val;
+   		int min = x.val;
+   		int allSize = 1;
+   		if (leftInfo != null) {
+   			max = Math.max(leftInfo.max, max);
+   			min = Math.min(leftInfo.min, min);
+   			allSize += leftInfo.allSize;
+   		}
+   		if (rightInfo != null) {
+   			max = Math.max(rightInfo.max, max);
+   			min = Math.min(rightInfo.min, min);
+   			allSize += rightInfo.allSize;
+   		}
+   		int p1 = -1;
+   		if (leftInfo != null) {
+   			p1 = leftInfo.maxBSTSubtreeSize;
+   		}
+   		int p2 = -1;
+   		if (rightInfo != null) {
+   			p2 = rightInfo.maxBSTSubtreeSize;
+   		}
+   		int p3 = -1;
+   		boolean leftBST = leftInfo == null ? true : (leftInfo.maxBSTSubtreeSize == leftInfo.allSize);
+   		boolean rightBST = rightInfo == null ? true : (rightInfo.maxBSTSubtreeSize == rightInfo.allSize);
+   		if (leftBST && rightBST) {
+   			boolean leftMaxLessX = leftInfo == null ? true : (leftInfo.max < x.val);
+   			boolean rightMinMoreX = rightInfo == null ? true : (x.val < rightInfo.min);
+   			if (leftMaxLessX && rightMinMoreX) {
+   				int leftSize = leftInfo == null ? 0 : leftInfo.allSize;
+   				int rightSize = rightInfo == null ? 0 : rightInfo.allSize;
+   				p3 = leftSize + rightSize + 1;
+   			}
+   		}
+   		return new Info(Math.max(p1, Math.max(p2, p3)), allSize, max, min);
+   	}
+   
+   }
+   
+   ```
+
+   
 
 
 
