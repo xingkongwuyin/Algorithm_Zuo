@@ -3923,8 +3923,8 @@
 
    > * 判断：
    >   * 如果左右子树都是满二叉树，且左子树的高度比左子树的高度大1，则这棵树是完全二叉树。
-   >   * 如果左右子树都是满二叉树，且左子树的高度比左子树的高度相等，则这棵树是完全二叉树
-   >   * 如果左子树是满二叉树，右子树是完全二叉树，且左子树的高度等于右子树的高度，则这棵树是完全二叉树
+   >   * 如果左右子树都是满二叉树，且左子树的高度比左子树的高度相等，则这棵树是完全二叉树。
+   >   * 如果左子树是满二叉树，右子树是完全二叉树，且左子树的高度等于右子树的高度，则这棵树是完全二叉树。
    >   * 如果左子树是完全二叉树，右子树是满二叉树，且左子树的高度等右子树的高度加1，则这棵树是完全二叉树。
 
    ![image-20220706075301460](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207060753741.png)
@@ -3945,10 +3945,10 @@
    			this.value = data;
    		}
    	}
-   
-   	public static boolean isCBT1(Node head) {
+       // first method
+      	public static boolean isCBT1(Node head) {
    		if (head == null) {
-   			return true; // 空树一般算作完全二叉树
+   			return true;
    		}
    		LinkedList<Node> queue = new LinkedList<>();
    		// 是否遇到过左右两个孩子不双全的节点
@@ -3981,74 +3981,8 @@
    		}
    		return true;
    	}
-   
-   	public static boolean isCBT2(Node head) {
-   		if (head == null) {
-   			return true;
-   		}
-   		return process(head).isCBT;
-   	}
-   
-   	// 对每一棵子树，是否是满二叉树、是否是完全二叉树、高度
-   	public static class Info {
-   		public boolean isFull;
-   		public boolean isCBT;
-   		public int height;
-   
-   		public Info(boolean full, boolean cbt, int h) {
-   			isFull = full;
-   			isCBT = cbt;
-   			height = h;
-   		}
-   	}
-   
-   	public static Info process(Node X) {
-   		if (X == null) {
-   			return new Info(true, true, 0);
-   		}
-   		Info leftInfo = process(X.left);
-   		Info rightInfo = process(X.right);
-   		
-   		
-   		
-   		int height = Math.max(leftInfo.height, rightInfo.height) + 1;
-   		
-   		
-   		boolean isFull = leftInfo.isFull 
-   				&& 
-   				rightInfo.isFull 
-   				&& leftInfo.height == rightInfo.height;
-   		
-   		
-   		boolean isCBT = false;
-   		if (isFull) {
-   			isCBT = true;
-   		} else { // 以x为头整棵树，不满
-   			if (leftInfo.isCBT && rightInfo.isCBT) {
-   				
-   				
-   				if (leftInfo.isCBT 
-   						&& rightInfo.isFull 
-   						&& leftInfo.height == rightInfo.height + 1) {
-   					isCBT = true;
-   				}
-   				if (leftInfo.isFull 
-   						&& 
-   						rightInfo.isFull 
-   						&& leftInfo.height == rightInfo.height + 1) {
-   					isCBT = true;
-   				}
-   				if (leftInfo.isFull 
-   						&& rightInfo.isCBT && leftInfo.height == rightInfo.height) {
-   					isCBT = true;
-   				}
-   				
-   				
-   			}
-   		}
-   		return new Info(isFull, isCBT, height);
-   	}
-   
+   	
+      
    }
    
    ```
@@ -4060,6 +3994,13 @@
    ![image-20220706081008299](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207060810397.png)
 
    ![image-20220706081025598](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207060810801.png)
+
+   > 补充：
+   >
+   > * 目前救我而知，答案的可能性一般有两种，一种要么是带有头节点，一种不带。知道答案的可能性后，重要的是，满足这个可能性，需要的的条件，知道条件后，才知道向左右子树要信息。
+   > * 如果可能性带有头节点，那么左右子树也有答案的可能性，这种题的一般做法是，先算出自己的解，然后与带有头节点的解PK，谁最优，谁就是这棵树的解
+   >
+   > 
 
 3. **==给定一棵二叉树的头节点head,返回这颗树是不是平衡二叉树==**
 
@@ -4093,7 +4034,7 @@
    	}
    
    
-   	public static boolean isBalanced2(Node head) {
+   	public static boolean isBalanced(Node head) {
    		return process(head).isBalanced;
    	}
    	
@@ -4172,7 +4113,7 @@
    		}
    	}
    
-   	public static boolean isBST2(Node head) {
+   	public static boolean isBST(Node head) {
    		if (head == null) {
    			return true;
    		}
@@ -4317,37 +4258,6 @@
       		int height = Math.max(leftInfo.height, rightInfo.height) + 1;
       		return new Info2(isFull, height);
       	}
-      
-      	// for test
-      	public static Node generateRandomBST(int maxLevel, int maxValue) {
-      		return generate(1, maxLevel, maxValue);
-      	}
-      
-      	// for test
-      	public static Node generate(int level, int maxLevel, int maxValue) {
-      		if (level > maxLevel || Math.random() < 0.5) {
-      			return null;
-      		}
-      		Node head = new Node((int) (Math.random() * maxValue));
-      		head.left = generate(level + 1, maxLevel, maxValue);
-      		head.right = generate(level + 1, maxLevel, maxValue);
-      		return head;
-      	}
-      
-      	public static void main(String[] args) {
-      		int maxLevel = 5;
-      		int maxValue = 100;
-      		int testTimes = 1000000;
-      		System.out.println("测试开始");
-      		for (int i = 0; i < testTimes; i++) {
-      			Node head = generateRandomBST(maxLevel, maxValue);
-      			if (isFull1(head) != isFull2(head)) {
-      				System.out.println("出错了!");
-      			}
-      		}
-      		System.out.println("测试结束");
-      	}
-      
       }
       
       ```
@@ -4381,7 +4291,7 @@
    		}
    	}
        
-   	public static int maxDistance2(Node head) {
+   	public static int maxDistance(Node head) {
    		return process(head).maxDistance;
    	}
    
@@ -4513,13 +4423,444 @@
 
    
 
+# Lesson13
+
+1. **==用递归判断一颗二叉树是完全二叉树==**
+
+   > ==判断方法：==
+   >
+   > * 左右子树都是满二叉树，且高度相等
+   > * 左右子树都是满二叉树，且左子树的高度比右子树的高度大1
+   > * 左子树的满二叉树，右子树是完全二叉树，且高度相等
+   > * 左子树是完全二叉树，右子树的满二叉树，且左子树的高度比右子树的高度大1
+
+   ```java
+   	public static boolean isCompleteTree2(TreeNode head) {
+   		return process(head).isCBT;
+   	}
+   
+   	public static class Info {
+   		public boolean isFull;
+   		public boolean isCBT;
+   		public int height;
+   
+   		public Info(boolean full, boolean cbt, int h) {
+   			isFull = full;
+   			isCBT = cbt;
+   			height = h;
+   		}
+   	}
+   
+   	public static Info process(TreeNode x) {
+   		if (x == null) {
+   			return new Info(true, true, 0);
+   		}
+   		Info leftInfo = process(x.left);
+   		Info rightInfo = process(x.right);
+   		int height = Math.max(leftInfo.height, rightInfo.height) + 1;
+   		boolean isFull = leftInfo.isFull && rightInfo.isFull && leftInfo.height == rightInfo.height;
+   		boolean isCBT = false;
+   		if (leftInfo.isFull && rightInfo.isFull && leftInfo.height == rightInfo.height) {
+   			isCBT = true;
+   		} else if (leftInfo.isCBT && rightInfo.isFull && leftInfo.height == rightInfo.height + 1) {
+   			isCBT = true;
+   		} else if (leftInfo.isFull && rightInfo.isFull && leftInfo.height == rightInfo.height + 1) {
+   			isCBT = true;
+   		} else if (leftInfo.isFull && rightInfo.isCBT && leftInfo.height == rightInfo.height) {
+   			isCBT = true;
+   		}
+   		return new Info(isFull, isCBT, height);
+   	}
+   ```
+
+   
+
+2. **==给定一颗二叉树的头结点head，返回这颗二叉树中最大的二叉搜索子树的头节点==**
+
+   ```java
+   package class13;
+   
+   import java.util.ArrayList;
+   
+   public class Code02_MaxSubBSTHead {
+   
+   	public static class Node {
+   		public int value;
+   		public Node left;
+   		public Node right;
+   
+   		public Node(int data) {
+   			this.value = data;
+   		}
+   	}
+   
+   	public static int getBSTSize(Node head) {
+   		if (head == null) {
+   			return 0;
+   		}
+   		ArrayList<Node> arr = new ArrayList<>();
+   		in(head, arr);
+   		for (int i = 1; i < arr.size(); i++) {
+   			if (arr.get(i).value <= arr.get(i - 1).value) {
+   				return 0;
+   			}
+   		}
+   		return arr.size();
+   	}
+   
+   	public static void in(Node head, ArrayList<Node> arr) {
+   		if (head == null) {
+   			return;
+   		}
+   		in(head.left, arr);
+   		arr.add(head);
+   		in(head.right, arr);
+   	}
+   
+   	public static Node maxSubBSTHead1(Node head) {
+   		if (head == null) {
+   			return null;
+   		}
+   		if (getBSTSize(head) != 0) {
+   			return head;
+   		}
+   		Node leftAns = maxSubBSTHead1(head.left);
+   		Node rightAns = maxSubBSTHead1(head.right);
+   		return getBSTSize(leftAns) >= getBSTSize(rightAns) ? leftAns : rightAns;
+   	}
+   
+   	public static Node maxSubBSTHead2(Node head) {
+   		if (head == null) {
+   			return null;
+   		}
+   		return process(head).maxSubBSTHead;
+   	}
+   
+   	// 每一棵子树
+   	public static class Info {
+   		public Node maxSubBSTHead;
+   		public int maxSubBSTSize;
+   		public int min;
+   		public int max;
+   
+   		public Info(Node h, int size, int mi, int ma) {
+   			maxSubBSTHead = h;
+   			maxSubBSTSize = size;
+   			min = mi;
+   			max = ma;
+   		}
+   	}
+   
+   	public static Info process(Node X) {
+   		if (X == null) {
+   			return null;
+   		}
+   		Info leftInfo = process(X.left);
+   		Info rightInfo = process(X.right);
+   		int min = X.value;
+   		int max = X.value;
+   		Node maxSubBSTHead = null;
+   		int maxSubBSTSize = 0;
+   		if (leftInfo != null) {
+   			min = Math.min(min, leftInfo.min);
+   			max = Math.max(max, leftInfo.max);
+   			maxSubBSTHead = leftInfo.maxSubBSTHead;
+   			maxSubBSTSize = leftInfo.maxSubBSTSize;
+   		}
+   		if (rightInfo != null) {
+   			min = Math.min(min, rightInfo.min);
+   			max = Math.max(max, rightInfo.max);
+   			if (rightInfo.maxSubBSTSize > maxSubBSTSize) {
+   				maxSubBSTHead = rightInfo.maxSubBSTHead;
+   				maxSubBSTSize = rightInfo.maxSubBSTSize;
+   			}
+   		}
+   		if ((leftInfo == null ? true : (leftInfo.maxSubBSTHead == X.left && leftInfo.max < X.value))
+   				&& (rightInfo == null ? true : (rightInfo.maxSubBSTHead == X.right && rightInfo.min > X.value))) {
+   			maxSubBSTHead = X;
+   			maxSubBSTSize = (leftInfo == null ? 0 : leftInfo.maxSubBSTSize)
+   					+ (rightInfo == null ? 0 : rightInfo.maxSubBSTSize) + 1;
+   		}
+   		return new Info(maxSubBSTHead, maxSubBSTSize, min, max);
+   	}
+   
+   	// for test
+   	public static Node generateRandomBST(int maxLevel, int maxValue) {
+   		return generate(1, maxLevel, maxValue);
+   	}
+   
+   	// for test
+   	public static Node generate(int level, int maxLevel, int maxValue) {
+   		if (level > maxLevel || Math.random() < 0.5) {
+   			return null;
+   		}
+   		Node head = new Node((int) (Math.random() * maxValue));
+   		head.left = generate(level + 1, maxLevel, maxValue);
+   		head.right = generate(level + 1, maxLevel, maxValue);
+   		return head;
+   	}
+   
+   	public static void main(String[] args) {
+   		int maxLevel = 4;
+   		int maxValue = 100;
+   		int testTimes = 1000000;
+   		for (int i = 0; i < testTimes; i++) {
+   			Node head = generateRandomBST(maxLevel, maxValue);
+   			if (maxSubBSTHead1(head) != maxSubBSTHead2(head)) {
+   				System.out.println("Oops!");
+   			}
+   		}
+   		System.out.println("finish!");
+   	}
+   
+   }
+   
+   ```
+
+   
 
 
 
+3. **==给定一颗二叉树的头节点head，和另外两个结点a和b。返回a和b的最低公共祖先==**
 
+   ![image-20220707093833606](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207070938846.png)
 
+   ![image-20220707093937935](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207070939124.png)
 
+   ![image-20220707094030267](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207070940513.png)
 
+   ![image-20220707095454639](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207070954939.png)
+
+   
+
+   
+
+   ```java
+   import java.util.ArrayList;
+   import java.util.HashMap;
+   import java.util.HashSet;
+   
+   // 因为这个递归套路是或许遍历，所以时间复杂度就是O(N)
+   
+   public class Code03_lowestAncestor {
+   
+   	public static class Node {
+   		public int value;
+   		public Node left;
+   		public Node right;
+   
+   		public Node(int data) {
+   			this.value = data;
+   		}
+   	}
+   
+   	public static Node lowestAncestor1(Node head, Node o1, Node o2) {
+   		if (head == null) {
+   			return null;
+   		}
+   		// key的父节点是value
+   		HashMap<Node, Node> parentMap = new HashMap<>();
+   		parentMap.put(head, null);
+   		fillParentMap(head, parentMap);
+   		HashSet<Node> o1Set = new HashSet<>();
+   		Node cur = o1;
+   		o1Set.add(cur);
+   		while (parentMap.get(cur) != null) {
+   			cur = parentMap.get(cur);
+   			o1Set.add(cur);
+   		}
+   		cur = o2;
+   		while (!o1Set.contains(cur)) {
+   			cur = parentMap.get(cur);
+   		}
+   		return cur;
+   	}
+   
+   	public static void fillParentMap(Node head, HashMap<Node, Node> parentMap) {
+   		if (head.left != null) {
+   			parentMap.put(head.left, head);
+   			fillParentMap(head.left, parentMap);
+   		}
+   		if (head.right != null) {
+   			parentMap.put(head.right, head);
+   			fillParentMap(head.right, parentMap);
+   		}
+   	}
+   
+   	public static Node lowestAncestor2(Node head, Node a, Node b) {
+   		return process(head, a, b).ans;
+   	}
+   
+   	public static class Info {
+   		public boolean findA;
+   		public boolean findB;
+   		public Node ans;
+   
+   		public Info(boolean fA, boolean fB, Node an) {
+   			findA = fA;
+   			findB = fB;
+   			ans = an;
+   		}
+   	}
+   
+   	public static Info process(Node x, Node a, Node b) {
+   		if (x == null) {
+   			return new Info(false, false, null);
+   		}
+   		Info leftInfo = process(x.left, a, b);
+   		Info rightInfo = process(x.right, a, b);
+   		boolean findA = (x == a) || leftInfo.findA || rightInfo.findA;
+   		boolean findB = (x == b) || leftInfo.findB || rightInfo.findB;
+   		Node ans = null;
+   		if (leftInfo.ans != null) {
+   			ans = leftInfo.ans;
+   		} else if (rightInfo.ans != null) {
+   			ans = rightInfo.ans;
+   		} else {
+               // 能到这一步，肯定是左右子树都没答案
+               // 如果findA && findB成立，肯定有答案，那么答案就是头节点
+   			if (findA && findB) {
+   				ans = x;
+   			}
+   		}
+   		return new Info(findA, findB, ans);
+   	}
+   }
+   
+   
+   ```
+
+   
+
+4. ==排队的最大快乐值==
+
+   ![image-20220707101549815](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207071015901.png)
+
+   ![image-20220707102645032](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207071029633.png)
+
+   ![image-20220707102852826](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207071030254.png)
+
+   ```java
+   package class13;
+   
+   import java.util.ArrayList;
+   import java.util.List;
+   
+   public class Code04_MaxHappy {
+   
+   	public static class Employee {
+   		public int happy;
+   		public List<Employee> nexts;
+   
+   		public Employee(int h) {
+   			happy = h;
+   			nexts = new ArrayList<>();
+   		}
+   
+   	}
+   
+   	public static int maxHappy1(Employee boss) {
+   		if (boss == null) {
+   			return 0;
+   		}
+   		return process1(boss, false);
+   	}
+   
+   	// 当前来到的节点叫cur，
+   	// up表示cur的上级是否来，
+   	// 该函数含义：
+   	// 如果up为true，表示在cur上级已经确定来，的情况下，cur整棵树能够提供最大的快乐值是多少？
+   	// 如果up为false，表示在cur上级已经确定不来，的情况下，cur整棵树能够提供最大的快乐值是多少？
+   	public static int process1(Employee cur, boolean up) {
+   		if (up) { // 如果cur的上级来的话，cur没得选，只能不来
+   			int ans = 0;
+   			for (Employee next : cur.nexts) {
+   				ans += process1(next, false);
+   			}
+   			return ans;
+   		} else { // 如果cur的上级不来的话，cur可以选，可以来也可以不来
+   			int p1 = cur.happy;
+   			int p2 = 0;
+   			for (Employee next : cur.nexts) {
+   				p1 += process1(next, true);
+   				p2 += process1(next, false);
+   			}
+   			return Math.max(p1, p2);
+   		}
+   	}
+   
+   	public static int maxHappy2(Employee head) {
+   		Info allInfo = process(head);
+   		return Math.max(allInfo.no, allInfo.yes);
+   	}
+   
+   	public static class Info {
+   		public int no;
+   		public int yes;
+   
+   		public Info(int n, int y) {
+   			no = n;
+   			yes = y;
+   		}
+   	}
+   
+   	public static Info process(Employee x) {
+   		if (x == null) {
+   			return new Info(0, 0);
+   		}
+   		int no = 0;
+   		int yes = x.happy;
+   		for (Employee next : x.nexts) {
+   			Info nextInfo = process(next);
+   			no += Math.max(nextInfo.no, nextInfo.yes);
+   			yes += nextInfo.no;
+   
+   		}
+   		return new Info(no, yes);
+   	}
+   }
+   
+   ```
+
+   
+
+## 贪心算法
+
+0. ==**前置知识**==
+
+   > * 贪心算法，在于贪心策略先提出，后证明，证明可以用方法论，一步一步推，也可以用对数器的方法，实验出来，也就是实验论。因为证明贪心策略出来的结果是最优解，是比较困难的，所以最好是用对数器的方法直接证明。
+   > * 笔试常见，面试不常见，即使面试中碰见这类题，可以跟面试官先提出策略，再用对数器的方式实验出来，后面用方法证明，可以慢慢来
+
+   ![image-20220707103825646](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207071038728.png)
+
+1. **==字典序最小的结果==**
+
+   ![image-20220707103946213](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207071039290.png)
+
+   ![image-20220707110443414](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207071104518.png)
+
+   ```java
+   	public static class MyComparator implements Comparator<String> {
+   		@Override
+   		public int compare(String a, String b) {
+   			return (a + b).compareTo(b + a);
+   		}
+   	}
+   
+   	public static String lowestString(String[] strs) {
+   		if (strs == null || strs.length == 0) {
+   			return "";
+   		}
+   		Arrays.sort(strs, new MyComparator());
+   		String res = "";
+   		for (int i = 0; i < strs.length; i++) {
+   			res += strs[i];
+   		}
+   		return res;
+   	}
+   ```
+
+   
 
 
 
