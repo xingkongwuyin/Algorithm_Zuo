@@ -4817,7 +4817,7 @@
    	}
    
    	// 会议的开始时间和结束时间，都是数值，不会 < 0
-   	public static int bestArrange2(Program[] programs) {
+   	public static int bestArrange(Program[] programs) {
    		Arrays.sort(programs, new ProgramComparator());
    		int timeLine = 0;  // 可以看作会议结束的时间，也可以看作
    		int result = 0;    // 一天的时间走向
@@ -4851,48 +4851,11 @@
    ![image-20220708104953238](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207081050637.png)
 
    ```java
-   package class14;
-   
    import java.util.PriorityQueue;
    
    public class Code02_LessMoneySplitGold {
    
-   	// 纯暴力！
-   	public static int lessMoney1(int[] arr) {
-   		if (arr == null || arr.length == 0) {
-   			return 0;
-   		}
-   		return process(arr, 0);
-   	}
-   
-   	// 等待合并的数都在arr里，pre之前的合并行为产生了多少总代价
-   	// arr中只剩一个数字的时候，停止合并，返回最小的总代价
-   	public static int process(int[] arr, int pre) {
-   		if (arr.length == 1) {
-   			return pre;
-   		}
-   		int ans = Integer.MAX_VALUE;
-   		for (int i = 0; i < arr.length; i++) {
-   			for (int j = i + 1; j < arr.length; j++) {
-   				ans = Math.min(ans, process(copyAndMergeTwo(arr, i, j), pre + arr[i] + arr[j]));
-   			}
-   		}
-   		return ans;
-   	}
-   
-   	public static int[] copyAndMergeTwo(int[] arr, int i, int j) {
-   		int[] ans = new int[arr.length - 1];
-   		int ansi = 0;
-   		for (int arri = 0; arri < arr.length; arri++) {
-   			if (arri != i && arri != j) {
-   				ans[ansi++] = arr[arri];
-   			}
-   		}
-   		ans[ansi] = arr[i] + arr[j];
-   		return ans;
-   	}
-   
-   	public static int lessMoney2(int[] arr) {
+   	public static int lessMoney(int[] arr) {
    		PriorityQueue<Integer> pQ = new PriorityQueue<>();
    		for (int i = 0; i < arr.length; i++) {
    			pQ.add(arr[i]);
@@ -4986,8 +4949,139 @@
 4. **==至少需要几盏灯==**
 
    ![image-20220708114014736](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207081140870.png)
+   
+   ![image-20220708192822684](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207081928773.png)
+   
+   > 思路：
+   >
+   > * 来到i位置，如果是点，只考虑i位置即i位置以后的事，即i位置和后面位置的可能性，和i位置的如果是点，只能由自己位置的等点亮，或者后面的等点亮。
+   >
+   > 贪心策略：
+   >
+   > * 如果来到i位置，i ， i + 1，  i + 2位置都是点，那么就在i + 1位置放灯
+   >
+   > 
+   
+   ![image-20220708194750177](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207081947331.png)
+   
+   ```java
+   public class Code01_Light {
+   
+   	public static int minLight(String road) {
+   		char[] str = road.toCharArray();
+   		int i = 0;
+   		int light = 0;
+   		while (i < str.length) {
+   			if (str[i] == 'X') {
+   				i++;
+   			} else {
+   				light++;
+   				if (i + 1 == str.length) {
+   					break;
+   				} else { // 有i位置 i+ 1 X .
+   					if (str[i + 1] == 'X') {
+   						i = i + 2;
+   					} else {
+   						i = i + 3;
+   					}
+   				}
+   			}
+   		}
+   		return light;
+   	}	
+   }
+   
+   ```
+   
+   
 
+## 并查集
 
+0. **==前置知识==**
+
+   ![image-20220708200315006](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207082003110.png)
+
+   ```java
+   import java.util.HashMap;
+   import java.util.List;
+   import java.util.Stack;
+   
+   // 并查集的查询达到了（或大于）样本量的规模，则每次查询的时间复杂度平均下来是O(1)
+   // 主要是findHead做了优化，将链表扁平化
+   public class Code05_UnionFind {
+   
+   	public static class Node<V> {
+   		V value;
+   
+   		public Node(V v) {
+   			value = v;
+   		}
+   	}
+   
+   	public static class UnionFind<V> {
+           // Node<V>是V包了一层，加了个value，也就是指针
+   		public HashMap<V, Node<V>> nodes;
+           // 用一张表代替指针，即第一个Node<V>的父亲结点是第二个Node<V>
+   		public HashMap<Node<V>, Node<V>> parents;
+           // 记录每个集合的头节点即Node<V>,Integer是Node<V>所在集合的大小
+   		public HashMap<Node<V>, Integer> sizeMap;
+   
+   		public UnionFind(List<V> values) {
+   			nodes = new HashMap<>();
+   			parents = new HashMap<>();
+   			sizeMap = new HashMap<>();
+               // 每一个样本生成自己的小集合
+   			for (V cur : values) {
+   				Node<V> node = new Node<>(cur);
+   				nodes.put(cur, node);
+   				parents.put(node, node);
+   				sizeMap.put(node, 1);
+   			}
+   		}
+   
+   		// 给你一个节点，请你往上到不能再往上，把代表返回
+   		public Node<V> findHead(Node<V> cur) {
+   			Stack<Node<V>> path = new Stack<>();
+   			while (cur != parents.get(cur)) {
+   				path.push(cur);
+   				cur = parents.get(cur);
+   			}
+   			while (!path.isEmpty()) {
+   				parents.put(path.pop(), cur);
+   			}
+   			return cur;
+   		}
+   		
+           // father这里应该是ancessor，因为是要找到所在集合的代表结点可能是父亲也            可能是祖先
+   		public boolean isSameSet(V a, V b) {
+   			return findHead(nodes.get(a)) == findHead(nodes.get(b));
+   		}
+   	
+           // 小的集合挂大的集合，即小的集合的代表结点的指针指向大的集合的代表结点
+   		public void union(V a, V b) {
+   			Node<V> aHead = findHead(nodes.get(a));
+   			Node<V> bHead = findHead(nodes.get(b));
+   			if (aHead != bHead) {
+   				int aSetSize = sizeMap.get(aHead);
+   				int bSetSize = sizeMap.get(bHead);
+   				Node<V> big = aSetSize >= bSetSize ? aHead : bHead;
+   				Node<V> small = big == aHead ? bHead : aHead;
+   				parents.put(small, big);
+   				sizeMap.put(big, aSetSize + bSetSize);
+   				sizeMap.remove(small);
+   			}
+   		}
+   
+   		public int sets() {
+   			return sizeMap.size();
+   		}
+   
+   	}
+   }
+   
+   ```
+
+   
 
 
 
