@@ -1784,9 +1784,13 @@
 
 
 
-# Lesson 06
 
-0. ==前置知识 堆==
+
+## 堆
+
+
+
+0. **==前置知识 堆==**
 
    > * 0的父节点是自己
    >
@@ -1796,7 +1800,7 @@
    >
    > ![image-20220629073429317](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206292109802.png)
 
-1. ==堆结构的实现==
+1. **==堆结构的实现==**
 
    ```java
    package lesson06;
@@ -1934,7 +1938,7 @@
 
 
 
-2. ==堆排序==
+2. **==堆排序==**
 
    ```java
    package lesson06;
@@ -2013,7 +2017,7 @@
 
 
 
-3. ==已知一个几乎有序的数组。几乎有序是指，如果把数组排好顺序的话，每个元素移动的距离一定不超过k，k相对于数组长度来说是比较小的。请选择一个合适的排序策略，对这个数组进行排序==
+3. **==已知一个几乎有序的数组。几乎有序是指，如果把数组排好顺序的话，每个元素移动的距离一定不超过k，k相对于数组长度来说是比较小的。请选择一个合适的排序策略，对这个数组进行排序==**
 
    ```java
    	public static void sortArrayDistanceLessK(int[] arr, int k){
@@ -2044,7 +2048,7 @@
 
 # Lesson07
 
-1. ==给定很多线段，每个线段都有两个数[start, end]，表示线段开始位置和结束位置，左右都是闭区间。返回线段最多重合区域中，包含了几条线段==
+1. **==给定很多线段，每个线段都有两个数[start, end]，表示线段开始位置和结束位置，左右都是闭区间。返回线段最多重合区域中，包含了几条线段==**
 
    > 规定：
    >
@@ -2108,7 +2112,7 @@
 
 
 
-2. ==加强堆==
+2. **==加强堆==**
 
    > * 使用加强堆的理由
    >   * 当堆里的某个对象的属性变了，现有的堆无法进行调整，即使调整也是O(N)的时间复杂度
@@ -4786,7 +4790,202 @@
 
    
 
+# Lesson14
 
+0. **==贪心的题很多跟排序和堆有关==**
+
+1. **==最多的宣讲场次==**
+
+   > 贪心策略：每次选结束时间最早的宣讲会
+
+   ![image-20220708100954649](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207081009715.png)
+
+   ```java
+   import java.util.Arrays;
+   import java.util.Comparator;
+   
+   public class Code03_BestArrange {
+   
+   	public static class Program {
+   		public int start;
+   		public int end;
+   
+   		public Program(int start, int end) {
+   			this.start = start;
+   			this.end = end;
+   		}
+   	}
+   
+   	// 会议的开始时间和结束时间，都是数值，不会 < 0
+   	public static int bestArrange2(Program[] programs) {
+   		Arrays.sort(programs, new ProgramComparator());
+   		int timeLine = 0;  // 可以看作会议结束的时间，也可以看作
+   		int result = 0;    // 一天的时间走向
+   		// 依次遍历每一个会议，结束时间早的会议先遍历
+   		for (int i = 0; i < programs.length; i++) {
+   			if (timeLine <= programs[i].start) {
+   				result++;
+   				timeLine = programs[i].end;
+   			}
+   		}
+   		return result;
+   	}
+   
+   	public static class ProgramComparator implements Comparator<Program> {
+   
+   		@Override
+   		public int compare(Program o1, Program o2) {
+   			return o1.end - o2.end;
+   		}
+   
+   	}
+   }
+   
+   
+   ```
+
+
+
+2. **==返回最小分割代价==**
+
+   ![image-20220708104953238](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207081050637.png)
+
+   ```java
+   package class14;
+   
+   import java.util.PriorityQueue;
+   
+   public class Code02_LessMoneySplitGold {
+   
+   	// 纯暴力！
+   	public static int lessMoney1(int[] arr) {
+   		if (arr == null || arr.length == 0) {
+   			return 0;
+   		}
+   		return process(arr, 0);
+   	}
+   
+   	// 等待合并的数都在arr里，pre之前的合并行为产生了多少总代价
+   	// arr中只剩一个数字的时候，停止合并，返回最小的总代价
+   	public static int process(int[] arr, int pre) {
+   		if (arr.length == 1) {
+   			return pre;
+   		}
+   		int ans = Integer.MAX_VALUE;
+   		for (int i = 0; i < arr.length; i++) {
+   			for (int j = i + 1; j < arr.length; j++) {
+   				ans = Math.min(ans, process(copyAndMergeTwo(arr, i, j), pre + arr[i] + arr[j]));
+   			}
+   		}
+   		return ans;
+   	}
+   
+   	public static int[] copyAndMergeTwo(int[] arr, int i, int j) {
+   		int[] ans = new int[arr.length - 1];
+   		int ansi = 0;
+   		for (int arri = 0; arri < arr.length; arri++) {
+   			if (arri != i && arri != j) {
+   				ans[ansi++] = arr[arri];
+   			}
+   		}
+   		ans[ansi] = arr[i] + arr[j];
+   		return ans;
+   	}
+   
+   	public static int lessMoney2(int[] arr) {
+   		PriorityQueue<Integer> pQ = new PriorityQueue<>();
+   		for (int i = 0; i < arr.length; i++) {
+   			pQ.add(arr[i]);
+   		}
+   		int sum = 0;
+   		int cur = 0;
+   		while (pQ.size() > 1) {
+   			cur = pQ.poll() + pQ.poll();
+   			sum += cur;
+   			pQ.add(cur);
+   		}
+   		return sum;
+   	}
+   }
+   
+   ```
+
+
+
+3. **==最后获得最大钱数==**
+
+   > ==有时候面试官出一个问题，把条件含含糊糊的说，他的目的是想让你去问他这个问题的条件有哪些，把这个问题declare，所以在面试的时候，你想不懂这个问题，可能就是面试官的条件没说清，等着你去问！，一定要搞清楚这个问题后再去做这个题！==
+
+   > 建立一个根据花费大小的小根堆，和一个根据利润大小的大根堆。根据M，解锁项目到大根堆，然后从大根堆弹出利润最高的项目。
+
+   ![image-20220708110512926](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207081105052.png)
+
+   ```java
+   import java.util.Comparator;
+   import java.util.PriorityQueue;
+   
+   public class Code04_IPO {
+   
+   	// 最多K个项目
+   	// W是初始资金
+   	// Profits[] Capital[] 一定等长
+   	// 返回最终最大的资金
+   	public static int findMaximizedCapital(int K, int W, int[] Profits, int[] Capital) {
+   		PriorityQueue<Program> minCostQ = new PriorityQueue<>(new MinCostComparator());
+   		PriorityQueue<Program> maxProfitQ = new PriorityQueue<>(new MaxProfitComparator());
+   		for (int i = 0; i < Profits.length; i++) {
+   			minCostQ.add(new Program(Profits[i], Capital[i]));
+   		}
+   		for (int i = 0; i < K; i++) {
+               // 堆 队列 在poll之前一i的一定要判空
+   			while (!minCostQ.isEmpty() && minCostQ.peek().c <= W) {
+   				maxProfitQ.add(minCostQ.poll());
+   			}
+   			if (maxProfitQ.isEmpty()) {
+   				return W;
+   			}
+   			W += maxProfitQ.poll().p;
+   		}
+   		return W;
+   	}
+   
+   	public static class Program {
+   		public int p;
+   		public int c;
+   
+   		public Program(int p, int c) {
+   			this.p = p;
+   			this.c = c;
+   		}
+   	}
+   
+   	public static class MinCostComparator implements Comparator<Program> {
+   
+   		@Override
+   		public int compare(Program o1, Program o2) {
+   			return o1.c - o2.c;
+   		}
+   
+   	}
+   
+   	public static class MaxProfitComparator implements Comparator<Program> {
+   
+   		@Override
+   		public int compare(Program o1, Program o2) {
+   			return o2.p - o1.p;
+   		}
+   
+   	}
+   
+   }
+   
+   ```
+
+   
+
+4. **==至少需要几盏灯==**
+
+   ![image-20220708114014736](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207081140870.png)
 
 
 
