@@ -4995,7 +4995,7 @@
    
    
 
-## 并查集
+## 并查集（支持集合 合并和查询的一个结构）
 
 0. **==前置知识==**
 
@@ -5181,6 +5181,10 @@
 
    ![image-20220709102802157](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207091028279.png)
 
+   ![image-20220709141239770](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207091412860.png)
+
+   ![image-20220709215407032](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207092154105.png)
+
    ```java
    package class15;
    
@@ -5221,6 +5225,8 @@
    		infect(board, i, j + 1);
    	}
    
+       
+       // 并查集 HashMap
    	public static int numIslands1(char[][] board) {
    		int row = board.length;
    		int col = board[0].length;
@@ -5236,7 +5242,7 @@
    		}
    		UnionFind1<Dot> uf = new UnionFind1<>(dotList);
    		for (int j = 1; j < col; j++) {
-   			// (0,j)  (0,0)跳过了  (0,1) (0,2) (0,3)
+   			// (0,j)  (0,0)跳过了(该位置既没有左也没有上)  (0,1) (0,2) (0,3)
    			if (board[0][j - 1] == '1' && board[0][j] == '1') {
    				uf.union(dots[0][j - 1], dots[0][j]);
    			}
@@ -5325,7 +5331,7 @@
    	}
    
        
-       
+       // 并查集 Array
        // 左和上
    	public static int numIslands2(char[][] board) {
    		int row = board.length;
@@ -5395,6 +5401,7 @@
    				help[hi++] = i;
    				i = parent[i];
    			}
+               // hi是先减减的
    			for (hi--; hi >= 0; hi--) {
    				parent[help[hi]] = i;
    			}
@@ -5429,9 +5436,189 @@
 
    
 
+3. **==Number of Islands ||==**
 
+   > 动态数组动态连
 
+   ![image-20220709145207467](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207091452539.png)
 
+   ```java
+   package class15;
+   
+   import java.util.ArrayList;
+   import java.util.HashMap;
+   import java.util.List;
+   
+   // 本题为leetcode原题
+   // 测试链接：https://leetcode.com/problems/number-of-islands-ii/
+   // 所有方法都可以直接通过
+   public class Code03_NumberOfIslandsII {
+   
+   	public static List<Integer> numIslands21(int m, int n, int[][] positions) {
+   		UnionFind1 uf = new UnionFind1(m, n);
+   		List<Integer> ans = new ArrayList<>();
+   		for (int[] position : positions) {
+   			ans.add(uf.connect(position[0], position[1]));
+   		}
+   		return ans;
+   	}
+   
+   	public static class UnionFind1 {
+   		private int[] parent;
+           //  一个技巧，以前是i位置和j位置决出之后，会删掉一个，j位置胜出，在size里面会删掉i位置，在这个题中就不用删掉，也就是size数组的作用成了，size[i]！= 0，证明i位置被初始化过
+   		private int[] size;
+   		private int[] help;
+   		private final int row;
+   		private final int col;
+   		private int sets;
+   
+   		public UnionFind1(int m, int n) {
+   			row = m;
+   			col = n;
+   			sets = 0;
+   			int len = row * col;
+   			parent = new int[len];
+   			size = new int[len];
+   			help = new int[len];
+   		}
+   
+   		private int index(int r, int c) {
+   			return r * col + c;
+   		}
+   
+   		private int find(int i) {
+   			int hi = 0;
+   			while (i != parent[i]) {
+   				help[hi++] = i;
+   				i = parent[i];
+   			}
+   			for (hi--; hi >= 0; hi--) {
+   				parent[help[hi]] = i;
+   			}
+   			return i;
+   		}
+   
+   		private void union(int r1, int c1, int r2, int c2) {
+   			if (r1 < 0 || r1 == row || r2 < 0 || r2 == row || c1 < 0 || c1 == col || c2 < 0 || c2 == col) {
+   				return;
+   			}
+   			int i1 = index(r1, c1);
+   			int i2 = index(r2, c2);
+   			if (size[i1] == 0 || size[i2] == 0) {
+   				return;
+   			}
+   			int f1 = find(i1);
+   			int f2 = find(i2);
+   			if (f1 != f2) {
+   				if (size[f1] >= size[f2]) {
+   					size[f1] += size[f2];
+   					parent[f2] = f1;
+   				} else {
+   					size[f2] += size[f1];
+   					parent[f1] = f2;
+   				}
+   				sets--;
+   			}
+   		}
+   
+   		public int connect(int r, int c) {
+   			int index = index(r, c);
+   			if (size[index] == 0) {
+   				parent[index] = index;
+   				size[index] = 1;
+   				sets++;
+   				union(r - 1, c, r, c);
+   				union(r + 1, c, r, c);
+   				union(r, c - 1, r, c);
+   				union(r, c + 1, r, c);
+   			}
+   			return sets;
+   		}
+   
+   	}
+   
+   	// 课上讲的如果m*n比较大，会经历很重的初始化，而k比较小，怎么优化的方法
+   	public static List<Integer> numIslands22(int m, int n, int[][] positions) {
+   		UnionFind2 uf = new UnionFind2();
+   		List<Integer> ans = new ArrayList<>();
+   		for (int[] position : positions) {
+   			ans.add(uf.connect(position[0], position[1]));
+   		}
+   		return ans;
+   	}
+   
+   	public static class UnionFind2 {
+   		private HashMap<String, String> parent;
+   		private HashMap<String, Integer> size;
+   		private ArrayList<String> help;
+   		private int sets;
+   
+   		public UnionFind2() {
+   			parent = new HashMap<>();
+   			size = new HashMap<>();
+   			help = new ArrayList<>();
+   			sets = 0;
+   		}
+   
+   		private String find(String cur) {
+   			while (!cur.equals(parent.get(cur))) {
+   				help.add(cur);
+   				cur = parent.get(cur);
+   			}
+   			for (String str : help) {
+   				parent.put(str, cur);
+   			}
+   			help.clear();
+   			return cur;
+   		}
+   
+   		private void union(String s1, String s2) {
+   			if (parent.containsKey(s1) && parent.containsKey(s2)) {
+   				String f1 = find(s1);
+   				String f2 = find(s2);
+   				if (!f1.equals(f2)) {
+   					int size1 = size.get(f1);
+   					int size2 = size.get(f2);
+   					String big = size1 >= size2 ? f1 : f2;
+   					String small = big == f1 ? f2 : f1;
+   					parent.put(small, big);
+   					size.put(big, size1 + size2);
+   					sets--;
+   				}
+   			}
+   		}
+   
+   		public int connect(int r, int c) {
+   			String key = String.valueOf(r) + "_" + String.valueOf(c);
+   			if (!parent.containsKey(key)) {
+   				parent.put(key, key);
+   				size.put(key, 1);
+   				sets++;
+   				String up = String.valueOf(r - 1) + "_" + String.valueOf(c);
+   				String down = String.valueOf(r + 1) + "_" + String.valueOf(c);
+   				String left = String.valueOf(r) + "_" + String.valueOf(c - 1);
+   				String right = String.valueOf(r) + "_" + String.valueOf(c + 1);
+   				union(up, key);
+   				union(down, key);
+   				union(left, key);
+   				union(right, key);
+   			}
+   			return sets;
+   		}
+   
+   	}
+   
+   }
+   
+   ```
+
+   
+
+4. **==岛问题（扩展）==**
+
+   ![image-20220709152511790](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207091525860.png)
+
+   ![image-20220709154824344](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207091548464.png)
 
 
 
