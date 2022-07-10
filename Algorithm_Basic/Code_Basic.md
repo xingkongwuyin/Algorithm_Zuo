@@ -5622,11 +5622,682 @@
 
 
 
+# Lesson16  
+
+0. ==**图**==
+
+   ![image-20220710100650593](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207101006650.png)
+
+   ![image-20220710100711873](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207101007922.png)
+
+   ![image-20220710100732414](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207101007469.png)
+
+   ![image-20220710100753961](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207101007012.png)
+
+   ![image-20220710093827921](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207100938005.png)
+
+   ![image-20220710094120913](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207100941010.png)
+
+   ![image-20220710094420545](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207100944621.png)
+
+   ![image-20220710095001035](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207100950121.png)
+
+   ![image-20220710095337850](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207100953933.png)
+
+   ```java
+   import java.util.ArrayList;
+   
+   // 点结构的描述
+   public class Node {
+   	public int value;
+   	public int in;
+   	public int out;
+   	public ArrayList<Node> nexts;
+   	public ArrayList<Edge> edges;
+   
+   	public Node(int value) {
+   		this.value = value;
+   		in = 0;
+   		out = 0;
+   		nexts = new ArrayList<>();
+   		edges = new ArrayList<>();
+   	}
+   }
+   ```
+
+   ```java
+   // 接上个代码中的edge
+   public class Edge {
+   	public int weight;
+   	public Node from;
+   	public Node to;
+   
+   	public Edge(int weight, Node from, Node to) {
+   		this.weight = weight;
+   		this.from = from;
+   		this.to = to;
+   	}
+   
+   }
+   ```
+
+   ```java
+   import java.util.HashMap;
+   import java.util.HashSet;
+   
+   public class Graph {
+   	public HashMap<Integer, Node> nodes;
+   	public HashSet<Edge> edges;
+   	
+   	public Graph() {
+   		nodes = new HashMap<>();
+   		edges = new HashSet<>();
+   	}
+   }
+   ```
+
+   ```java
+   public class GraphGenerator {
+   
+   	// matrix 所有的边
+   	// N*3 的矩阵
+   	// [weight, from节点上面的值，to节点上面的值]
+   	// 
+   	// [ 5 , 0 , 7]
+   	// [ 3 , 0,  1]
+   	// 
+   	public static Graph createGraph(int[][] matrix) {
+   		Graph graph = new Graph();
+   		for (int i = 0; i < matrix.length; i++) {
+   			 // 拿到每一条边， matrix[i] 
+   			int weight = matrix[i][0];
+   			int from = matrix[i][1];
+   			int to = matrix[i][2];
+   			if (!graph.nodes.containsKey(from)) {
+   				graph.nodes.put(from, new Node(from));
+   			}
+   			if (!graph.nodes.containsKey(to)) {
+   				graph.nodes.put(to, new Node(to));
+   			}
+   			Node fromNode = graph.nodes.get(from);
+   			Node toNode = graph.nodes.get(to);
+   			Edge newEdge = new Edge(weight, fromNode, toNode);
+   			fromNode.nexts.add(toNode);
+   			fromNode.out++;
+   			toNode.in++;
+   			fromNode.edges.add(newEdge);
+   			graph.edges.add(newEdge);
+   		}
+   		return graph;
+   	}
+   
+   }
+   
+   ```
 
 
 
+1. **==宽度优先遍历==**
+
+   ```java
+   import java.util.HashSet;
+   import java.util.LinkedList;
+   import java.util.Queue;
+   
+   public class Code01_BFS {
+   
+   	// 从node出发，进行宽度优先遍历
+   	public static void bfs(Node start) {
+   		if (start == null) {
+   			return;
+   		}
+   		Queue<Node> queue = new LinkedList<>();
+   		HashSet<Node> set = new HashSet<>();
+   		queue.add(start);
+   		set.add(start);
+   		while (!queue.isEmpty()) {
+   			Node cur = queue.poll();
+   			System.out.println(cur.value);
+   			for (Node next : cur.nexts) {
+   				if (!set.contains(next)) {
+   					set.add(next);
+   					queue.add(next);
+   				}
+   			}
+   		}
+   	}
+   }
+   ```
+
+   
+
+2. **==深度优先遍历==**
+
+   ![image-20220710110622410](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207101106494.png)
+
+   ```java
+   // set有两个功能
+   // 1. 禁止走环路
+   // 2. 禁止走回路
+   
+   import java.util.HashSet;
+   import java.util.Stack;
+   
+   public class Code02_DFS {
+   
+   	public static void dfs(Node node) {
+   		if (node == null) {
+   			return;
+   		}
+   		Stack<Node> stack = new Stack<>();
+   		HashSet<Node> set = new HashSet<>();
+   		stack.add(node);
+   		set.add(node);
+   		System.out.println(node.value);
+   		while (!stack.isEmpty()) {
+   			Node cur = stack.pop();
+   			for (Node next : cur.nexts) {
+   				if (!set.contains(next)) {
+   					stack.push(cur);
+   					stack.push(next);
+   					set.add(next);
+                       // 入栈就打印
+   					System.out.println(next.value);
+   					break;
+   				}
+   			}
+   		}
+   	}
+   }
+   ```
+
+   
+
+3. ==**图的拓扑排序算法**==
+
+   > ==拓扑排序的一定是有向无环图==
+
+   ![image-20220710111122596](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207101111675.png)
+
+   ```java
+   //拓扑排序不唯一
+   
+   import java.util.ArrayList;
+   import java.util.HashMap;
+   import java.util.LinkedList;
+   import java.util.List;
+   import java.util.Queue;
+   
+   public class Code03_TopologySort {
+   
+   	// directed graph and no loop
+   	public static List<Node> sortedTopology(Graph graph) {
+   		// key 某个节点   value 剩余的入度
+   		HashMap<Node, Integer> inMap = new HashMap<>();
+   		// 只有剩余入度为0的点，才进入这个队列
+   		Queue<Node> zeroInQueue = new LinkedList<>();
+   		for (Node node : graph.nodes.values()) {
+   			inMap.put(node, node.in);
+   			if (node.in == 0) {
+   				zeroInQueue.add(node);
+   			}
+   		}
+   		List<Node> result = new ArrayList<>();
+   		while (!zeroInQueue.isEmpty()) {
+   			Node cur = zeroInQueue.poll();
+   			result.add(cur);
+   			for (Node next : cur.nexts) {
+   				inMap.put(next, inMap.get(next) - 1);
+   				if (inMap.get(next) == 0) {
+   					zeroInQueue.add(next);
+   				}
+   			}
+   		}
+   		return result;
+   	}
+   }
+   ```
 
 
 
+4. ==拓扑序（自己改写图结构）==
 
+   ![image-20220710113811169](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207101138243.png)
 
+   ![image-20220710114434874](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207101144954.png)
+
+   ![image-20220710115306349](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207101153425.png)
+
+   ```java
+   package class16;
+   
+   import java.util.ArrayList;
+   import java.util.HashMap;
+   import java.util.LinkedList;
+   import java.util.Queue;
+   
+   // OJ链接：https://www.lintcode.com/problem/topological-sorting
+   public class Code03_TopologicalOrderBFS {
+   
+   	// 不要提交这个类
+   	public static class DirectedGraphNode {
+   		public int label;
+   		public ArrayList<DirectedGraphNode> neighbors;
+   
+   		public DirectedGraphNode(int x) {
+   			label = x;
+   			neighbors = new ArrayList<DirectedGraphNode>();
+   		}
+   	}
+   
+   	// 提交下面的
+   	public static ArrayList<DirectedGraphNode> topSort(ArrayList<DirectedGraphNode> graph) {
+   		HashMap<DirectedGraphNode, Integer> indegreeMap = new HashMap<>();
+   		for (DirectedGraphNode cur : graph) {
+   			indegreeMap.put(cur, 0);
+   		}
+   		for (DirectedGraphNode cur : graph) {
+   			for (DirectedGraphNode next : cur.neighbors) {
+   				indegreeMap.put(next, indegreeMap.get(next) + 1);
+   			}
+   		}
+   		Queue<DirectedGraphNode> zeroQueue = new LinkedList<>();
+   		for (DirectedGraphNode cur : indegreeMap.keySet()) {
+   			if (indegreeMap.get(cur) == 0) {
+   				zeroQueue.add(cur);
+   			}
+   		}
+   		ArrayList<DirectedGraphNode> ans = new ArrayList<>();
+   		while (!zeroQueue.isEmpty()) {
+   			DirectedGraphNode cur = zeroQueue.poll();
+   			ans.add(cur);
+   			for (DirectedGraphNode next : cur.neighbors) {
+   				indegreeMap.put(next, indegreeMap.get(next) - 1);
+   				if (indegreeMap.get(next) == 0) {
+   					zeroQueue.offer(next);
+   				}
+   			}
+   		}
+   		return ans;
+   	}
+   
+   }
+   
+   ```
+
+   ```java
+   // 根据点次，如果x的点次大于y的点次，则x的拓扑序 <= y的拓扑序
+   package class16;
+   
+   import java.util.ArrayList;
+   import java.util.Comparator;
+   import java.util.HashMap;
+   
+   // OJ链接：https://www.lintcode.com/problem/topological-sorting
+   public class Code03_TopologicalOrderDFS2 {
+   
+   	// 不要提交这个类
+   	public static class DirectedGraphNode {
+   		public int label;
+   		public ArrayList<DirectedGraphNode> neighbors;
+   
+   		public DirectedGraphNode(int x) {
+   			label = x;
+   			neighbors = new ArrayList<DirectedGraphNode>();
+   		}
+   	}
+   
+   	// 提交下面的
+   	public static class Record {
+   		public DirectedGraphNode node;
+   		public long nodes;
+   
+   		public Record(DirectedGraphNode n, long o) {
+   			node = n;
+   			nodes = o;
+   		}
+   	}
+   
+   	public static class MyComparator implements Comparator<Record> {
+   
+   		@Override
+   		public int compare(Record o1, Record o2) {
+   			return o1.nodes == o2.nodes ? 0 : (o1.nodes > o2.nodes ? -1 : 1);
+   		}
+   	}
+   
+   	public static ArrayList<DirectedGraphNode> topSort(ArrayList<DirectedGraphNode> graph) {
+   		HashMap<DirectedGraphNode, Record> order = new HashMap<>();
+   		for (DirectedGraphNode cur : graph) {
+   			f(cur, order);
+   		}
+   		ArrayList<Record> recordArr = new ArrayList<>();
+   		for (Record r : order.values()) {
+   			recordArr.add(r);
+   		}
+   		recordArr.sort(new MyComparator());
+   		ArrayList<DirectedGraphNode> ans = new ArrayList<DirectedGraphNode>();
+   		for (Record r : recordArr) {
+   			ans.add(r.node);
+   		}
+   		return ans;
+   	}
+   
+   	// 当前来到cur点，请返回cur点所到之处，所有的点次！
+   	// 返回（cur，点次）
+   	// 缓存！！！！！order   
+   	//  key : 某一个点的点次，之前算过了！
+   	//  value : 点次是多少
+   	public static Record f(DirectedGraphNode cur, HashMap<DirectedGraphNode, Record> order) {
+   		if (order.containsKey(cur)) {
+   			return order.get(cur);
+   		}
+   		// cur的点次之前没算过！
+   		long nodes = 0;
+   		for (DirectedGraphNode next : cur.neighbors) {
+   			nodes += f(next, order).nodes;
+   		}
+   		Record ans = new Record(cur, nodes + 1);
+   		order.put(cur, ans);
+   		return ans;
+   	}
+   
+   }
+   
+   ```
+
+   ```java
+   // 根据最大深度，如果x的深度大于y的深度，则x的拓扑序 <= y的拓扑序
+   
+   import java.util.ArrayList;
+   import java.util.Comparator;
+   import java.util.HashMap;
+   
+   // OJ链接：https://www.lintcode.com/problem/topological-sorting
+   public class Code03_TopologicalOrderDFS1 {
+   
+   	// 不要提交这个类
+   	public static class DirectedGraphNode {
+   		public int label;
+   		public ArrayList<DirectedGraphNode> neighbors;
+   
+   		public DirectedGraphNode(int x) {
+   			label = x;
+   			neighbors = new ArrayList<DirectedGraphNode>();
+   		}
+   	}
+   
+   	// 提交下面的
+   	public static class Record {
+   		public DirectedGraphNode node;
+   		public int deep;
+   
+   		public Record(DirectedGraphNode n, int o) {
+   			node = n;
+   			deep = o;
+   		}
+   	}
+   
+   	public static class MyComparator implements Comparator<Record> {
+   
+   		@Override
+   		public int compare(Record o1, Record o2) {
+   			return o2.deep - o1.deep;
+   		}
+   	}
+   
+   	public static ArrayList<DirectedGraphNode> topSort(ArrayList<DirectedGraphNode> graph) {
+   		HashMap<DirectedGraphNode, Record> order = new HashMap<>();
+   		for (DirectedGraphNode cur : graph) {
+   			f(cur, order);
+   		}
+   		ArrayList<Record> recordArr = new ArrayList<>();
+   		for (Record r : order.values()) {
+   			recordArr.add(r);
+   		}
+   		recordArr.sort(new MyComparator());
+   		ArrayList<DirectedGraphNode> ans = new ArrayList<DirectedGraphNode>();
+   		for (Record r : recordArr) {
+   			ans.add(r.node);
+   		}
+   		return ans;
+   	}
+   
+   	public static Record f(DirectedGraphNode cur, HashMap<DirectedGraphNode, Record> order) {
+   		if (order.containsKey(cur)) {
+   			return order.get(cur);
+   		}
+   		int follow = 0;
+   		for (DirectedGraphNode next : cur.neighbors) {
+   			follow = Math.max(follow, f(next, order).deep);
+   		}
+   		Record ans = new Record(cur, follow + 1);
+   		order.put(cur, ans);
+   		return ans;
+   	}
+   }
+   ```
+
+   
+
+5. **==最小生成树算法==**
+
+   > 无向图
+
+   ![image-20220710145345949](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207101453038.png)
+
+   ![image-20220710121523742](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207101215827.png)
+
+   ```java
+   // 思路：每个结点先生成自己的集合，然后权重从小到大，依次筛选边，
+   //      如何该边两端的两个结点，不在一个集合，那就要这条边，且
+   //      将这两个结点放在同一个集合中，同样的步骤，遍历完所有的
+   //      边，这时所有结点放在了同一个集合里了
+   
+   import java.util.Collection;
+   import java.util.Comparator;
+   import java.util.HashMap;
+   import java.util.HashSet;
+   import java.util.PriorityQueue;
+   import java.util.Set;
+   import java.util.Stack;
+   
+   //undirected graph only
+   public class Code04_Kruskal {
+   
+   	// Union-Find Set
+   	public static class UnionFind {
+   		// key 某一个节点， value key节点往上的节点
+   		private HashMap<Node, Node> fatherMap;
+   		// key 某一个集合的代表节点, value key所在集合的节点个数
+   		private HashMap<Node, Integer> sizeMap;
+   
+   		public UnionFind() {
+   			fatherMap = new HashMap<Node, Node>();
+   			sizeMap = new HashMap<Node, Integer>();
+   		}
+   		
+   		public void makeSets(Collection<Node> nodes) {
+   			fatherMap.clear();
+   			sizeMap.clear();
+   			for (Node node : nodes) {
+   				fatherMap.put(node, node);
+   				sizeMap.put(node, 1);
+   			}
+   		}
+   
+   		private Node findFather(Node n) {
+   			Stack<Node> path = new Stack<>();
+   			while(n != fatherMap.get(n)) {
+   				path.add(n);
+   				n = fatherMap.get(n);
+   			}
+   			while(!path.isEmpty()) {
+   				fatherMap.put(path.pop(), n);
+   			}
+   			return n;
+   		}
+   
+   		public boolean isSameSet(Node a, Node b) {
+   			return findFather(a) == findFather(b);
+   		}
+   
+   		public void union(Node a, Node b) {
+   			if (a == null || b == null) {
+   				return;
+   			}
+   			Node aDai = findFather(a);
+   			Node bDai = findFather(b);
+   			if (aDai != bDai) {
+   				int aSetSize = sizeMap.get(aDai);
+   				int bSetSize = sizeMap.get(bDai);
+   				if (aSetSize <= bSetSize) {
+   					fatherMap.put(aDai, bDai);
+   					sizeMap.put(bDai, aSetSize + bSetSize);
+   					sizeMap.remove(aDai);
+   				} else {
+   					fatherMap.put(bDai, aDai);
+   					sizeMap.put(aDai, aSetSize + bSetSize);
+   					sizeMap.remove(bDai);
+   				}
+   			}
+   		}
+   	}
+   	
+   
+   	public static class EdgeComparator implements Comparator<Edge> {
+   
+   		@Override
+   		public int compare(Edge o1, Edge o2) {
+   			return o1.weight - o2.weight;
+   		}
+   
+   	}
+   
+   	public static Set<Edge> kruskalMST(Graph graph) {
+   		UnionFind unionFind = new UnionFind();
+   		unionFind.makeSets(graph.nodes.values());
+   		// 从小的边到大的边，依次弹出，小根堆！
+   		PriorityQueue<Edge> priorityQueue = new PriorityQueue<>(new EdgeComparator());
+   		for (Edge edge : graph.edges) { // M 条边
+   			priorityQueue.add(edge);  // O(logM)
+   		}
+   		Set<Edge> result = new HashSet<>();
+   		while (!priorityQueue.isEmpty()) { // M 条边
+   			Edge edge = priorityQueue.poll(); // O(logM)
+   			if (!unionFind.isSameSet(edge.from, edge.to)) { // O(1)
+   				result.add(edge);
+   				unionFind.union(edge.from, edge.to);
+   			}
+   		}
+   		return result;
+   	}
+   }
+   
+   ```
+
+   
+
+6. **==P算法==**
+
+   ![image-20220710151029629](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207101510712.png)
+
+   ```java
+   package class16;
+   
+   import java.util.Comparator;
+   import java.util.HashSet;
+   import java.util.PriorityQueue;
+   import java.util.Set;
+   
+   // undirected graph only
+   public class Code05_Prim {
+   
+   	public static class EdgeComparator implements Comparator<Edge> {
+   
+   		@Override
+   		public int compare(Edge o1, Edge o2) {
+   			return o1.weight - o2.weight;
+   		}
+   
+   	}
+   
+   	public static Set<Edge> primMST(Graph graph) {
+   		// 解锁的边进入小根堆
+   		PriorityQueue<Edge> priorityQueue = new PriorityQueue<>(new EdgeComparator());
+   
+   		// 哪些点被解锁出来了
+   		HashSet<Node> nodeSet = new HashSet<>();
+   		
+   		
+   		
+   		Set<Edge> result = new HashSet<>(); // 依次挑选的的边在result里
+   
+   		for (Node node : graph.nodes.values()) { // 随便挑了一个点
+   			// node 是开始点
+   			if (!nodeSet.contains(node)) {
+   				nodeSet.add(node);
+   				for (Edge edge : node.edges) { // 由一个点，解锁所有相连的边
+   					priorityQueue.add(edge);
+   				}
+   				while (!priorityQueue.isEmpty()) {
+   					Edge edge = priorityQueue.poll(); // 弹出解锁的边中，最小的边
+   					Node toNode = edge.to; // 可能的一个新的点
+   					if (!nodeSet.contains(toNode)) { // 不含有的时候，就是新的点
+   						nodeSet.add(toNode);
+   						result.add(edge);
+   						for (Edge nextEdge : toNode.edges) {
+   							priorityQueue.add(nextEdge);
+   						}
+   					}
+   				}
+   			}
+   			// break;
+   		}
+   		return result;
+   	}
+   
+   	// 请保证graph是连通图
+   	// graph[i][j]表示点i到点j的距离，如果是系统最大值代表无路
+   	// 返回值是最小连通图的路径之和
+   	public static int prim(int[][] graph) {
+   		int size = graph.length;
+   		int[] distances = new int[size];
+   		boolean[] visit = new boolean[size];
+   		visit[0] = true;
+   		for (int i = 0; i < size; i++) {
+   			distances[i] = graph[0][i];
+   		}
+   		int sum = 0;
+   		for (int i = 1; i < size; i++) {
+   			int minPath = Integer.MAX_VALUE;
+   			int minIndex = -1;
+   			for (int j = 0; j < size; j++) {
+   				if (!visit[j] && distances[j] < minPath) {
+   					minPath = distances[j];
+   					minIndex = j;
+   				}
+   			}
+   			if (minIndex == -1) {
+   				return sum;
+   			}
+   			visit[minIndex] = true;
+   			sum += minPath;
+   			for (int j = 0; j < size; j++) {
+   				if (!visit[j] && distances[j] > graph[minIndex][j]) {
+   					distances[j] = graph[minIndex][j];
+   				}
+   			}
+   		}
+   		return sum;
+   	}
+   
+   	public static void main(String[] args) {
+   		System.out.println("hello world!");
+   	}
+   
+   }
+   
+   ```
+
+   
