@@ -5863,7 +5863,7 @@
 
 
 
-4. ==拓扑序（自己改写图结构）==
+4. **==拓扑序（自己改写图结构）==**
 
    ![image-20220710113811169](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207101138243.png)
 
@@ -6318,12 +6318,14 @@
 
 7. **==Dijkstra==**
 
-   > 有向，无负权重，可以有环的图
+   > * 有向，无负权重，可以有环的图
+   >
+   > * 求一个图中一个点到其他所有点的最短路径的算法
 
    ![image-20220710155958571](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207101559683.png)
-
+   
    ```java
-   package class16;
+   
    
    import java.util.HashMap;
    import java.util.HashSet;
@@ -6486,7 +6488,7 @@
    }
    
    ```
-
+   
    
 
 
