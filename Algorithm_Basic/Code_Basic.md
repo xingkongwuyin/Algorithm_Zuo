@@ -6491,5 +6491,261 @@
    
    
 
+# Lesson17
 
+1. ==加强堆实现Dijkstra算法（后续学）==
+
+## 暴力递归
+
+0. ==**前置知识**==
+
+![image-20220714120950500](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207141209575.png)
+
+
+
+1. **==汉诺塔问题==**
+
+   > * 递归函数，可以通过增加参数的方式，增加问题可能性
+
+   ![image-20220714121109940](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207141211019.png)
+   
+   ```java
+   package class17;
+   
+   import java.util.Stack;
+   
+   public class Code02_Hanoi {
+   
+       // 把主过程的每一步写清，就可以写出递归，但这种递归是多个子过程
+       // 相互嵌套的
+   	public static void hanoi1(int n) {
+   		leftToRight(n);
+   	}
+   	// 递归的边界条件，可以从一开始就考虑，就考虑那些已知的，不需要递归的情况
+       // 就不用考虑递归最后结束的条件
+   	// 请把1~N层圆盘 从最左 -> 最右
+   	public static void leftToRight(int n) {
+   		if (n == 1) { // base case
+   			System.out.println("Move 1 from left to right");
+   			return;
+   		}
+   		leftToMid(n - 1);
+           // 把第n层圆盘从最左移到最右，不是把n个圆盘从最左移到最右
+   		System.out.println("Move " + n + " from left to right");
+   		midToRight(n - 1);
+   	}
+   
+   	// 请把1~N层圆盘 从左 -> 中
+   	public static void leftToMid(int n) {
+   		if (n == 1) {
+   			System.out.println("Move 1 from left to mid");
+   			return;
+   		}
+   		leftToRight(n - 1);
+   		System.out.println("Move " + n + " from left to mid");
+   		rightToMid(n - 1);
+   	}
+   
+   	public static void rightToMid(int n) {
+   		if (n == 1) {
+   			System.out.println("Move 1 from right to mid");
+   			return;
+   		}
+   		rightToLeft(n - 1);
+   		System.out.println("Move " + n + " from right to mid");
+   		leftToMid(n - 1);
+   	}
+   
+   	public static void midToRight(int n) {
+   		if (n == 1) {
+   			System.out.println("Move 1 from mid to right");
+   			return;
+   		}
+   		midToLeft(n - 1);
+   		System.out.println("Move " + n + " from mid to right");
+   		leftToRight(n - 1);
+   	}
+   
+   	public static void midToLeft(int n) {
+   		if (n == 1) {
+   			System.out.println("Move 1 from mid to left");
+   			return;
+   		}
+   		midToRight(n - 1);
+   		System.out.println("Move " + n + " from mid to left");
+   		rightToLeft(n - 1);
+   	}
+   
+   	public static void rightToLeft(int n) {
+   		if (n == 1) {
+   			System.out.println("Move 1 from right to left");
+   			return;
+   		}
+   		rightToMid(n - 1);
+   		System.out.println("Move " + n + " from right to left");
+   		midToLeft(n - 1);
+   	}
+   
+   	public static void hanoi2(int n) {
+   		if (n > 0) {
+   			func(n, "left", "right", "mid");
+   		}
+   	}
+   
+       
+   	public static void func(int N, String from, String to, String other) {
+   		if (N == 1) { // base
+   			System.out.println("Move 1 from " + from + " to " + to);
+   		} else {
+   			func(N - 1, from, other, to);
+   			System.out.println("Move " + N + " from " + from + " to " + to);
+   			func(N - 1, other, to, from);
+   		}
+   	}
+   
+   	public static class Record {
+   		public boolean finish1;
+   		public int base;
+   		public String from;
+   		public String to;
+   		public String other;
+   
+   		public Record(boolean f1, int b, String f, String t, String o) {
+   			finish1 = false;
+   			base = b;
+   			from = f;
+   			to = t;
+   			other = o;
+   		}
+   	}
+   
+       // 递归版本
+   	public static void hanoi3(int N) {
+   		if (N < 1) {
+   			return;
+   		}
+   		Stack<Record> stack = new Stack<>();
+   		stack.add(new Record(false, N, "left", "right", "mid"));
+   		while (!stack.isEmpty()) {
+   			Record cur = stack.pop();
+   			if (cur.base == 1) {
+   				System.out.println("Move 1 from " + cur.from + " to " + cur.to);
+   				if (!stack.isEmpty()) {
+   					stack.peek().finish1 = true;
+   				}
+   			} else {
+   				if (!cur.finish1) {
+   					stack.push(cur);
+   					stack.push(new Record(false, cur.base - 1, cur.from, cur.other, cur.to));
+   				} else {
+   					System.out.println("Move " + cur.base + " from " + cur.from + " to " + cur.to);
+   					stack.push(new Record(false, cur.base - 1, cur.other, cur.to, cur.from));
+   				}
+   			}
+   		}
+   	}
+   
+   	public static void main(String[] args) {
+   		int n = 3;
+   		hanoi1(n);
+   		System.out.println("============");
+   		hanoi2(n);
+   //		System.out.println("============");
+   //		hanoi3(n);
+   	}
+   
+   }
+   
+   ```
+   
+2. **==打印一个字符串的所有子序列==**
+
+   > * 对于递归函数，可以一个黑盒，定义这个函数一开始，就把功能明确定好，在函数内部调用自己的时候，就把它当成一个黑盒
+   >
+   > 
+
+   ```java
+   package class17;
+   
+   import java.util.ArrayList;
+   import java.util.HashSet;
+   import java.util.List;
+   
+   public class Code03_PrintAllSubsquences {
+   
+   	// s -> "abc" ->
+       // 子序列包括空序列和自己本身
+   	public static List<String> subs(String s) {
+   		char[] str = s.toCharArray();
+   		String path = "";
+   		List<String> ans = new ArrayList<>();
+   		process1(str, 0, ans, path);
+   		return ans;
+   	}
+   
+   	// str 固定参数
+   	// 来到了str[index]字符，index是位置
+   	// str[0..index-1]已经走过了！之前的决定，都在path上
+   	// 之前的决定已经不能改变了，就是path
+   	// str[index....]还能决定，之前已经确定，而后面还能自由选择的话，
+   	// 把所有生成的子序列，放入到ans里去
+       // 将从index以后生成的子序列分别和path合并，然后分别放入ans里
+       // 这里从index开始，就成了一个通用的，可以从一个数组的任意位置处求子序列，
+       // 就不是非得从0位置开始打印
+   	public static void process1(char[] str, int index, List<String> ans, String path) {
+   		if (index == str.length) {
+   			ans.add(path);
+   			return;
+   		}
+   		// 没有要index位置的字符
+   		process1(str, index + 1, ans, path);
+   		// 要了index位置的字符
+   		process1(str, index + 1, ans, path + String.valueOf(str[index]));
+   	}
+   
+   	public static List<String> subsNoRepeat(String s) {
+   		char[] str = s.toCharArray();
+   		String path = "";
+           // hashset有去重的功能
+   		HashSet<String> set = new HashSet<>();
+   		process2(str, 0, set, path);
+   		List<String> ans = new ArrayList<>();
+   		for (String cur : set) {
+   			ans.add(cur);
+   		}
+   		return ans;
+   	}
+   
+   	public static void process2(char[] str, int index, HashSet<String> set, String path) {
+   		if (index == str.length) {
+   			set.add(path);
+   			return;
+   		}
+   		String no = path;
+   		process2(str, index + 1, set, no);
+   		String yes = path + String.valueOf(str[index]);
+   		process2(str, index + 1, set, yes);
+   	}
+   
+   	public static void main(String[] args) {
+   		String test = "acccc";
+   		List<String> ans1 = subs(test);
+   		List<String> ans2 = subsNoRepeat(test);
+   
+   		for (String str : ans1) {
+   			System.out.println(str);
+   		}
+   		System.out.println("=================");
+   		for (String str : ans2) {
+   			System.out.println(str);
+   		}
+   		System.out.println("=================");
+   
+   	}
+   
+   }
+   
+   ```
+
+   
 
