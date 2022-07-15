@@ -6752,6 +6752,9 @@
 
    > * 深度优先遍历的常用技巧之一：遍历完恢复现场
    > * 动态规划的关键之一：递归函数可变参数的设计
+   > * 总结
+   >   + 第二题去重，是在最后过滤掉相同的序列；而这题的去重是在排列的过程中就排除掉相同的排列，这种方法也叫做剪枝（在递归中，排除掉不符合条件）
+   >   + 比较来说，剪枝比过滤更快，因为过滤的前提是得把全部的序列求出，所以比较慢
 
    ![image-20220715151721764](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207151517823.png)
 
@@ -6845,6 +6848,61 @@
    		chs[i] = chs[j];
    		chs[j] = tmp;
    	}
+   }
+   ```
+
+4. **==逆序一个栈==**
+
+   ![image-20220715164407427](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207151644487.png)
+
+   ![image-20220715165300401](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207151653489.png)
+
+   ![image-20220715165908082](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207151659165.png)
+
+   ```java
+   package class17;
+   
+   import java.util.Stack;
+   
+   public class Code05_ReverseStackUsingRecursive {
+   
+   	public static void reverse(Stack<Integer> stack) {
+   		if (stack.isEmpty()) {
+   			return;
+   		}
+   		int i = f(stack);
+   		reverse(stack);
+   		stack.push(i);
+   	}
+   
+   	// 栈底元素移除掉
+   	// 上面的元素盖下来
+   	// 返回移除掉的栈底元素
+   	public static int f(Stack<Integer> stack) {
+   		int result = stack.pop();
+   		if (stack.isEmpty()) {
+   			return result;
+   		} else {
+   			int last = f(stack);
+   			stack.push(result);
+   			return last;
+   		}
+   	}
+   
+   	public static void main(String[] args) {
+   		Stack<Integer> test = new Stack<Integer>();
+   		test.push(1);
+   		test.push(2);
+   		test.push(3);
+   		test.push(4);
+   		test.push(5);
+   		reverse(test);
+   		while (!test.isEmpty()) {
+   			System.out.println(test.pop());
+   		}
+   
+   	}
+   
    }
    ```
 
