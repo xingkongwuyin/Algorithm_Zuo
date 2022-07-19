@@ -6908,3 +6908,319 @@
 
    
 
+## Lesson18
+
+0. 前置知识
+
+   * 动态规划的总结：
+
+     算过一次后把答案记下来，如果发现有重复调用的过程，直接调之前的答案（之前算的放在一张表里，这叫做缓存）就叫做动态规划，空间换时间的一种做法
+
+   + 动态规划是从尝试开始，把好的尝试写出来，后面优化是水到渠成的，这个尝试就是先把递归写出来，哪怕是暴力递归
+
+   
+
+   ![image-20220716081015204](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207160810343.png)
+
+   * 递归的结束条件就是已知条件
+
+1. ==机器人走路==
+
+   + 什么样的暴力递归可以优化，出现重复解的暴力递归，如果暴力递归的么一个子过程都是不一样的，就没有办法动态规划。因为动态规划的目的就是为了防止子过程展开了一遍，再展开相同的子过程时，就不用展开了，直接拿值了，如果子过程是各不相同的，动态规划是，没办法使用的
+   + 动态规划，好像是要记住子过程和其返回值
+   + 这个题，如图所示，是从顶到下的动态规划，这种缓存是不关心位置依赖的。
+
+   ![image-20220719124437145](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207191244240.png)
+
+   ![image-20220719085207259](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207190852393.png)
+
+   ![image-20220719121457827](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207191214958.png)
+
+   ![image-20220719121746030](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207191217176.png)
+
+   > * 上图是二维动态规划表
+   > * 动态规划是结果，不是原因，写出一个最基本的尝试，一步一步的做缓存，一步一步分析位置依赖，你的尝试策略就是状态转移的东西，状态转移只是结果，不是原因，非常强调尝试，因为尝试是自然智慧，只要带有尝试的想法，是都能写来的，动态优化的版本只是最终优化的结果，尝试策略和状态转移方程是一码事，所以动态规划，一定要先尝试，也就是先暴力递归，先写出来
+   > * 上面的那张表就是根据暴力递归的方法填出来的
+
+   ```C
+   package class18;
+   
+   public class Code01_RobotWalk {
+   
+   	public static int ways1(int N, int start, int aim, int K) {
+   		if (N < 2 || start < 1 || start > N || aim < 1 || aim > N || K < 1) {
+   			return -1;
+   		}
+   		return process1(start, K, aim, N);
+   	}
+   
+   	// 机器人当前来到的位置是cur，
+   	// 机器人还有rest步需要去走，
+   	// 最终的目标是aim，
+   	// 有哪些位置？1~N
+   	// 返回：机器人从cur出发，走过rest步之后，最终停在aim的方法数，是多少？
+   	public static int process1(int cur, int rest, int aim, int N) {
+   		if (rest == 0) { // 如果已经不需要走了，走完了！
+   			return cur == aim ? 1 : 0;
+   		}
+   		// (cur, rest)
+   		if (cur == 1) { // 1 -> 2
+   			return process1(2, rest - 1, aim, N);
+   		}
+   		// (cur, rest)
+   		if (cur == N) { // N-1 <- N
+   			return process1(N - 1, rest - 1, aim, N);
+   		}
+   		// (cur, rest)
+   		return process1(cur - 1, rest - 1, aim, N) + process1(cur + 1, rest - 1, aim, N);
+   	}
+   
+       // 缓存法
+       // cur:1~N
+       // rest:0~K
+   	public static int ways2(int N, int start, int aim, int K) {
+   		if (N < 2 || start < 1 || start > N || aim < 1 || aim > N || K < 1) {
+   			return -1;
+   		}
+   		int[][] dp = new int[N + 1][K + 1];
+   		for (int i = 0; i <= N; i++) {
+   			for (int j = 0; j <= K; j++) {
+   				dp[i][j] = -1;
+   			}
+   		}
+   		// dp就是缓存表
+   		// dp[cur][rest] == -1 -> process1(cur, rest)之前没算过！
+   		// dp[cur][rest] != -1 -> process1(cur, rest)之前算过！返回值，dp[cur][rest]
+   		// N+1 * K+1
+   		return process2(start, K, aim, N, dp);
+   	}
+   
+   	// cur 范: 1 ~ N
+   	// rest 范：0 ~ K
+   	public static int process2(int cur, int rest, int aim, int N, int[][] dp) {
+   		if (dp[cur][rest] != -1) {
+   			return dp[cur][rest];
+   		}
+   		// 之前没算过！
+   		int ans = 0;
+   		if (rest == 0) {
+   			ans = cur == aim ? 1 : 0;
+   		} else if (cur == 1) {
+   			ans = process2(2, rest - 1, aim, N, dp);
+   		} else if (cur == N) {
+   			ans = process2(N - 1, rest - 1, aim, N, dp);
+   		} else {
+   			ans = process2(cur - 1, rest - 1, aim, N, dp) + process2(cur + 1, rest - 1, aim, N, dp);
+   		}
+   		dp[cur][rest] = ans;
+   		return ans;
+   
+   	}
+   
+   	public static int ways3(int N, int start, int aim, int K) {
+   		if (N < 2 || start < 1 || start > N || aim < 1 || aim > N || K < 1) {
+   			return -1;
+   		}
+   		int[][] dp = new int[N + 1][K + 1];
+   		dp[aim][0] = 1;
+   		for (int rest = 1; rest <= K; rest++) {
+   			dp[1][rest] = dp[2][rest - 1];
+   			for (int cur = 2; cur < N; cur++) {
+   				dp[cur][rest] = dp[cur - 1][rest - 1] + dp[cur + 1][rest - 1];
+   			}
+   			dp[N][rest] = dp[N - 1][rest - 1];
+   		}
+   		return dp[start][K];
+   	}
+   
+   	public static void main(String[] args) {
+   		System.out.println(ways1(5, 2, 4, 6));
+   		System.out.println(ways2(5, 2, 4, 6));
+   		System.out.println(ways3(5, 2, 4, 6));
+   	}
+   
+   }
+   
+   ```
+
+   
+
+2. **==获胜者的分数==**
+
+   ![image-20220719133316009](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207191333110.png)
+
+   ![image-20220719133820829](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207191338941.png)
+
+   ![image-20220719134536983](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207191345144.png)
+
+   ![image-20220719134859938](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207191349071.png)
+
+   ![image-20220719224602637](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207192246751.png)
+
+   ![image-20220719224641582](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207192246730.png)
+
+   ```C
+   package class18;
+   
+   public class Code02_CardsInLine {
+   
+   	// 根据规则，返回获胜者的分数
+   	public static int win1(int[] arr) {
+   		if (arr == null || arr.length == 0) {
+   			return 0;
+   		}
+   		int first = f1(arr, 0, arr.length - 1);
+   		int second = g1(arr, 0, arr.length - 1);
+   		return Math.max(first, second);
+   	}
+   
+   	// arr[L..R]，先手获得的最好分数返回
+   	public static int f1(int[] arr, int L, int R) {
+   		if (L == R) {
+   			return arr[L];
+   		}
+   		int p1 = arr[L] + g1(arr, L + 1, R);
+   		int p2 = arr[R] + g1(arr, L, R - 1);
+   		return Math.max(p1, p2);
+   	}
+   
+   	// // arr[L..R]，后手获得的最好分数返回
+   	public static int g1(int[] arr, int L, int R) {
+   		if (L == R) {
+   			return 0;
+   		}
+   		int p1 = f1(arr, L + 1, R); // 对手拿走了L位置的数
+   		int p2 = f1(arr, L, R - 1); // 对手拿走了R位置的数
+           // 因为是零和博弈，对手一定会给你最差的分数，这个返回不是自己
+           // 决定的，是对手做决定
+           // 对手会把两个可能的最优中的最小扔给你
+           // p1有一个最优，p2也有一个最优，但对手会把最小的最优扔给你
+   		return Math.min(p1, p2);
+   	}
+   
+   	public static int win2(int[] arr) {
+   		if (arr == null || arr.length == 0) {
+   			return 0;
+   		}
+   		int N = arr.length;
+   		int[][] fmap = new int[N][N];
+   		int[][] gmap = new int[N][N];
+   		for (int i = 0; i < N; i++) {
+   			for (int j = 0; j < N; j++) {
+   				fmap[i][j] = -1;
+   				gmap[i][j] = -1;
+   			}
+   		}
+   		int first = f2(arr, 0, arr.length - 1, fmap, gmap);
+   		int second = g2(arr, 0, arr.length - 1, fmap, gmap);
+   		return Math.max(first, second);
+   	}
+   
+   	// arr[L..R]，先手获得的最好分数返回
+   	public static int f2(int[] arr, int L, int R, int[][] fmap, int[][] gmap) {
+   		if (fmap[L][R] != -1) {
+   			return fmap[L][R];
+   		}
+   		int ans = 0;
+   		if (L == R) {
+   			ans = arr[L];
+   		} else {
+   			int p1 = arr[L] + g2(arr, L + 1, R, fmap, gmap);
+   			int p2 = arr[R] + g2(arr, L, R - 1, fmap, gmap);
+   			ans = Math.max(p1, p2);
+   		}
+   		fmap[L][R] = ans;
+   		return ans;
+   	}
+   
+   	// // arr[L..R]，后手获得的最好分数返回
+   	public static int g2(int[] arr, int L, int R, int[][] fmap, int[][] gmap) {
+   		if (gmap[L][R] != -1) {
+   			return gmap[L][R];
+   		}
+   		int ans = 0;
+   		if (L != R) {
+   			int p1 = f2(arr, L + 1, R, fmap, gmap); // 对手拿走了L位置的数
+   			int p2 = f2(arr, L, R - 1, fmap, gmap); // 对手拿走了R位置的数
+   			ans = Math.min(p1, p2);
+   		}
+   		gmap[L][R] = ans;
+   		return ans;
+   	}
+   
+   	public static int win3(int[] arr) {
+   		if (arr == null || arr.length == 0) {
+   			return 0;
+   		}
+   		int N = arr.length;
+   		int[][] fmap = new int[N][N];
+   		int[][] gmap = new int[N][N];
+   		for (int i = 0; i < N; i++) {
+   			fmap[i][i] = arr[i];
+   		}
+   		for (int startCol = 1; startCol < N; startCol++) {
+   			int L = 0;
+   			int R = startCol;
+   			while (R < N) {
+   				fmap[L][R] = Math.max(arr[L] + gmap[L + 1][R], arr[R] + gmap[L][R - 1]);
+   				gmap[L][R] = Math.min(fmap[L + 1][R], fmap[L][R - 1]);
+   				L++;
+   				R++;
+   			}
+   		}
+   		return Math.max(fmap[0][N - 1], gmap[0][N - 1]);
+   	}
+   
+   	public static void main(String[] args) {
+   		int[] arr = { 5, 7, 4, 5, 8, 1, 6, 0, 3, 4, 6, 1, 7 };
+   		System.out.println(win1(arr));
+   		System.out.println(win2(arr));
+   		System.out.println(win3(arr));
+   
+   	}
+   
+   }
+   ```
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
