@@ -65,7 +65,7 @@ public class Code02_ConvertToLetterString {
 				String s = randomString(len);
 				int ans0 = ConvertToLetterString1(s);
 				int ans1 = ConvertToLetterString2(s);
-				if (ans0 != ans1 ) {
+				if (ans0 != ans1 ) {	
 					System.out.println(s);
 					System.out.println(ans0);
 					System.out.println(ans1);
