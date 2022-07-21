@@ -7272,23 +7272,20 @@
      		return dp[0][bag];
      	}
      
-     	publ ic static void main(String[] args) {
+     	public static void main(String[] args) {
      		int[] weights = { 3, 2, 4, 7, 3, 1, 7 };
      		int[] values = { 5, 6, 3, 19, 12, 4, 2 };
      		int bag = 15;
-  		System.out.println(maxValue(weights, values, bag));
-     		System.out.println(dp(weights, values, bag));
-   	}
-     
+             	System.out.println(maxValue(weights, values, bag));
+      		System.out.println(dp(weights, values, bag));
      }
-     
+      
+      }
      ```
      
-     ![image-20220720105120246](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207201051393.png)
+      ![image-20220720105120246](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207210946941.png)
      
-     ![image-20220720151652475](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207201516573.png)
-
-​     
+      ![image-20220720151652475](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207210946591.png)
 
 2. **==字符串转化==**
 
@@ -7297,8 +7294,9 @@
    ![image-20220720170113068](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207201701162.png)
 
    * 注意
-     + 从左往右的模型
-
+     
+   + 从左往右的模型
+     
    * Code
 
      ```java
@@ -7360,40 +7358,7 @@
      		return dp[0];
      	}
      
-     	// 从左往右的动态规划
-     	// dp[i]表示：str[0...i]有多少种转化方式
-     	public static int dp2(String s) {
-     		if (s == null || s.length() == 0) {
-     			return 0;
-     		}
-     		char[] str = s.toCharArray();
-     		int N = str.length;
-     		if (str[0] == '0') {
-     			return 0;
-     		}
-     		int[] dp = new int[N];
-     		dp[0] = 1;
-     		for (int i = 1; i < N; i++) {
-     			if (str[i] == '0') {
-     				// 如果此时str[i]=='0'，那么他是一定要拉前一个字符(i-1的字符)一起拼的，
-     				// 那么就要求前一个字符，不能也是‘0’，否则拼不了。
-     				// 前一个字符不是‘0’就够了嘛？不够，还得要求拼完了要么是10，要么是20，如果更大的话，拼不了。
-     				// 这就够了嘛？还不够，你们拼完了，还得要求str[0...i-2]真的可以被分解！
-     				// 如果str[0...i-2]都不存在分解方案，那i和i-1拼成了也不行，因为之前的搞定不了。
-     				if (str[i - 1] == '0' || str[i - 1] > '2' || (i - 2 >= 0 && dp[i - 2] == 0)) {
-     					return 0;
-     				} else {
-     					dp[i] = i - 2 >= 0 ? dp[i - 2] : 1;
-     				}
-     			} else {
-     				dp[i] = dp[i - 1];
-     				if (str[i - 1] != '0' && (str[i - 1] - '0') * 10 + str[i] - '0' <= 26) {
-     					dp[i] += i - 2 >= 0 ? dp[i - 2] : 1;
-     				}
-     			}
-     		}
-     		return dp[N - 1];
-     	}
+     	
      
      	// 为了测试
      	public static String randomString(int len) {
@@ -7650,7 +7615,8 @@
      		// 尝试
      		return process1(str1, str2, str1.length - 1, str2.length - 1);
      	}
-     
+     	// 最长公共子序列肯定在这几种可能性中，把这几种可能性对应的最长的公共子序列的
+         // 长度求出来就，就是题目要求的 
      	// str1[0...i]和str2[0...j]，这个范围上最长公共子序列长度是多少？
      	// 可能性分类:
      	// a) 最长公共子序列，一定不以str1[i]字符结尾、也一定不以str2[j]字符结尾
@@ -7760,10 +7726,9 @@
      
      }
      
-     ```
-
+```
      
-
+  
    
 
    
@@ -7774,6 +7739,7 @@
 
    
 
+   
    
 
 
