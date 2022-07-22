@@ -7822,11 +7822,90 @@
    * Question
 
      * ![](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207220936626.png)
-     * 
 
      
 
+   + Code
+
+     + 记忆化搜索就是用缓存的方法
+     + zhe是三维动态规划，如果简单，那就用动态规划，不简单，那就直接用记忆化搜索的方法
+
+     ```java
+     package class20;
      
+     public class Code02_HorseJump {
+     
+     	// 当前来到的位置是（x,y）
+     	// 还剩下rest步需要跳
+     	// 跳完rest步，正好跳到a，b的方法数是多少？
+     	// 10 * 9
+     	public static int jump(int a, int b, int k) {
+     		return process(0, 0, k, a, b);
+     	}
+     
+     	public static int process(int x, int y, int rest, int a, int b) {
+             // 蹦越界是不能崩回来的，
+     		if (x < 0 || x > 9 || y < 0 || y > 8) {
+     			return 0;
+     		}
+     		if (rest == 0) {
+                 // 来到ab，不走也算是一种方法
+     			return (x == a && y == b) ? 1 : 0;
+     		}
+             // 方法数应该是八个方向所获得的方法数的总和
+     		int ways = 1 * process(x + 2, y + 1, rest - 1, a, b);
+     		ways += process(x + 1, y + 2, rest - 1, a, b);
+     		ways += process(x - 1, y + 2, rest - 1, a, b);
+     		ways += process(x - 2, y + 1, rest - 1, a, b);
+     		ways += process(x - 2, y - 1, rest - 1, a, b);
+     		ways += process(x - 1, y - 2, rest - 1, a, b);
+     		ways += process(x + 1, y - 2, rest - 1, a, b);
+     		ways += process(x + 2, y - 1, rest - 1, a, b);
+     		return ways;
+     	}
+     
+         // 任何一层的东西都依赖下一层的东西，不依赖本层
+     	public static int dp(int a, int b, int k) {
+     		int[][][] dp = new int[10][9][k + 1];
+     		dp[a][b][0] = 1;
+     		for (int rest = 1; rest <= k; rest++) {
+     			for (int x = 0; x < 10; x++) {
+     				for (int y = 0; y < 9; y++) {
+     					int ways = pick(dp, x + 2, y + 1, rest - 1);
+     					ways += pick(dp, x + 1, y + 2, rest - 1);
+     					ways += pick(dp, x - 1, y + 2, rest - 1);
+     					ways += pick(dp, x - 2, y + 1, rest - 1);
+     					ways += pick(dp, x - 2, y - 1, rest - 1);
+     					ways += pick(dp, x - 1, y - 2, rest - 1);
+     					ways += pick(dp, x + 1, y - 2, rest - 1);
+     					ways += pick(dp, x + 2, y - 1, rest - 1);
+     					dp[x][y][rest] = ways;
+     				}
+     			}
+     		}
+     		return dp[0][0][k];
+     	}
+     
+         // 判断x和y是否越界
+     	public static int pick(int[][][] dp, int x, int y, int rest) {
+     		if (x < 0 || x > 9 || y < 0 || y > 8) {
+     			return 0;
+     		}
+     		return dp[x][y][rest];
+     	}
+     }
+     
+     ```
+
+     ![image-20220722115316048](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207221153150.png)
+
+   
+
+   3. **==咖啡机==**
+
+      * Question
+
+         ![image-20220722121708653](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207221217721.png)
 
 
 
