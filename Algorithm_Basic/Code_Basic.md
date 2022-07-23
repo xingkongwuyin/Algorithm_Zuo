@@ -7828,7 +7828,7 @@
    + Code
 
      + 记忆化搜索就是用缓存的方法
-     + zhe是三维动态规划，如果简单，那就用动态规划，不简单，那就直接用记忆化搜索的方法
+     + 这是三维动态规划，如果简单，那就用动态规划，不简单，那就直接用记忆化搜索的方法
 
      ```java
      package class20;
@@ -7901,13 +7901,152 @@
 
    
 
-   3. **==咖啡机==**
+3. **==咖啡机==**
 
-      * Question
+   * Question
 
-         ![image-20220722121708653](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207221217721.png)
+      ![image-20220722121708653](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207221217721.png)
 
+   * Code
 
+     + 思路
+
+       + ![image-20220723150331657](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207231503796.png)、
+       + ![image-20220723155020543](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207231550621.png)
+
+     + Code
+
+       + 1） 从暴力递归到动态递归，到弄出表的大小，中间弄出的表的时候，表的大小可能不好估计，也就是可变参数不好估计，那就把可变参数的大小冲到最大
+
+         2）填表的时候，一定要注意哪些位置是不要填的
+
+         3）如果想不出位置依赖，那就用缓存的方法
+
+       ```java
+       package class20;
+       
+       import java.util.Arrays;
+       import java.util.Comparator;
+       import java.util.PriorityQueue;
+       
+       // 题目
+       // 数组arr代表每一个咖啡机冲一杯咖啡的时间，每个咖啡机只能串行的制造咖啡。
+       // 现在有n个人需要喝咖啡，只能用咖啡机来制造咖啡。
+       // 认为每个人喝咖啡的时间非常短，冲好的时间即是喝完的时间。
+       // 每个人喝完之后咖啡杯可以选择洗或者自然挥发干净，只有一台洗咖啡杯的机器，只能串行的洗咖啡杯。
+       // 洗杯子的机器洗完一个杯子时间为a，任何一个杯子自然挥发干净的时间为b。
+       // 四个参数：arr, n, a, b
+       // 假设时间点从0开始，返回所有人喝完咖啡并洗完咖啡杯的全部过程结束后，至少来到什么时间点。
+       public class Code03_Coffee {
+       
+       	// 以下为贪心+优良暴力
+       	public static class Machine {
+       		public int timePoint;
+       		public int workTime;
+       
+       		public Machine(int t, int w) {
+       			timePoint = t;
+       			workTime = w;
+       		}
+       	}
+       
+       	public static class MachineComparator implements Comparator<Machine> {
+       
+       		@Override
+       		public int compare(Machine o1, Machine o2) {
+       			return (o1.timePoint + o1.workTime) - (o2.timePoint + o2.workTime);
+       		}
+       
+       	}
+       
+       	// 优良一点的暴力尝试的方法
+       	public static int minTime1(int[] arr, int n, int a, int b) {
+       		PriorityQueue<Machine> heap = new PriorityQueue<Machine>(new MachineComparator());
+       		for (int i = 0; i < arr.length; i++) {
+       			heap.add(new Machine(0, arr[i]));
+       		}
+               // 每个人喝完的时间点
+       		int[] drinks = new int[n];
+       		for (int i = 0; i < n; i++) {
+       			Machine cur = heap.poll();
+       			cur.timePoint += cur.workTime;
+       			drinks[i] = cur.timePoint;
+       			heap.add(cur);
+       		}
+       		return bestTime(drinks, a, b, 0, 0);
+       	}
+       
+       	// drinks 所有杯子可以开始洗的时间
+       	// wash 单杯洗干净的时间（串行）
+       	// air 挥发干净的时间(并行)
+           // index 当前来到第几人的咖啡杯
+       	// free 洗的机器什么时候可用
+       	// drinks[index.....]都变干净，最早的结束时间（返回）
+       	public static int bestTime(int[] drinks, int wash, int air, int index, int free) {
+       		if (index == drinks.length) {
+       			return 0;
+       		}
+       		// index号杯子 决定洗
+       		int selfClean1 = Math.max(drinks[index], free) + wash;
+       		int restClean1 = bestTime(drinks, wash, air, index + 1, selfClean1);
+       		int p1 = Math.max(selfClean1, restClean1);
+       
+       		// index号杯子 决定挥发
+       		int selfClean2 = drinks[index] + air;
+       		int restClean2 = bestTime(drinks, wash, air, index + 1, free);
+       		int p2 = Math.max(selfClean2, restClean2);
+       		return Math.min(p1, p2);
+       	}
+       
+       	// 贪心+优良尝试改成动态规划
+       	public static int minTime2(int[] arr, int n, int a, int b) {
+       		PriorityQueue<Machine> heap = new PriorityQueue<Machine>(new MachineComparator());
+       		for (int i = 0; i < arr.length; i++) {
+       			heap.add(new Machine(0, arr[i]));
+       		}
+       		int[] drinks = new int[n];
+       		for (int i = 0; i < n; i++) {
+       			Machine cur = heap.poll();
+       			cur.timePoint += cur.workTime;
+       			drinks[i] = cur.timePoint;
+       			heap.add(cur);
+       		}
+       		return bestTimeDp(drinks, a, b);
+       	}
+       
+       	public static int bestTimeDp(int[] drinks, int wash, int air) {
+       		int N = drinks.length;
+               // 最大咖啡机可以使用时间
+       		int maxFree = 0;
+       		for (int i = 0; i < drinks.length; i++) {
+       			maxFree = Math.max(maxFree, drinks[i]) + wash;
+       		}
+       		int[][] dp = new int[N + 1][maxFree + 1];
+       		for (int index = N - 1; index >= 0; index--) {
+       			for (int free = 0; free <= maxFree; free++) {
+       				int selfClean1 = Math.max(drinks[index], free) + wash;
+       				if (selfClean1 > maxFree) {
+       					break; // 因为后面的也都不用填了
+       				}
+       				// index号杯子 决定洗
+       				int restClean1 = dp[index + 1][selfClean1];
+       				int p1 = Math.max(selfClean1, restClean1);
+       				// index号杯子 决定挥发
+       				int selfClean2 = drinks[index] + air;
+       				int restClean2 = dp[index + 1][free];
+       				int p2 = Math.max(selfClean2, restClean2);
+       				dp[index][free] = Math.min(p1, p2);
+       			}
+       		}
+       		return dp[0][0];
+       	}
+       }
+       
+       ```
+
+       
+
+小根堆：对象：咖啡机什么时候可以在用和咖啡机泡完一杯要多久 小根堆的排序策略是：两个时间加起来排序
 
 ​       
 
