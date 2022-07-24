@@ -8046,8 +8046,114 @@
 
        
 
-小根堆：对象：咖啡机什么时候可以在用和咖啡机泡完一杯要多久 小根堆的排序策略是：两个时间加起来排序
+## Lesson21
 
-​       
+0. **==前置知识==**
+
+   + 动态规划中，空间压缩技巧和为什么要转成一个严格表的动态规划，为什么不到记忆化搜索就结束了
+
+1. **==最小距离累加和==**
+
+   * Question
+
+     + ![image-20220724102339089](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207241023195.png)
+
+     + 技巧
+
+       动态规划的数组压缩技巧
+
+   + Code
+
+     + 思路
+
+       ![](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207241028135.png)
+
+       ![image-20220724103052553](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207241030685.png)
+
+       ![image-20220724104428531](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207241044671.png)
+
+       ![image-20220724105314406](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207241053530.png)
+
+     + code
+
+       ```java
+       // dp[i][j] 从ij位置出发，到右下角的距离
+       package class21;
+       
+       public class Code01_MinPathSum {
+       
+           // 第一种思路：从（0， 0）出发到（i， j）的最短距离，返回的是dp[N]          [M]
+       	// 第二种思路：从（i， j）出发到右下角的距离，返回的是dp[0][0]
+           // 本体采用第一种思路
+           public static int minPathSum1(int[][] m) {
+       		if (m == null || m.length == 0 || m[0] == null || m[0].length == 0) {
+       			return 0;
+       		}
+       		int row = m.length;
+       		int col = m[0].length;
+       		int[][] dp = new int[row][col];
+       		dp[0][0] = m[0][0];
+       		for (int i = 1; i < row; i++) {
+       			dp[i][0] = dp[i - 1][0] + m[i][0];
+       		}
+       		for (int j = 1; j < col; j++) {
+       			dp[0][j] = dp[0][j - 1] + m[0][j];
+       		}
+       		for (int i = 1; i < row; i++) {
+       			for (int j = 1; j < col; j++) {
+       				dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + m[i][j];
+       			}
+       		}
+       		return dp[row - 1][col - 1];
+       	}
+       
+       	public static int minPathSum2(int[][] m) {
+       		if (m == null || m.length == 0 || m[0] == null || m[0].length == 0) {
+       			return 0;
+       		}
+       		int row = m.length;
+       		int col = m[0].length;
+       		int[] dp = new int[col];
+       		dp[0] = m[0][0];
+       		for (int j = 1; j < col; j++) {
+       			dp[j] = dp[j - 1] + m[0][j];
+       		}
+       		for (int i = 1; i < row; i++) {
+       			dp[0] += m[i][0];
+       			for (int j = 1; j < col; j++) {
+       				dp[j] = Math.min(dp[j - 1], dp[j]) + m[i][j];
+       			}
+       		}
+       		return dp[col - 1];
+       	}
+       }
+       
+       ```
+
+     + 如果动态规划中，任何一个普遍位置只依赖自己左边和上边的位置，都可以这么去做，用一个一维数组去动态更新
+
+       ![image-20220724110444093](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207241104233.png)
+
+     + 任何一个普遍位置只依赖自己左上角和上边的值，也可以用一个一维数组去自动更新
+
+       ![image-20220724111204152](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207241112260.png)
+
+     
+
+     + 任何一个普遍位置，只依赖自己左边，左上边和上边的位置。 
+
+       注意：设置一个临时变量
+
+       ![image-20220724111937121](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207241119238.png)
+
+     + 如果列的长度大于行的长度，开辟一维dp数组的大小和寻找位置依赖的方法如下
+
+       也即是，列比较段，那就一行一行更新；行比较短那就一列一列更新
+
+       ![image-20220724113451509](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207241134614.png)
+
+       ![image-20220724113647009](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207241136134.png)
+
+     + 二维dp数组，是在自己的脑海中，实际出来的是根据二维dp数组和位置依赖推出一维dp数组，这就是空间压缩技巧（小技巧，如果时间就做，没时间就不用）
 
 ​                
