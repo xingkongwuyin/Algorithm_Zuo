@@ -8157,3 +8157,62 @@
      + 二维dp数组，是在自己的脑海中，实际出来的是根据二维dp数组和位置依赖推出一维dp数组，这就是空间压缩技巧（小技巧，如果时间就做，没时间就不用）
 
 ​                
+
+2. **==货币问题1==**
+
+   * Question
+
+     + ![image-20220725084447386](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207250846604.png)
+     + 从左往右的尝试模型（其他三种模型是范围尝试模型，样本对应模型和业务限制模型）
+
+   * Code
+
+     + 思路
+
+     + Code
+
+       ```java
+       package class21;
+       
+       public class Code02_CoinsWayEveryPaperDifferent {
+       
+       	public static int coinWays(int[] arr, int aim) {
+       		return process(arr, 0, aim);
+       	}
+       
+       	// arr[index....] 组成正好rest这么多的钱，有几种方法
+       	public static int process(int[] arr, int index, int rest) {
+       		if (rest < 0) {
+       			return 0;
+       		}
+       		if (index == arr.length) { // 没钱了！
+       			return rest == 0 ? 1 : 0;
+       		} else 
+                   // 要index的钱和不要index的钱的方法累加
+       			return process(arr, index + 1, rest) + process(arr, index + 1, rest - arr[index]);
+       		}
+       	}
+       
+       	public static int dp(int[] arr, int aim) {
+       		if (aim == 0) {
+       			return 1;
+       		}
+       		int N = arr.length;
+       		int[][] dp = new int[N + 1][aim + 1];
+       		dp[N][0] = 1;
+       		for (int index = N - 1; index >= 0; index--) {
+       			for (int rest = 0; rest <= aim; rest++) {
+       				dp[index][rest] = dp[index + 1][rest] + (rest - arr[index] >= 0 ? dp[index + 1][rest - arr[index]] : 0);
+       			}
+       		}
+       		return dp[0][aim];
+       	}
+       }
+       
+       ```
+
+3. **==货币问题2==**
+
+   + Qurestion
+     + ![image-20220725090305997](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207250903113.png)
+
