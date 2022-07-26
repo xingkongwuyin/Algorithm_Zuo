@@ -8258,5 +8258,126 @@
      
      ```
    
-     
+
+4. **==货币问题==**
+
+   + Question
+
+     + ![image-20220726070934974](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207261147228.png)
+     + 相当与货币问题2中，将所有的货币放在同一个数组
+
+   + Code
+
+     + ![image-20220726072721113](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207261147293.png)
+
+       ![image-20220726073330497](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207261147275.png)
+
+     + ```java  
+       package class21;
+       
+       import java.util.HashMap;
+       import java.util.Map.Entry;
+       
+       public class Code04_CoinsWaySameValueSamePapper {
+       
+       	public static class Info {
+       		public int[] coins;
+       		public int[] zhangs;
+       
+       		public Info(int[] c, int[] z) {
+       			coins = c;
+       			zhangs = z;
+       		}
+       	}
+       
+       	public static Info getInfo(int[] arr) {
+       		HashMap<Integer, Integer> counts = new HashMap<>();
+       		for (int value : arr) {
+       			if (!counts.containsKey(value)) {
+       				counts.put(value, 1);
+       			} else {
+       				counts.put(value, counts.get(value) + 1);
+       			}
+       		}
+       		int N = counts.size();
+       		int[] coins = new int[N];
+       		int[] zhangs = new int[N];
+       		int index = 0;
+       		for (Entry<Integer, Integer> entry : counts.entrySet()) {
+       			coins[index] = entry.getKey();
+       			zhangs[index++] = entry.getValue();
+       		}
+       		return new Info(coins, zhangs);
+       	}
+       
+       	public static int coinsWay(int[] arr, int aim) {
+       		if (arr == null || arr.length == 0 || aim < 0) {
+       			return 0;
+       		}
+       		Info info = getInfo(arr);
+       		return process(info.coins, info.zhangs, 0, aim);
+       	}
+       
+       	// coins 面值数组，正数且去重
+       	// zhangs 每种面值对应的张数
+       	public static int process(int[] coins, int[] zhangs, int index, int rest) {
+       		if (index == coins.length) {
+       			return rest == 0 ? 1 : 0;
+       		}
+       		int ways = 0;
+       		for (int zhang = 0; zhang * coins[index] <= rest && zhang <= zhangs[index]; zhang++) {
+       			ways += process(coins, zhangs, index + 1, rest - (zhang * coins[index]));
+       		}
+       		return ways;
+       	}
+       
+       	public static int dp1(int[] arr, int aim) {
+       		if (arr == null || arr.length == 0 || aim < 0) {
+       			return 0;
+       		}
+       		Info info = getInfo(arr);
+       		int[] coins = info.coins;
+       		int[] zhangs = info.zhangs;
+       		int N = coins.length;
+       		int[][] dp = new int[N + 1][aim + 1];
+       		dp[N][0] = 1;
+       		for (int index = N - 1; index >= 0; index--) {
+       			for (int rest = 0; rest <= aim; rest++) {
+       				int ways = 0;
+       				for (int zhang = 0; zhang * coins[index] <= rest && zhang <= zhangs[index]; zhang++) {
+       					ways += dp[index + 1][rest - (zhang * coins[index])];
+       				}
+       				dp[index][rest] = ways;
+       			}
+       		}
+       		return dp[0][aim];
+       	}
+       
+       	public static int dp2(int[] arr, int aim) {
+       		if (arr == null || arr.length == 0 || aim < 0) {
+       			return 0;
+       		}
+       		Info info = getInfo(arr);
+       		int[] coins = info.coins;
+       		int[] zhangs = info.zhangs;
+       		int N = coins.length;
+       		int[][] dp = new int[N + 1][aim + 1];
+       		dp[N][0] = 1;
+       		for (int index = N - 1; index >= 0; index--) {
+       			for (int rest = 0; rest <= aim; rest++) {
+       				dp[index][rest] = dp[index + 1][rest];
+       				if (rest - coins[index] >= 0) {
+       					dp[index][rest] += dp[index][rest - coins[index]];
+                       }
+                       // 减去的是相对位置
+       				if (rest - coins[index] * (zhangs[index] + 1) >= 0) {
+       					dp[index][rest] -= dp[index + 1][rest - coins[index] * (zhangs[index] + 1)];
+       				}
+       			}
+       		}
+       		return dp[0][aim];
+       	}
+       }
+         
+       ```
 
