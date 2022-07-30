@@ -1207,3 +1207,65 @@ public class Code06_TwoQueueImplementStack {
 }
 
 ```
+
+
+
+
+
+## **Code Hanoi**
+
+### **Relevant Knowledge**
+
+### **Question**
+
+* **汉诺塔**
+
+### **Illustration**
+
+### **Thinking**
+
+*  **process：有三个柱子from、to和others，将n个盘子从from柱子移动到to柱子**
+
+### **Code**
+
+```java
+package lesson17;
+
+import java.util.Stack;
+
+public class Code01_Hanoi {
+    public static void hanoi(int n){
+        if(n > 0){
+            process(n, "left", "right", "mid");
+        }
+    }
+
+    // process：有三个柱子from、to和others，将n个盘子从from柱子移动到to柱子
+    public static void process(int n, String from, String to, String others){
+        if(n == 1){
+            System.out.println("move 1 from " + from + " to " + to);
+            return;  // (2)
+        }
+        process(n - 1, from, others, to);
+        System.out.println("move " + n + " from " + from + " to " + to);
+        process(n - 1, others, to, from);
+    }
+    
+    public static void process1(int N, String from, String to, String other) {
+		if (N == 1) { // base
+			System.out.println("Move 1 from " + from + " to " + to);
+		} else {      //(2)
+			func(N - 1, from, other, to);
+			System.out.println("Move " + N + " from " + from + " to " + to);
+			func(N - 1, other, to, from);
+		}
+	}
+
+}
+// (1)和(2),两种递归的结束的表达方式
+// (1),如果不加return，那么判断完if后，就会继续执行后面的程序，容易造成死循环
+//  所以，用这种表达形式，一定要记得有return
+// (2),用if……else，就不用担心，因为if第一个判断过去后，下面的判断就不会进行
+// 所以也能结束递归
+```
+
