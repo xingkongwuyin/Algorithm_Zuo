@@ -573,11 +573,11 @@ public class Code03_KM {
 
 * **解决链表的题，一般需要三个指针：pre、cur和next**
 
-  **pre：用来记录当前结点的前一个结点位置**
+  **pre：用来记录当前结点的前一个结点位置（前世）**  
 
-  **cur：当前结点的位置**
+  **cur：当前结点的位置（今生）**
 
-  **next：当前结点下一个位置**
+  **next：当前结点下一个位置（未来）**
 
 ### **Code**
 
@@ -728,7 +728,7 @@ public class Code02_DeleteGivenValue {
 
 ### **Thinking**
 
-* 
+* **(这个代码还没实现)**
 
 ### **Code**
 
@@ -1018,6 +1018,7 @@ public class Code04_GetMinStack {
                 throw new RuntimeException("栈已经空");
             }
             int value = StackData.pop();
+            // 即使有返回值，但可以不要
             StackMin.pop();
             return StackData.pop();
         }
